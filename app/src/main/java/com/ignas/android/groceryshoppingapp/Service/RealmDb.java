@@ -42,6 +42,11 @@ public class RealmDb {
         }
         return list;
     }
+    public void removeAll(){
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+    }
     public void addItems(ArrayList<Item>items){
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
@@ -65,6 +70,7 @@ public class RealmDb {
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(@NotNull Realm realm) {
+
             }
             }, new Realm.Transaction.OnSuccess() {
             @Override

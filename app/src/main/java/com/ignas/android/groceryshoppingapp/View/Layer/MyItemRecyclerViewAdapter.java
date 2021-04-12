@@ -39,16 +39,19 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         list = data.getEmptyList();
 
          */
-        this.mValues = emptySpace(items);
-
+        items.add(new Item());
+        this.mValues = items;
         this.mItemClickListener = itemClickListener;
     }
+    /*
     public ArrayList<Item> emptySpace(ArrayList<Item> items){
         if (items.size() == 0) {
             items.add(new Item());
         }
         return items;
     }
+
+     */
 
 
     @NotNull
@@ -81,8 +84,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.deleteBtn.setOnClickListener(vew->{
 
             Item itemToRemove = mValues.get(position);
-            removeUpdate(position,itemToRemove);
             mItemClickListener.onItemRemoveClick(itemToRemove);
+            itemToRemove = removeUpdate(position,itemToRemove);
         });
 
         }
@@ -114,20 +117,23 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             mValues.add(position,new Item());
             notifyItemInserted(mValues.size()-1);
         }
-        public void removeUpdate(int position,Item item){
+        public Item removeUpdate(int position,Item item){
+        Item itemToRemove = new Item();
             if(getItemCount()>1){
                 item.setItemName("");
                 item.setAmount(0);
                 item.setLastingDays(0);
                 item.setPrice(0.f);
-                mValues.remove(position);
-                notifyItemRemoved(mValues.size()-1);
+                mValues.remove(item);
+                notifyItemRemoved(position);
+                //notifyItemRemoved(mValues.size()-1);
             }else{
                 item.setItemName("");
                 item.setAmount(0);
                 item.setLastingDays(0);
                 item.setPrice(0.f);
             }
+            return itemToRemove;
         }
 
     public interface ItemClickListener{

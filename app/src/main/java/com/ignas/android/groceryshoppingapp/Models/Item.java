@@ -12,13 +12,14 @@ public class Item extends RealmObject{
     @PrimaryKey
     private static int itemID=0;
 
+
     private String itemName="";
     private float price=0;
     private int amount=0;
     private Date runOutDate=null;
     private int lastingDays =0;
 
-    {
+    static {
         itemID++;
     }
 

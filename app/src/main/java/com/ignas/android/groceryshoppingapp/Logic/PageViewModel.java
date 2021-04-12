@@ -8,6 +8,8 @@ import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
+
 public class PageViewModel {//extends ViewModel {
     private static PageViewModel pageViewModel=null ;
 
@@ -16,6 +18,10 @@ public class PageViewModel {//extends ViewModel {
 
     public PageViewModel() {
         db = new RealmDb();
+        setItems();
+
+       // db.removeAll();
+
     }
     public static PageViewModel getInstance(){
         if(pageViewModel==null){
@@ -28,6 +34,8 @@ public class PageViewModel {//extends ViewModel {
        items =  db.getItems();
     }
 
+
+
     public ArrayList<Item> getItems() {
         return items;
     }
@@ -35,11 +43,7 @@ public class PageViewModel {//extends ViewModel {
     public void saveItems(){
         for(int i = 0;i< items.size();i++){
             if(items.get(i).getItemName().equals("")){
-
-                try{
                     items.remove(i);
-                }catch(Exception e){
-                }
             }
         }
         db.addItems(items);

@@ -55,7 +55,7 @@ public class ItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         data = PageViewModel.getInstance();
-        data.setItems();
+        //data.setItems();
 
         /*
         if (getArguments() != null) {
@@ -93,7 +93,8 @@ public class ItemFragment extends Fragment {
                 @Override
                 public void onItemRemoveClick(Item item) {
 
-                    Log.d(TAG, "Save Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
+                    Log.d(TAG, "removed Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
+
                 }
             }));
         }
