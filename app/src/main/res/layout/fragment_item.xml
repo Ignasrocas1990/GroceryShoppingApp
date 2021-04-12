@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_baseline_delete_24"
+            android:contentDescription="@string/del" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Bread"
+                android:gravity="center"
+                android:inputType="text"
+                android:hint="@string/item_name" />
+
+            <EditText
+                android:id="@+id/lastingDays"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="6"
+                android:gravity="center"
+                android:inputType="number"
+                android:hint="@string/lasting_days" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/quantity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="2"
+                android:gravity="center"
+                android:hint="@string/quantity"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="2.50"
+                android:gravity="center"
+                android:hint="@string/price"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/saveFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/saveUpdate"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+    </LinearLayout>

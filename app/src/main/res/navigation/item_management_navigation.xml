@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_management_navigation"
+    app:startDestination="@id/navigation_addItems">
+
+    <fragment
+        android:id="@+id/navigation_addItems"
+        android:name="com.ignas.android.groceryshoppingapp.View.Layer.ItemFragment"
+        android:label="fragment_item_list"
+        tools:layout="@layout/fragment_item_list" />
+    <fragment
+        android:id="@+id/navigation_blankFragment"
+        android:name="com.ignas.android.groceryshoppingapp.BlankFragment"
+        android:label="fragment_blank"
+        tools:layout="@layout/fragment_blank" />
+</navigation>
