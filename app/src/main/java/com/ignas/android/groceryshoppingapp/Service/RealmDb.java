@@ -5,6 +5,8 @@ import android.util.Log;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,19 +44,36 @@ public class RealmDb {
     }
     public void addItems(ArrayList<Item>items){
         realm.executeTransactionAsync(new Realm.Transaction(){
-
             @Override
-            public void execute(Realm realm) {
+            public void execute(@NotNull Realm realm) {
                 realm.copyToRealmOrUpdate(items);
             }
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess: all good");
+                Log.d(TAG, "onSuccess: saved items");
             }
         }, new Realm.Transaction.OnError() {
             @Override
-            public void onError(Throwable error) {
+            public void onError(@NotNull Throwable error) {
+                Log.d(TAG, "onError: Adding error"+error.getLocalizedMessage());
+            }
+        }
+        );
+    }
+    public void removeItems(ArrayList<Item>items) {
+        realm.executeTransactionAsync(new Realm.Transaction(){
+            @Override
+            public void execute(@NotNull Realm realm) {
+            }
+            }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess: all good");
+            }
+            }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(@NotNull Throwable error) {
                 Log.d(TAG, "onError: something when wrong");
             }
         }

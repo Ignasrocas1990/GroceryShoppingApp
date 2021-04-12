@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
          bottomNav = findViewById(R.id.toolBar);
          controller = Navigation.findNavController(this,R.id.hostFragment);
-/*
+         /*
         AppBarConfiguration toolBarConfig = new AppBarConfiguration.Builder(
                 R.id.navigation_addItems,R.id.navigation_blankFragment)
                 .build();

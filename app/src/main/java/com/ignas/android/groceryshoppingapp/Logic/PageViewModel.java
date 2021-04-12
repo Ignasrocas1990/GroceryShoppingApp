@@ -11,7 +11,7 @@ import java.util.List;
 public class PageViewModel {//extends ViewModel {
     private static PageViewModel pageViewModel=null ;
 
-    private ArrayList<Item> items =null;
+    private ArrayList<Item> items;
     RealmDb db;
 
     public PageViewModel() {
@@ -31,7 +31,18 @@ public class PageViewModel {//extends ViewModel {
     public ArrayList<Item> getItems() {
         return items;
     }
-    public void add(Item item){
+
+    public void saveItems(){
+        for(int i = 0;i< items.size();i++){
+            if(items.get(i).getItemName().equals("")){
+
+                try{
+                    items.remove(i);
+                }catch(Exception e){
+                }
+            }
+        }
+        db.addItems(items);
     }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
@@ -40,10 +51,4 @@ public class PageViewModel {//extends ViewModel {
     public LiveData<String> getText() {return mText;}
 
  */
-
-
-
-
-
-
 }

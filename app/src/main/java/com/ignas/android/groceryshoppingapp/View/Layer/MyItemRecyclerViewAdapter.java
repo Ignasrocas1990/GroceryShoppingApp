@@ -39,9 +39,15 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         list = data.getEmptyList();
 
          */
-        items.add(new Item());
-        this.mValues = items;
+        this.mValues = emptySpace(items);
+
         this.mItemClickListener = itemClickListener;
+    }
+    public ArrayList<Item> emptySpace(ArrayList<Item> items){
+        if (items.size() == 0) {
+            items.add(new Item());
+        }
+        return items;
     }
 
 
@@ -54,7 +60,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {//need to fix if 0 then its empty space (so hints seen)
         Item item = mValues.get(position);
         holder.product_name.setText(item.getItemName());
         holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
@@ -63,18 +69,20 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
 
         holder.saveBtn.setOnClickListener(vew ->{
-            //Item item = mValues.get(position);
+            Item itemToAdd = mValues.get(position);
 
             if (!holder.product_name.getText().toString().equals("")) {
 
                         addUpdate(position,holder);
                     }
-                mItemClickListener.onItemClick(mValues.get(position));
+                mItemClickListener.onItemSaveClick(itemToAdd);
             });
 
         holder.deleteBtn.setOnClickListener(vew->{
-            //Item item = mValues.get(position);
-            removeUpdate(position,mValues.get(position));
+
+            Item itemToRemove = mValues.get(position);
+            removeUpdate(position,itemToRemove);
+            mItemClickListener.onItemRemoveClick(itemToRemove);
         });
 
         }
@@ -123,7 +131,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         }
 
     public interface ItemClickListener{
-        void onItemClick(Item item);
+        void onItemSaveClick(Item item);
+        void onItemRemoveClick(Item item);
     }
 
     @Override

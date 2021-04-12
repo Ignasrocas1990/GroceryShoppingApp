@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -32,7 +34,7 @@ public class ItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 10;
-    public final String TAG = "emptyList";
+    public final String TAG = "log";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,15 +85,24 @@ public class ItemFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(data.getItems(), new MyItemRecyclerViewAdapter.ItemClickListener() {
                 @Override
-                public void onItemClick(Item item) {
-                    Log.d(TAG, "onItemClick: "+item.getItemName());
-                    Log.d(TAG, "onItemClick: "+item.getLastingDays());
-                    Log.d(TAG, "onItemClick: "+item.getAmount());
-                    Log.d(TAG, "onItemClick: "+item.getPrice());
+                public void onItemSaveClick(Item item) {
+                    Log.d(TAG, "onItemSaveClick: "+data.getItems().size());
+                    Log.d(TAG, "Save Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
+                }
 
+                @Override
+                public void onItemRemoveClick(Item item) {
+
+                    Log.d(TAG, "Save Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
                 }
             }));
         }
         return view;
+    }
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "left the view");
+        data.saveItems();
+        super.onDestroyView();
     }
 }
