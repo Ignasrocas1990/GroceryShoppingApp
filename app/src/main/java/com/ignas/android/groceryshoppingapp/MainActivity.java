@@ -22,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.ignas.android.groceryshoppingapp.Logic.PageViewModel;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Service.DbConnect;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 import com.ignas.android.groceryshoppingapp.View.Layer.SectionsPagerAdapter;
 

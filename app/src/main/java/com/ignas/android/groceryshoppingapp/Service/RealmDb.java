@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.annotations.PrimaryKey;
 
 
 public class RealmDb {
@@ -19,24 +21,17 @@ public class RealmDb {
     Realm realm;
 
     public RealmDb() {
+
         realm = Realm.getDefaultInstance();
     }
-    //get all the lists
-    /*
-    public RealmResults<ItemList> getAllLists(){
-        RealmResults<ItemList> lists = realm.where(ItemList.class).findAll();
-        return null;
-    }
-    public int getA(){
-        return 1;
-    }
-     */
     //------------create a list
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
         try {
             RealmResults<Item> results = realm.where(Item.class).findAll();
-            list.addAll(realm.copyFromRealm(results));
+            if(results.size()!=0){
+                list.addAll(realm.copyFromRealm(results));
+            }
         }catch (Exception e){
             Log.d(TAG, "getItems: "+e.getLocalizedMessage());
         }
@@ -70,19 +65,32 @@ public class RealmDb {
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(@NotNull Realm realm) {
-
+                for(Item item : items){
+                    try {
+                        Item removeItem = realm.where(Item.class).equalTo("item_id", item.getItem_id()).findFirst();
+                        removeItem.deleteFromRealm();
+                    }catch (IllegalArgumentException e){
+                        Log.d(TAG, "deleting items. not found ");
+                    }
+                }
             }
             }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess: all good");
+                Log.d(TAG, "onSuccess: Item deleted");
             }
             }, new Realm.Transaction.OnError() {
             @Override
             public void onError(@NotNull Throwable error) {
-                Log.d(TAG, "onError: something when wrong");
+                Log.d(TAG, "onError: Item did not delete");
             }
         }
         );
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        realm.close();
+        super.finalize();
     }
 }

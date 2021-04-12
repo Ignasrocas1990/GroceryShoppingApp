@@ -23,6 +23,7 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Layer.dummy.Content;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +34,10 @@ public class ItemFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 10;
     public final String TAG = "log";
+    private ArrayList<Item> newItems;
+    private ArrayList<Item> deletedItems;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,8 +58,6 @@ public class ItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         data = PageViewModel.getInstance();
-        //data.setItems();
-
         /*
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -81,20 +82,23 @@ public class ItemFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
              */
+            newItems = new ArrayList<>();
+            deletedItems = new ArrayList<>();
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(data.getItems(), new MyItemRecyclerViewAdapter.ItemClickListener() {
                 @Override
                 public void onItemSaveClick(Item item) {
                     Log.d(TAG, "onItemSaveClick: "+data.getItems().size());
-                    Log.d(TAG, "Save Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
+                    Log.d(TAG, "Save Item: "+ item.getItem_id()+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
+                    newItems.add(item);
                 }
 
                 @Override
                 public void onItemRemoveClick(Item item) {
 
                     Log.d(TAG, "removed Item: "+item.getItemName()+" "+item.getLastingDays()+" "+item.getAmount()+" "+item.getPrice());
-
+                    deletedItems.add(item);
                 }
             }));
         }
@@ -103,7 +107,8 @@ public class ItemFragment extends Fragment {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "left the view");
-        data.saveItems();
+        data.saveItems(newItems);
+        data.deleteItems(deletedItems);
         super.onDestroyView();
     }
 }

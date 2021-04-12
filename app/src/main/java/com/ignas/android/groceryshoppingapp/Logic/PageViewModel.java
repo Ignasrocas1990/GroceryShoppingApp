@@ -18,9 +18,9 @@ public class PageViewModel {//extends ViewModel {
 
     public PageViewModel() {
         db = new RealmDb();
+        //db.removeAll();
         setItems();
 
-       // db.removeAll();
 
     }
     public static PageViewModel getInstance(){
@@ -40,13 +40,17 @@ public class PageViewModel {//extends ViewModel {
         return items;
     }
 
-    public void saveItems(){
+    public void saveItems(ArrayList<Item> changeItems){
         for(int i = 0;i< items.size();i++){
             if(items.get(i).getItemName().equals("")){
                     items.remove(i);
             }
         }
         db.addItems(items);
+    }
+
+    public void deleteItems(ArrayList<Item> deletedItems) {
+        db.removeItems(deletedItems);
     }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
@@ -55,4 +59,5 @@ public class PageViewModel {//extends ViewModel {
     public LiveData<String> getText() {return mText;}
 
  */
+
 }

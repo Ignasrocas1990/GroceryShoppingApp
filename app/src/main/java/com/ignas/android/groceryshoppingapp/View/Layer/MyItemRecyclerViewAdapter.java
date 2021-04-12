@@ -84,8 +84,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.deleteBtn.setOnClickListener(vew->{
 
             Item itemToRemove = mValues.get(position);
-            mItemClickListener.onItemRemoveClick(itemToRemove);
-            itemToRemove = removeUpdate(position,itemToRemove);
+            if(!itemToRemove.getItemName().equals("")){
+                mItemClickListener.onItemRemoveClick(itemToRemove);
+                removeUpdate(position,itemToRemove);
+            }
+
         });
 
         }
@@ -112,12 +115,13 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 }else{
                     item.setPrice(Float.parseFloat(priceString));
                 }
+                position++;
+                mValues.add(position,new Item());
+                notifyItemInserted(mValues.size()-1);
             }
-            position++;
-            mValues.add(position,new Item());
-            notifyItemInserted(mValues.size()-1);
+
         }
-        public Item removeUpdate(int position,Item item){
+        public void removeUpdate(int position,Item item){
         Item itemToRemove = new Item();
             if(getItemCount()>1){
                 item.setItemName("");
@@ -133,7 +137,6 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 item.setLastingDays(0);
                 item.setPrice(0.f);
             }
-            return itemToRemove;
         }
 
     public interface ItemClickListener{
