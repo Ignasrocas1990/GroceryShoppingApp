@@ -31,6 +31,8 @@ public class PageViewModel {//extends ViewModel {
     public ArrayList<Item> getItems() {
         return items;
     }
+    public void add(Item item){
+    }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private LiveData<String> mText = Transformations.map(mIndex, input -> "Hello world from section: " + input);

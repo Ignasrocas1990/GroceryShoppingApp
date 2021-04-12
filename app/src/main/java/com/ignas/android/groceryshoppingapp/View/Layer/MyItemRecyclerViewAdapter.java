@@ -12,6 +12,8 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Layer.dummy.Content.DummyItem;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +39,13 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         list = data.getEmptyList();
 
          */
+        items.add(new Item());
         this.mValues = items;
         this.mItemClickListener = itemClickListener;
     }
 
 
+    @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -51,6 +55,12 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Item item = mValues.get(position);
+        holder.product_name.setText(item.getItemName());
+        holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
+        holder.quantity.setText(String.valueOf(item.getAmount()));
+        holder.price.setText(String.valueOf(item.getPrice()));
+
 
         holder.saveBtn.setOnClickListener(vew ->{
             //Item item = mValues.get(position);
