@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp.View.Layer;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +11,17 @@ import android.widget.EditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Layer.dummy.Content.DummyItem;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
    private List<Item> mValues;
    private ItemClickListener mItemClickListener;
-   private String TAG = "Saving";
+   private String TAG = "log";
 
 /*
     public MyItemRecyclerViewAdapter(List<DummyItem> items) {
@@ -39,21 +35,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         list = data.getEmptyList();
 
          */
-        items.add(new Item());
+
         this.mValues = items;
         this.mItemClickListener = itemClickListener;
     }
-    /*
-    public ArrayList<Item> emptySpace(ArrayList<Item> items){
-        if (items.size() == 0) {
-            items.add(new Item());
-        }
-        return items;
-    }
-
-     */
-
-
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,13 +57,22 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
 
         holder.saveBtn.setOnClickListener(vew ->{
+            String newName = holder.product_name.getText().toString();
+            String newDays = holder.lasting_days.getText().toString();
+            String newQuantity = holder.quantity.getText().toString();
+            String newPrice = holder.price.getText().toString();
+
             Item itemToAdd = mValues.get(position);
+            if (item.getItemName().equals("") && !newName.equals("")) {
+                        add(itemToAdd,holder,newName,newDays,newQuantity,newPrice);
+            }else if(!newName.equals(item.getItemName()) || Integer.parseInt(newDays)!=item.getLastingDays()
+                    || Integer.parseInt(newQuantity) != item.getAmount() || Float.parseFloat(newPrice) != item.getPrice()){
 
-            if (!holder.product_name.getText().toString().equals("")) {
+                Log.d(TAG, "to be updated ");
 
-                        addUpdate(position,holder);
-                    }
-                mItemClickListener.onItemSaveClick(itemToAdd);
+            }
+
+            mItemClickListener.onItemSaveClick(itemToAdd);
             });
 
         holder.deleteBtn.setOnClickListener(vew->{
@@ -92,34 +86,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         });
 
         }
-        public void addUpdate(int position, ViewHolder holder){
-            Item item = mValues.get(position);
-            String product_name = holder.product_name.getText().toString();
-            String amountString = holder.quantity.getText().toString();
-            String lastingDaysString = holder.lasting_days.getText().toString();
-            String priceString = holder.price.getText().toString();
-            if(!product_name.equals("")){
-                item.setItemName(product_name);
-                if(amountString.equals("")){
-                    item.setAmount(0);
-                }else{
-                    item.setAmount(Integer.parseInt(amountString));
-                }
-                if(lastingDaysString.equals("")){
-                    item.setLastingDays(0);
-                }else{
-                    item.setLastingDays(Integer.parseInt(lastingDaysString));
-                }
-                if(priceString.equals("")){
-                    item.setPrice(0.f);
-                }else{
-                    item.setPrice(Float.parseFloat(priceString));
-                }
-                position++;
-                mValues.add(position,new Item());
-                notifyItemInserted(mValues.size()-1);
-            }
+        public void add(Item item, ViewHolder holder,String newName,String newDays,String newQuantity,String newPrice){
+                item.setItemName(newName);
+                item.setAmount(Integer.parseInt(newQuantity));
+                item.setLastingDays(Integer.parseInt(newDays));
+                item.setPrice(Float.parseFloat(newPrice));
 
+                mValues.add(new Item());
+                notifyItemInserted(mValues.size()-1);
         }
         public void removeUpdate(int position,Item item){
         Item itemToRemove = new Item();

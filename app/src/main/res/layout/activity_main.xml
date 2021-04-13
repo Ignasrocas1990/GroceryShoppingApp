@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <com.google.android.material.tabs.TabLayout
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/toolBar"
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/item_manager"/>
+        android:background="@color/white"
+        app:tabIconTint="@color/blue"
+        app:tabIndicator="@android:drawable/button_onoff_indicator_off"
+        app:tabIndicatorColor="@color/blue"
+        app:tabIndicatorHeight="5dp"
+        app:tabRippleColor="@color/blue"
+        app:tabSelectedTextColor="@color/red"
+        app:tabTextColor="@color/blue">
 
-    <fragment
-        android:id="@+id/hostFragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/ItemFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_lunch_dining_24"
+            android:text="Manage Items" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blank" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolBar"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/item_management_navigation" />
-
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</LinearLayout>

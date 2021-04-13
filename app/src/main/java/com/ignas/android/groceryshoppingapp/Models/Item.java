@@ -1,7 +1,5 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
-import org.bson.types.ObjectId;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -12,11 +10,12 @@ import io.realm.annotations.PrimaryKey;
 public class Item extends RealmObject{
 
     //ObjectId item_id = new ObjectId(Integer.toString(new Random().nextInt()));
+
     @PrimaryKey
-    static String item_id;
+    static private int item_id;
     {
         Random r = new Random();
-        item_id = Integer.toHexString(r.nextInt());
+        item_id ++;//r.nextInt();
     }
 
     private String itemName="";
@@ -34,9 +33,10 @@ public class Item extends RealmObject{
         this.price = price;
         this.amount = amount;
         this.lastingDays = lastingDays;
+        setRunOutDate();
     }
 
-    public static String getItem_id() {
+    public int getItem_id() {
         return item_id;
     }
 

@@ -1,27 +1,26 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 
+import android.util.Log;
+
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import io.realm.RealmList;
-
-public class PageViewModel {//extends ViewModel {
+public class PageViewModel {
+    private static final String TAG ="log" ;//extends ViewModel {
     private static PageViewModel pageViewModel=null ;
 
-    private ArrayList<Item> items;
+    private ArrayList<Item> app_items;
+
     RealmDb db;
 
     public PageViewModel() {
         db = new RealmDb();
-        //db.removeAll();
-        setItems();
-
-
+        db.removeAll();
+        app_items=setItems();
+        addEmpty();
     }
     public static PageViewModel getInstance(){
         if(pageViewModel==null){
@@ -30,27 +29,46 @@ public class PageViewModel {//extends ViewModel {
         return pageViewModel;
     }
 
-    public void setItems(){
-       items =  db.getItems();
+    private ArrayList<Item> setItems(){
+       return db.getItems();
     }
-
-
 
     public ArrayList<Item> getItems() {
-        return items;
+        return app_items;
+    }
+    public void addEmpty(){
+        if(app_items.size()==0 || !app_items.get(app_items.size()-1).getItemName().equals("")) {
+            app_items.add(new Item());
+        }
+
     }
 
-    public void saveItems(ArrayList<Item> changeItems){
-        for(int i = 0;i< items.size();i++){
-            if(items.get(i).getItemName().equals("")){
-                    items.remove(i);
+    public void update() {
+        ArrayList<Item>dbItems = setItems();
+        ArrayList<Item> newItems = new ArrayList<Item>();
+        if(app_items.get(app_items.size()-1).getItemName().equals("")){
+            app_items.remove(app_items.size()-1);
+        }
+        if(dbItems.size()==0 && app_items.size()!=0){
+            db.addItems(app_items);
+        }
+        else if(!dbItems.equals(app_items)){
+            for(Item item:app_items){
+                for(Item dbItem:dbItems){
+                    if(item.getItem_id() != dbItem.getItem_id()){
+                        Log.d(TAG, "update: "+item.getItemName()+" the are not the same "+dbItem.getItemName());
+                        newItems.add(item);
+                    }
+                }
+            }
+            if(newItems.size()!=0){
+                db.addItems(newItems);
+
             }
         }
-        db.addItems(items);
-    }
 
-    public void deleteItems(ArrayList<Item> deletedItems) {
-        db.removeItems(deletedItems);
+
+
     }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();

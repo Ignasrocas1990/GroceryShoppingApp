@@ -18,7 +18,8 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmDb {
     final String TAG = "log";
-    Realm realm;
+
+    private Realm realm;
 
     public RealmDb() {
 
@@ -43,23 +44,31 @@ public class RealmDb {
         realm.commitTransaction();
     }
     public void addItems(ArrayList<Item>items){
+        realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(@NotNull Realm realm) {
-                realm.copyToRealmOrUpdate(items);
-            }
-        }, new Realm.Transaction.OnSuccess() {
+                    realm.copyToRealmOrUpdate(items);
+                }
+            }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess: saved items");
-            }
-        }, new Realm.Transaction.OnError() {
+                Log.d(TAG, "onSuccess: Item save");
+                }
+            }, new Realm.Transaction.OnError() {
             @Override
             public void onError(@NotNull Throwable error) {
-                Log.d(TAG, "onError: Adding error"+error.getLocalizedMessage());
+                Log.d(TAG, "onError: Item did not save");
             }
-        }
-        );
+        });
+    }
+    public void addItem(Item item){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.createObject(Item.class);
+            }
+        });
     }
     public void removeItems(ArrayList<Item>items) {
         realm.executeTransactionAsync(new Realm.Transaction(){
