@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class ItemList{
 
-    @PrimaryKey
+    //@PrimaryKey
     private int listID=0;
 
     private String listName="";

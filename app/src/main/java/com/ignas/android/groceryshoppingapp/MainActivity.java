@@ -1,8 +1,10 @@
 package com.ignas.android.groceryshoppingapp;
 
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,7 +25,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Logic.PageViewModel;
+import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
+
+import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
@@ -35,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager;
         TabItem manageItems;
 
-        protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         tabLayout = findViewById(R.id.tabs);
         manageItems = findViewById(R.id.ItemFragment);
         viewPager = findViewById(R.id.pageView);
@@ -65,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
 /*
         bottomNav = findViewById(R.id.toolBar);
         controller = Navigation.findNavController(this,R.id.hostFragment);
@@ -80,4 +88,22 @@ public class MainActivity extends AppCompatActivity {
 
  */
         }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ArrayList<Item> list = PageViewModel.getInstance().getItems();
+        list.remove(list.size()-1);
+        Log.d(TAG, "onStop: stoped");
+            Intent intent = new Intent(this, RealmDb.class);
+            intent.putParcelableArrayListExtra("update",list);
+            sendBroadcast(intent);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        PageViewModel.getInstance().addEmpty();
+
+    }
 }

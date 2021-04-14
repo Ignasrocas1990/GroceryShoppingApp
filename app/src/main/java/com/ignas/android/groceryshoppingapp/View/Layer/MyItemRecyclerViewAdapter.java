@@ -81,6 +81,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             if(!itemToRemove.getItemName().equals("")){
                 mItemClickListener.onItemRemoveClick(itemToRemove);
                 removeUpdate(position,itemToRemove);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position,mValues.size());
             }
 
         });
@@ -98,13 +100,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public void removeUpdate(int position,Item item){
         Item itemToRemove = new Item();
             if(getItemCount()>1){
-                item.setItemName("");
-                item.setAmount(0);
-                item.setLastingDays(0);
-                item.setPrice(0.f);
                 mValues.remove(item);
-                notifyItemRemoved(position);
-                //notifyItemRemoved(mValues.size()-1);
             }else{
                 item.setItemName("");
                 item.setAmount(0);

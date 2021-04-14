@@ -18,7 +18,7 @@ public class PageViewModel {
 
     public PageViewModel() {
         db = new RealmDb();
-        db.removeAll();
+        //db.removeAll();
         app_items=setItems();
         addEmpty();
     }
@@ -43,32 +43,39 @@ public class PageViewModel {
 
     }
 
-    public void update() {
+    public ArrayList<Item> add() {
         ArrayList<Item>dbItems = setItems();
         ArrayList<Item> newItems = new ArrayList<Item>();
-        if(app_items.get(app_items.size()-1).getItemName().equals("")){
-            app_items.remove(app_items.size()-1);
+
+        int dbSize = dbItems.size();
+        int appSize = app_items.size();
+
+        if(app_items.get(appSize-1).getItemName().equals("")){
+            app_items.remove(appSize-1);
+            appSize--;
         }
-        if(dbItems.size()==0 && app_items.size()!=0){
-            db.addItems(app_items);
+        if(dbSize==0 && appSize!=0){
+           // db.addItems(app_items);
+            return app_items;
         }
-        else if(!dbItems.equals(app_items)){
-            for(Item item:app_items){
-                for(Item dbItem:dbItems){
-                    if(item.getItem_id() != dbItem.getItem_id()){
-                        Log.d(TAG, "update: "+item.getItemName()+" the are not the same "+dbItem.getItemName());
-                        newItems.add(item);
+        else{
+            boolean found = false;
+                int poss =  appSize;
+                do{
+                    if(app_items.get(poss).getItem_id() == dbItems.get(dbSize).getItem_id()){
+                        found=true;
+                    }else{
+                        newItems.add(app_items.get(poss));
+                        poss--;
                     }
-                }
+                }while(!found);
             }
-            if(newItems.size()!=0){
-                db.addItems(newItems);
+        return newItems;
+    }
+    public ArrayList<Item> remove() {
+        ArrayList<Item> newItems = new ArrayList<Item>();
 
-            }
-        }
-
-
-
+        return newItems;
     }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();

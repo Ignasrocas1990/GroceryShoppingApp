@@ -1,6 +1,11 @@
 package com.ignas.android.groceryshoppingapp.Service;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -16,7 +21,7 @@ import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 
-public class RealmDb {
+public class RealmDb extends BroadcastReceiver {
     final String TAG = "log";
 
     private Realm realm;
@@ -25,6 +30,49 @@ public class RealmDb {
 
         realm = Realm.getDefaultInstance();
     }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive: got the list");
+        ArrayList<Item> app_items =intent.getParcelableArrayListExtra("update");
+        update(app_items);
+    }
+    private void update(ArrayList<Item> app_items) {
+        ArrayList<Item>dbItems = getItems();
+        ArrayList<Item>newItems = new ArrayList<>();
+        if(dbItems.size()!=0) {
+                for (int i = 0; i < app_items.size(); i++) {
+
+                    Item dbItem = dbItems.get(i);
+                    Item app_Item = app_items.get(i);
+
+
+                    while (i < dbItems.size() && !dbItems.get(i).equals(app_items.get(i))) {
+                        Item dbA = dbItems.get(i);
+                        Item appA = app_items.get(i);
+                        Log.d(TAG, "old: " + String.valueOf(dbA.getItem_id()) + " new: " + String.valueOf(appA.getItem_id()));
+                        boolean aaaa = dbA == appA;
+                        aaaa = dbA.equals(appA);
+
+                        removeItem(dbItems.get(i));
+                        dbItems.remove(dbItems.get(i));
+                    }
+                    if(i >= dbItems.size()){
+                        newItems.add(app_items.get(i));
+                    }
+                }
+                if(dbItems.size()>app_items.size()){
+                    for(int index = app_items.size(); index < dbItems.size(); index++){
+                        removeItem(dbItems.get(index));
+                    }
+                }
+
+                if(newItems.size()!=0) {addItems(newItems);}
+            }else{
+                addItems(app_items);
+            }
+    }
+
     //------------create a list
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
@@ -49,6 +97,7 @@ public class RealmDb {
             @Override
             public void execute(@NotNull Realm realm) {
                     realm.copyToRealmOrUpdate(items);
+                Log.d(TAG, "execute: added items...");
                 }
             }, new Realm.Transaction.OnSuccess() {
             @Override
@@ -70,31 +119,42 @@ public class RealmDb {
             }
         });
     }
-    public void removeItems(ArrayList<Item>items) {
+    public void removeItem(Item item) {
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(@NotNull Realm realm) {
-                for(Item item : items){
                     try {
+                        Log.d(TAG, "execute: "+String.valueOf(item.getItem_id()));
                         Item removeItem = realm.where(Item.class).equalTo("item_id", item.getItem_id()).findFirst();
+                        assert removeItem != null;
                         removeItem.deleteFromRealm();
-                    }catch (IllegalArgumentException e){
-                        Log.d(TAG, "deleting items. not found ");
+                        Log.d(TAG, "execute: "+removeItem.getItemName());
+                    }catch (Exception e){
+                        Log.d(TAG, "delete item. not found ");
                     }
-                }
             }
-            }, new Realm.Transaction.OnSuccess() {
+            });
+    }
+    private void test(ArrayList<Item> app_items) {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction(){
+            @Override
+            public void execute(@NotNull Realm realm) {
+                realm.deleteAll();
+                realm.copyToRealmOrUpdate(app_items);
+                Log.d(TAG, "execute: added items...");
+            }
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess: Item deleted");
+                Log.d(TAG, "onSuccess: Item save");
             }
-            }, new Realm.Transaction.OnError() {
+        }, new Realm.Transaction.OnError() {
             @Override
             public void onError(@NotNull Throwable error) {
-                Log.d(TAG, "onError: Item did not delete");
+                Log.d(TAG, "onError: Item did not save");
             }
-        }
-        );
+        });
     }
 
     @Override
