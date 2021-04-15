@@ -96,6 +96,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
                 mValues.add(new Item());
                 notifyItemInserted(mValues.size()-1);
+                notifyItemRangeChanged(0,mValues.size());
         }
         public void removeUpdate(int position,Item item){
         Item itemToRemove = new Item();

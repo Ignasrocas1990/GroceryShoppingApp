@@ -43,40 +43,6 @@ public class PageViewModel {
 
     }
 
-    public ArrayList<Item> add() {
-        ArrayList<Item>dbItems = setItems();
-        ArrayList<Item> newItems = new ArrayList<Item>();
-
-        int dbSize = dbItems.size();
-        int appSize = app_items.size();
-
-        if(app_items.get(appSize-1).getItemName().equals("")){
-            app_items.remove(appSize-1);
-            appSize--;
-        }
-        if(dbSize==0 && appSize!=0){
-           // db.addItems(app_items);
-            return app_items;
-        }
-        else{
-            boolean found = false;
-                int poss =  appSize;
-                do{
-                    if(app_items.get(poss).getItem_id() == dbItems.get(dbSize).getItem_id()){
-                        found=true;
-                    }else{
-                        newItems.add(app_items.get(poss));
-                        poss--;
-                    }
-                }while(!found);
-            }
-        return newItems;
-    }
-    public ArrayList<Item> remove() {
-        ArrayList<Item> newItems = new ArrayList<Item>();
-
-        return newItems;
-    }
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private LiveData<String> mText = Transformations.map(mIndex, input -> "Hello world from section: " + input);

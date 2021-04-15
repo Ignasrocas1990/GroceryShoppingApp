@@ -21,7 +21,7 @@ import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 
-public class RealmDb extends BroadcastReceiver {
+public class RealmDb{
     final String TAG = "log";
 
     private Realm realm;
@@ -30,22 +30,11 @@ public class RealmDb extends BroadcastReceiver {
 
         realm = Realm.getDefaultInstance();
     }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive: got the list");
-        ArrayList<Item> app_items =intent.getParcelableArrayListExtra("update");
-        update(app_items);
-    }
-    private void update(ArrayList<Item> app_items) {
+    public void update(ArrayList<Item> app_items) {
         ArrayList<Item>dbItems = getItems();
         ArrayList<Item>newItems = new ArrayList<>();
         if(dbItems.size()!=0) {
                 for (int i = 0; i < app_items.size(); i++) {
-
-                    Item dbItem = dbItems.get(i);
-                    Item app_Item = app_items.get(i);
-
 
                     while (i < dbItems.size() && !dbItems.get(i).equals(app_items.get(i))) {
                         Item dbA = dbItems.get(i);
@@ -106,29 +95,30 @@ public class RealmDb extends BroadcastReceiver {
                 }
             }, new Realm.Transaction.OnError() {
             @Override
-            public void onError(@NotNull Throwable error) {
+            public void onError(Throwable error) {
                 Log.d(TAG, "onError: Item did not save");
             }
         });
     }
     public void addItem(Item item){
-        realm.executeTransaction(new Realm.Transaction() {
+        realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.createObject(Item.class);
+                realm.copyToRealmOrUpdate(item);
             }
         });
     }
     public void removeItem(Item item) {
+        realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(@NotNull Realm realm) {
                     try {
                         Log.d(TAG, "execute: "+String.valueOf(item.getItem_id()));
-                        Item removeItem = realm.where(Item.class).equalTo("item_id", item.getItem_id()).findFirst();
-                        assert removeItem != null;
-                        removeItem.deleteFromRealm();
-                        Log.d(TAG, "execute: "+removeItem.getItemName());
+                        realm.where(Item.class)
+                                .equalTo("item_iD", item.getItem_id())
+                                .findFirst()
+                                .deleteFromRealm();
                     }catch (Exception e){
                         Log.d(TAG, "delete item. not found ");
                     }

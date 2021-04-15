@@ -16,7 +16,10 @@ public class DbConnect extends Application {
         Realm.init(this);
 
         final RealmConfiguration config = new RealmConfiguration.Builder().name("mydb.realm")
-                .schemaVersion(2).migration(new RealmMigrations()).build();
+                .schemaVersion(2).migration(new RealmMigrations())
+                .allowWritesOnUiThread(true)
+                .allowQueriesOnUiThread(true)
+                .build();
         Realm.setDefaultConfiguration(config);
         Realm.getInstance(config);
     }

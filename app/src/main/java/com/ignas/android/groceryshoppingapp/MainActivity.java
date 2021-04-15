@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -27,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Logic.PageViewModel;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
+import com.ignas.android.groceryshoppingapp.Service.Update;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 
 import java.util.ArrayList;
@@ -94,10 +96,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Item> list = PageViewModel.getInstance().getItems();
         list.remove(list.size()-1);
         Log.d(TAG, "onStop: stoped");
-            Intent intent = new Intent(this, RealmDb.class);
+            Intent intent = new Intent(this, Update.class);
             intent.putParcelableArrayListExtra("update",list);
-            sendBroadcast(intent);
-
+            startService(intent);
     }
 
     @Override

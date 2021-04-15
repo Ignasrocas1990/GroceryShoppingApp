@@ -96,7 +96,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     //Parcelable methods
-    
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,6 +104,7 @@ public class Item extends RealmObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.item_iD);
         dest.writeString(this.itemName);
         dest.writeFloat(this.price);
         dest.writeInt(this.amount);
@@ -112,6 +113,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     public void readFromParcel(Parcel source) {
+        this.item_iD = source.readInt();
         this.itemName = source.readString();
         this.price = source.readFloat();
         this.amount = source.readInt();
@@ -121,6 +123,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     protected Item(Parcel in) {
+        this.item_iD = in.readInt();
         this.itemName = in.readString();
         this.price = in.readFloat();
         this.amount = in.readInt();
