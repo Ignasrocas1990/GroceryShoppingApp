@@ -3,6 +3,9 @@ package com.ignas.android.groceryshoppingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager;
         TabItem manageItems;
         Toolbar toolbar;
+        Button btnButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
+        btnButton = findViewById(R.id.button);
         setSupportActionBar(toolbar);
 
         manageItems = findViewById(R.id.ItemFragment);
@@ -41,11 +46,14 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(tabAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -60,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -68,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, UpdateDbService.class);
             intent.putParcelableArrayListExtra("update",list);
             startService(intent);
+            Log.d(TAG, "onStop: come back");
+
+
     }
 
     @Override
@@ -76,4 +88,13 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.getInstance().addEmpty();
 
     }
+/*
+    public void start(View view) {
+        Toast.makeText(this, "pussssed", Toast.LENGTH_SHORT).show();
+        Alarm alarm = new Alarm();
+        alarm.setMilliseconds(5);
+        alarm.setAlarm(this,null,"aaaa");
+    }
+
+ */
 }

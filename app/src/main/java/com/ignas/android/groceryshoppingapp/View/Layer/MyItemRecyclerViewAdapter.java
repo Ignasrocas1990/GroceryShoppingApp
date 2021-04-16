@@ -58,11 +58,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             Item itemToAdd = mValues.get(position);
             if (item.getItemName().equals("") && !newName.equals("")) {
 
-                        add(itemToAdd,newName,newDays,newQuantity,newPrice);
+                add(itemToAdd,newName,newDays,newQuantity,newPrice);
+                mValues.add(new Item());
+                notifyItemInserted(mValues.size()-1);
 
             }else if(!newName.equals(item.getItemName()) || Integer.parseInt(newDays)!=item.getLastingDays()
                     || Integer.parseInt(newQuantity) != item.getAmount() || Float.parseFloat(newPrice) != item.getPrice()){
 
+                add(itemToAdd,newName,newDays,newQuantity,newPrice);
                 Log.d(TAG, "to be updated ");//---------TODO-------################
 
             }
@@ -89,8 +92,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 item.setLastingDays(Integer.parseInt(newDays));
                 item.setPrice(Float.parseFloat(newPrice));
 
-                mValues.add(new Item());
-                notifyItemInserted(mValues.size()-1);
+
                 //notifyItemRangeChanged(0,mValues.size());
         }
         public void removeUpdate(int position,Item item){

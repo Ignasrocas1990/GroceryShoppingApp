@@ -2,18 +2,15 @@ package com.ignas.android.groceryshoppingapp.Service;
 
 import android.util.Log;
 
-import com.ignas.android.groceryshoppingapp.Logic.Alarm;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import io.realm.DynamicRealm;
 import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -24,8 +21,11 @@ public class RealmDb{
 
     public RealmDb() { realm = Realm.getDefaultInstance(); }
 
-    public void saveAdd(Item item){
-        realm = Realm.getDefaultInstance();
+    public boolean needToReschedule(Item item){
+        AtomicBoolean flag= new AtomicBoolean();
+        flag.set(false);// Flag is for if sheduling needed
+
+         realm = Realm.getDefaultInstance();
          realm.executeTransactionAsync(realm -> {
              try {
                  //check if this item is running
@@ -33,13 +33,14 @@ public class RealmDb{
                          .equalTo("running",true)
                          .findFirst();
                  if (results == null) {
-                     //schedule---TODO------------- not item is scheduled
+                     flag.set(true);
 
-                 } else if(results.getRunOutDate().compareTo(item.getRunOutDate()) > 0) {
-                     //schedule---TODO------------- create new schedule from this item
-                 }else{
-                     addItem(item);
+                 } else if (results.getLastingDays() > item.getLastingDays()){//TODO-----------testing-------
+                 /*else if(results.getRunOutDate().compareTo(item.getRunOutDate()) > 0){ */
+                     results.setRunning(false);
+                     flag.set(true);
                  }
+                 item.setRunning(true);
              } catch (Exception e) {
                  Log.d(TAG, "getNextAlarm: did not get alarm");
              }
@@ -54,55 +55,11 @@ public class RealmDb{
 
              }
          });
-    }
-    //create new schedule
-    public void scheduleAlarm(){
-        ArrayList<Item> list = getItems();
-        Item item = getSmallestDateItem(list);
-        Alarm alert = new Alarm();
-
-
-    }
-
-
-    //add/delete(update) items
-    public void update(ArrayList<Item> app_items) {
-        ArrayList<Item>dbItems = getItems();
-        ArrayList<Item>newItems = new ArrayList<>();
-        if(dbItems.size()!=0) {
-                for (int i = 0; i < app_items.size(); i++) {
-
-                    while (i < dbItems.size() && !dbItems.get(i).equals(app_items.get(i))) {
-                        if(dbItems.get(i).isRunning()){
-                            //schedule---TODO-------------(cancel all(find/update running),get next smallest)
-                        }
-                        removeItem(dbItems.get(i));
-                        dbItems.remove(dbItems.get(i));
-                    }
-                    if(i >= dbItems.size()){
-                        newItems.add(app_items.get(i));
-                    }
-                }
-                if(dbItems.size()>app_items.size()){
-                    for(int i = app_items.size(); i < dbItems.size(); i++){
-                        if(dbItems.get(i).isRunning()){
-                            //schedule---TODO-------------
-                        }
-                        removeItem(dbItems.get(i));
-                    }
-                }
-
-                if(newItems.size()>1) {
-                    Item lowest = getSmallestDateItem(newItems);
-                    newItems.remove(lowest);
-                    saveAdd(lowest);
-                    addItems(newItems);
-                }else if (newItems.size()==1){saveAdd(newItems.get(0));}
-            }else{
-            addItems(app_items); }
+         return flag.get();
     }
     //  Get all items
     public ArrayList<Item> getItems() {
+        realm = Realm.getDefaultInstance();
         ArrayList<Item> list = new ArrayList<>();
         try {
             RealmResults<Item> results = realm.where(Item.class).findAll();
@@ -128,15 +85,11 @@ public class RealmDb{
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: Item save");
                 }
-            }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.d(TAG, "onError: Item did not save");
-            }
-        });
+            }, error -> Log.d(TAG, "onError: Item did not save"));
+        realm.refresh();
     }
     //remove single item
-    private void removeItem(Item item) {
+    public void removeItem(Item item) {
 
         realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(realm -> {
@@ -155,39 +108,29 @@ public class RealmDb{
                 Log.d(TAG, "onSuccess: item deleted");
             }
         });
+        realm.refresh();
     }
     // add single item to database
     public void addItem(Item item){
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
-            public void execute(Realm realm) {
+            public void execute(@NotNull Realm realm) {
                 realm.copyToRealmOrUpdate(item);
+                Log.d(TAG, "execute: added item...");
             }
-        });
-    }
-
-    //get Smallest Date
-    private Item getSmallestDateItem(ArrayList<Item>newItems){
-        Item lowestDateItem = newItems.get(0);
-        for(int i=1;i<newItems.size();i++){
-            Item currentItem = newItems.get(i);
-
-            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
-                lowestDateItem = currentItem;
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess: Item save");
             }
-        }
-        return lowestDateItem;
+        }, error -> Log.d(TAG, "onError: Item did not save"));
+        realm.refresh();
     }
     //remove all data from db
     public void removeAll(){
         realm.beginTransaction();
         realm.deleteAll();
         realm.commitTransaction();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        realm.close();
-        super.finalize();
     }
 }

@@ -87,11 +87,10 @@ public class Item extends RealmObject implements Parcelable {
         Calendar calendar = Calendar.getInstance();
         if(lastingDays != 0){
             calendar.add(Calendar.DAY_OF_WEEK,lastingDays);
-            this.runOutDate = calendar.getTime();
         }else{
             calendar.add(Calendar.DAY_OF_WEEK,7);
-            this.runOutDate = calendar.getTime();
         }
+        this.runOutDate = calendar.getTime();
 
 
     }
@@ -102,6 +101,7 @@ public class Item extends RealmObject implements Parcelable {
 
     public void setLastingDays(int lastingDays) {
         this.lastingDays = lastingDays;
+        setRunOutDate(lastingDays);
     }
 
     //Parcelable methods
