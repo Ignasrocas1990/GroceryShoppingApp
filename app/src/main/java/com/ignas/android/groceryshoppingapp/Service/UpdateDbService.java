@@ -10,7 +10,7 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.util.ArrayList;
 
-public class Update extends Service {
+public class UpdateDbService extends Service {
 
     RealmDb db;
     ArrayList<Item> list;

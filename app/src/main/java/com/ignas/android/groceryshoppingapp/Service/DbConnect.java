@@ -2,6 +2,8 @@ package com.ignas.android.groceryshoppingapp.Service;
 
 import android.app.Application;
 
+import com.ignas.android.groceryshoppingapp.Models.Item;
+
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -15,13 +17,14 @@ public class DbConnect extends Application {
         super.onCreate();
         Realm.init(this);
 
-        final RealmConfiguration config = new RealmConfiguration.Builder().name("mydb.realm")
-                .schemaVersion(2).migration(new RealmMigrations())
+        final RealmConfiguration config = new RealmConfiguration.Builder().name("groceryDb.realm")
+                .schemaVersion(3).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)
                 .build();
         Realm.setDefaultConfiguration(config);
         Realm.getInstance(config);
+
     }
 /*
     @Override
@@ -39,9 +42,10 @@ class RealmMigrations implements RealmMigration {
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
         final RealmSchema schema = realm.getSchema();
 
-        if (oldVersion == 1) {
+        if (oldVersion == 2) {
             final RealmObjectSchema userSchema = schema.get("UserData");
-            userSchema.addField("item_iD", int.class);
+            userSchema.addField("running", Item.class);
+
         }
     }
 }

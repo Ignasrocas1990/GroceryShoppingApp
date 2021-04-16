@@ -29,13 +29,6 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     }
  */
     public MyItemRecyclerViewAdapter(ArrayList<Item> items,ItemClickListener itemClickListener){
-        /*
-        data = new PageViewModel();
-        data.createEmptyList();
-        list = data.getEmptyList();
-
-         */
-
         this.mValues = items;
         this.mItemClickListener = itemClickListener;
     }
@@ -64,22 +57,24 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
             Item itemToAdd = mValues.get(position);
             if (item.getItemName().equals("") && !newName.equals("")) {
-                        add(itemToAdd,holder,newName,newDays,newQuantity,newPrice);
+
+                        add(itemToAdd,newName,newDays,newQuantity,newPrice);
+
             }else if(!newName.equals(item.getItemName()) || Integer.parseInt(newDays)!=item.getLastingDays()
                     || Integer.parseInt(newQuantity) != item.getAmount() || Float.parseFloat(newPrice) != item.getPrice()){
 
-                Log.d(TAG, "to be updated ");
+                Log.d(TAG, "to be updated ");//---------TODO-------################
 
             }
 
-            mItemClickListener.onItemSaveClick(itemToAdd);
+            //mItemClickListener.onItemSaveClick(itemToAdd);
             });
 
         holder.deleteBtn.setOnClickListener(vew->{
 
             Item itemToRemove = mValues.get(position);
             if(!itemToRemove.getItemName().equals("")){
-                mItemClickListener.onItemRemoveClick(itemToRemove);
+                //mItemClickListener.onItemRemoveClick(itemToRemove);
                 removeUpdate(position,itemToRemove);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position,mValues.size());
@@ -88,7 +83,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         });
 
         }
-        public void add(Item item, ViewHolder holder,String newName,String newDays,String newQuantity,String newPrice){
+        public void add(Item item,String newName,String newDays,String newQuantity,String newPrice){
                 item.setItemName(newName);
                 item.setAmount(Integer.parseInt(newQuantity));
                 item.setLastingDays(Integer.parseInt(newDays));
@@ -96,7 +91,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
                 mValues.add(new Item());
                 notifyItemInserted(mValues.size()-1);
-                notifyItemRangeChanged(0,mValues.size());
+                //notifyItemRangeChanged(0,mValues.size());
         }
         public void removeUpdate(int position,Item item){
         Item itemToRemove = new Item();

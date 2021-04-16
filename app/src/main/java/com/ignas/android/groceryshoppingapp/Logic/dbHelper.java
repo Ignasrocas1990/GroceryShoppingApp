@@ -1,32 +1,35 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 
-import android.util.Log;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
 import java.util.ArrayList;
 
-public class PageViewModel {
+public class dbHelper extends BroadcastReceiver {
     private static final String TAG ="log" ;//extends ViewModel {
-    private static PageViewModel pageViewModel=null ;
+    private static dbHelper dbHelper =null ;
 
     private ArrayList<Item> app_items;
 
     RealmDb db;
 
-    public PageViewModel() {
+    public dbHelper() {
         db = new RealmDb();
         //db.removeAll();
         app_items=setItems();
         addEmpty();
     }
-    public static PageViewModel getInstance(){
-        if(pageViewModel==null){
-           pageViewModel = new PageViewModel();
+
+    public static dbHelper getInstance(){
+        if(dbHelper ==null){
+           dbHelper = new dbHelper();
         }
-        return pageViewModel;
+        return dbHelper;
     }
 
     private ArrayList<Item> setItems(){
@@ -40,8 +43,12 @@ public class PageViewModel {
         if(app_items.size()==0 || !app_items.get(app_items.size()-1).getItemName().equals("")) {
             app_items.add(new Item());
         }
+    }
+    @Override
+    public void onReceive(Context context, Intent intent) {
 
     }
+
 
     /*
    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();

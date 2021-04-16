@@ -7,14 +7,17 @@
         android:orientation="horizontal">
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/delFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_baseline_delete_24"
-            android:contentDescription="@string/del" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/del"
+        android:outlineAmbientShadowColor="#D50909"
+        app:backgroundTint="#F44336"
+        app:fabSize="mini"
+        app:rippleColor="@color/blue"
+        app:srcCompat="@drawable/ic_baseline_delete_24" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,12 +70,16 @@
         </LinearLayout>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/saveFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/saveUpdate"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/saveFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/saveUpdate"
+        android:outlineAmbientShadowColor="@color/blue"
+        android:outlineSpotShadowColor="#FFC107"
+        app:backgroundTint="#4CAF50"
+        app:fabSize="mini"
+        app:rippleColor="@color/blue"
+        app:srcCompat="@drawable/ic_baseline_save_alt_24" />
     </LinearLayout>

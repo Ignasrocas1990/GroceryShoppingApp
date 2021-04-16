@@ -29,6 +29,7 @@ public class Item extends RealmObject implements Parcelable {
     private int amount=0;
     private Date runOutDate;
     private int lastingDays=0;
+    private boolean running = false;
 
     public Item(){}
     public Item(String itemName) {
@@ -40,6 +41,14 @@ public class Item extends RealmObject implements Parcelable {
         this.amount = amount;
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public int getItem_id() {
@@ -110,6 +119,7 @@ public class Item extends RealmObject implements Parcelable {
         dest.writeInt(this.amount);
         dest.writeLong(this.runOutDate != null ? this.runOutDate.getTime() : -1);
         dest.writeInt(this.lastingDays);
+        dest.writeBoolean(this.running);
     }
 
     public void readFromParcel(Parcel source) {
@@ -120,6 +130,7 @@ public class Item extends RealmObject implements Parcelable {
         long tmpRunOutDate = source.readLong();
         this.runOutDate = tmpRunOutDate == -1 ? null : new Date(tmpRunOutDate);
         this.lastingDays = source.readInt();
+        this.running = source.readBoolean();
     }
 
     protected Item(Parcel in) {
@@ -130,6 +141,7 @@ public class Item extends RealmObject implements Parcelable {
         long tmpRunOutDate = in.readLong();
         this.runOutDate = tmpRunOutDate == -1 ? null : new Date(tmpRunOutDate);
         this.lastingDays = in.readInt();
+        this.running = in.readBoolean();
     }
 
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
@@ -151,6 +163,7 @@ public class Item extends RealmObject implements Parcelable {
         Item i = (Item) obj;
         return item_iD == i.getItem_id() && itemName.equals(i.getItemName())
                 && Float.compare(price,i.getPrice())==0 && amount == i.getAmount()
-                && (runOutDate.compareTo(i.getRunOutDate())==0) && lastingDays == i.getLastingDays();
+                && (runOutDate.compareTo(i.getRunOutDate())==0) && lastingDays == i.getLastingDays()
+                && running == i.isRunning();
     }
 }

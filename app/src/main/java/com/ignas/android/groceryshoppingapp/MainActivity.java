@@ -1,55 +1,40 @@
 package com.ignas.android.groceryshoppingapp;
 
-import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.ignas.android.groceryshoppingapp.Logic.PageViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Service.RealmDb;
-import com.ignas.android.groceryshoppingapp.Service.Update;
+import com.ignas.android.groceryshoppingapp.Service.UpdateDbService;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
     //BottomNavigationView bottomNav;
         //NavController controller;
-
         TabLayout tabLayout;
         TabAdapter tabAdapter;
         ViewPager viewPager;
         TabItem manageItems;
+        Toolbar toolbar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         tabLayout = findViewById(R.id.tabs);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         manageItems = findViewById(R.id.ItemFragment);
         viewPager = findViewById(R.id.pageView);
         tabAdapter = new TabAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
@@ -62,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if(tab.getPosition()==0){
@@ -75,28 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-/*
-        bottomNav = findViewById(R.id.toolBar);
-        controller = Navigation.findNavController(this,R.id.hostFragment);
-
-        AppBarConfiguration toolBarConfig = new AppBarConfiguration.Builder(
-                R.id.navigation_addItems,R.id.navigation_blankFragment)
-                .build();
-                NavigationUI.setupActionBarWithNavController(this,controller,toolBarConfig);
-
-            NavigationUI.setupWithNavController(bottomNav,controller);
-
-
- */
         }
     @Override
     protected void onStop() {
         super.onStop();
-        ArrayList<Item> list = PageViewModel.getInstance().getItems();
+        ArrayList<Item> list = dbHelper.getInstance().getItems();
         list.remove(list.size()-1);
-        Log.d(TAG, "onStop: stoped");
-            Intent intent = new Intent(this, Update.class);
+            Intent intent = new Intent(this, UpdateDbService.class);
             intent.putParcelableArrayListExtra("update",list);
             startService(intent);
     }
@@ -104,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        PageViewModel.getInstance().addEmpty();
+        dbHelper.getInstance().addEmpty();
 
     }
 }
