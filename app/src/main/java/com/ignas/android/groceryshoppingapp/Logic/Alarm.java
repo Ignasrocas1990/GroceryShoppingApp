@@ -16,6 +16,7 @@ import androidx.core.app.RemoteInput;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class Alarm extends BroadcastReceiver {
@@ -29,9 +30,10 @@ public class Alarm extends BroadcastReceiver {
     public long getMilliseconds() {
         return milliseconds;
     }
-    public void setMilliseconds(int days) {
-        this.milliseconds = getModifiedDate(days);
+    public void setMilliseconds(Date date) {
+        this.milliseconds = convertToMili(date);
     }
+
 
     private int getMessage(Intent intent) {
         try {
@@ -82,7 +84,16 @@ public class Alarm extends BroadcastReceiver {
                     SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
         }
     }
+    private long convertToMili(Date later) {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar now = Calendar.getInstance();
+        String d = formatter.format(now.getTime());
+        Log.d(TAG, "getModifiedDate: "+d);
+        //----TODO-------------need to convert Date to calendar
+        long mills = now.getTimeInMillis()-(Calendar.getInstance().getTimeInMillis());
 
+        return mills;
+    }
     public long getModifiedDate(int days){
         //DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

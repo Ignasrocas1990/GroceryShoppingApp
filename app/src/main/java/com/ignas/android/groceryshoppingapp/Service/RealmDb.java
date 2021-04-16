@@ -2,11 +2,13 @@ package com.ignas.android.groceryshoppingapp.Service;
 
 import android.util.Log;
 
+import com.ignas.android.groceryshoppingapp.Logic.Alarm;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -31,11 +33,12 @@ public class RealmDb{
                          .equalTo("running",true)
                          .findFirst();
                  if (results == null) {
-                     //schedule---TODO-------------
-                 } else if(results.getRunOutDate().compareTo(item.getRunOutDate()) > 0) {
-                     //schedule---TODO-------------
-                 }else{
+                     //schedule---TODO------------- not item is scheduled
 
+                 } else if(results.getRunOutDate().compareTo(item.getRunOutDate()) > 0) {
+                     //schedule---TODO------------- create new schedule from this item
+                 }else{
+                     addItem(item);
                  }
              } catch (Exception e) {
                  Log.d(TAG, "getNextAlarm: did not get alarm");
@@ -52,27 +55,16 @@ public class RealmDb{
              }
          });
     }
-    //remove single item
-    private void removeItem(Item item) {
+    //create new schedule
+    public void scheduleAlarm(){
+        ArrayList<Item> list = getItems();
+        Item item = getSmallestDateItem(list);
+        Alarm alert = new Alarm();
 
-        realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(realm -> {
-            try {
-                realm.where(Item.class)
-                        .equalTo("item_iD", item.getItem_id())
-                        .findFirst()
-                        .deleteFromRealm();
-                realm.refresh();
-            } catch (Exception e) {
-                Log.d(TAG, "delete item. not found ");
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "onSuccess: item deleted");
-            }
-        });
+
     }
+
+
     //add/delete(update) items
     public void update(ArrayList<Item> app_items) {
         ArrayList<Item>dbItems = getItems();
@@ -82,7 +74,7 @@ public class RealmDb{
 
                     while (i < dbItems.size() && !dbItems.get(i).equals(app_items.get(i))) {
                         if(dbItems.get(i).isRunning()){
-                            //schedule---TODO-------------
+                            //schedule---TODO-------------(cancel all(find/update running),get next smallest)
                         }
                         removeItem(dbItems.get(i));
                         dbItems.remove(dbItems.get(i));
@@ -100,9 +92,12 @@ public class RealmDb{
                     }
                 }
 
-                if(newItems.size()!=0) {
+                if(newItems.size()>1) {
+                    Item lowest = getSmallestDateItem(newItems);
+                    newItems.remove(lowest);
+                    saveAdd(lowest);
                     addItems(newItems);
-                }
+                }else if (newItems.size()==1){saveAdd(newItems.get(0));}
             }else{
             addItems(app_items); }
     }
@@ -140,6 +135,27 @@ public class RealmDb{
             }
         });
     }
+    //remove single item
+    private void removeItem(Item item) {
+
+        realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(realm -> {
+            try {
+                realm.where(Item.class)
+                        .equalTo("item_iD", item.getItem_id())
+                        .findFirst()
+                        .deleteFromRealm();
+                realm.refresh();
+            } catch (Exception e) {
+                Log.d(TAG, "delete item. not found ");
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess: item deleted");
+            }
+        });
+    }
     // add single item to database
     public void addItem(Item item){
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -149,12 +165,26 @@ public class RealmDb{
             }
         });
     }
+
+    //get Smallest Date
+    private Item getSmallestDateItem(ArrayList<Item>newItems){
+        Item lowestDateItem = newItems.get(0);
+        for(int i=1;i<newItems.size();i++){
+            Item currentItem = newItems.get(i);
+
+            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
+                lowestDateItem = currentItem;
+            }
+        }
+        return lowestDateItem;
+    }
     //remove all data from db
     public void removeAll(){
         realm.beginTransaction();
         realm.deleteAll();
         realm.commitTransaction();
     }
+
     @Override
     protected void finalize() throws Throwable {
         realm.close();
