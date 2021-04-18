@@ -24,6 +24,7 @@
         <receiver android:name=".Alarm"/>
         <receiver android:name=".Notification"/>
         <service android:name=".Service.UpdateDbService"/>
+        <service android:name=".Service.RestartAlarmService"/>
     </application>
 
 </manifest>

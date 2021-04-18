@@ -16,6 +16,7 @@ import androidx.core.app.RemoteInput;
 
 import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
 import com.ignas.android.groceryshoppingapp.R;
+import com.ignas.android.groceryshoppingapp.Service.RestartAlarmService;
 
 public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
@@ -28,10 +29,10 @@ public class Notification extends BroadcastReceiver {
         long time = intent.getLongExtra("time",1);
 
         //create Brought action Button
-        Intent brought = new Intent(context, Alarm.class);
+        Intent brought = new Intent(context, RestartAlarmService.class);
         brought.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+        PendingIntent pendingIntent = PendingIntent.getService(
                 context, 0, brought, 0);
 
 //-----------------------

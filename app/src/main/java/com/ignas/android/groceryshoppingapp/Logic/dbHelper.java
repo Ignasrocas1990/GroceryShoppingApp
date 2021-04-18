@@ -22,7 +22,7 @@ public class dbHelper extends BroadcastReceiver {
 
     public dbHelper() {
         db = new RealmDb();
-        db.removeAll();
+        //db.removeAll();
         app_items=setItems();
         addEmpty();
     }
@@ -83,20 +83,11 @@ public class dbHelper extends BroadcastReceiver {
             newItems.addAll(app_items);
         }
         if(newItems.size()>1) {
-            Item lowest = getSmallestDateItem(newItems);
-            newItems.remove(lowest);
             db.addItems(newItems);
-
-            if(db.needToReschedule(lowest)){
-                db.addItem(lowest);
-                scheduleAlarm();
-            }
+            scheduleAlarm();
         }else if (newItems.size()==1){
-            if(db.needToReschedule(newItems.get(0))){
-                db.addItem(newItems.get(0));
-                scheduleAlarm();
-            }
-
+            db.addItem(newItems.get(0));
+            scheduleAlarm();
         }
     }
     @Override
@@ -109,14 +100,37 @@ public class dbHelper extends BroadcastReceiver {
         alert.setMilliseconds(item.getLastingDays());
         alert.setAlarm(context, intent,item.getItemName());
     }
+    //re-schedule service
+    public void re_scheduleAlarm(){
+       // ArrayList<Item> list = new RealmDb().getItems(); maybe not like that
+        //Item item = getSmallestDateItem(list);//
+        //Item item = test(list);
+        ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
+        if(items.size()>0){
+            Item item = items.get(0);
+            Alarm alert = new Alarm();
+            alert.setMilliseconds(item.getLastingDays());
+            alert.setAlarm(mContext, null,item.getItemName());
+        }
+
+    }
+
+
     //create new schedule service
     public void scheduleAlarm(){
-        ArrayList<Item> list = new RealmDb().getItems();
+        //ArrayList<Item> list = new RealmDb().getItems();
         //Item item = getSmallestDateItem(list);//
-        Item item = test(list);//TODO-------------------------testing
-        Alarm alert = new Alarm();
-        alert.setMilliseconds(item.getLastingDays());
-        alert.setAlarm(mContext, null,item.getItemName());
+        //Item item = test(list);  NOTE: change it to getSmallestDate() instead (first check if it is not running)
+        ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
+        if(items.size()>0) {
+            Item item = items.get(0);
+            Alarm alert = new Alarm();
+            alert.setMilliseconds(item.getLastingDays());
+            alert.setAlarm(mContext, null, item.getItemName());
+        }
+
+
+
     }
 
     //get Smallest number TODO ----for testing ------------------------

@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.core.app.RemoteInput;
 
 import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
+import com.ignas.android.groceryshoppingapp.Service.RestartAlarmService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,10 +60,9 @@ public class Alarm extends BroadcastReceiver {
         }
         */
 
-        //need to create service from here-----TODO------------------
-        //Intent toDbHelper = new Intent(context,dbHelper.class);
-        //context.sendBroadcast(toDbHelper);
 
+        //Intent restartAlarmService = new Intent(context, RestartAlarmService.class);
+       // context.startService(restartAlarmService);
 
 
         //close notification bar
@@ -105,9 +105,6 @@ public class Alarm extends BroadcastReceiver {
         return days*1000;
 
     }
-    public void hideNotification(Context context,Intent intent,String name){
-
-    }
     public void setAlarm(Context context,Intent intent,String name){
 
 
@@ -115,13 +112,6 @@ public class Alarm extends BroadcastReceiver {
         Intent newIntent = new Intent(context,Notification.class);
         newIntent.putExtra("name",name);
         newIntent.putExtra("time",milliseconds);
-
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if(intent != null){
-            manager.cancel(intent.getIntExtra("time", 0));
-        }
-
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, 0, newIntent, 0);
