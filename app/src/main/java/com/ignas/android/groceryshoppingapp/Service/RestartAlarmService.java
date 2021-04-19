@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -23,21 +24,12 @@ public class RestartAlarmService extends Service {
 
         NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         if(intent != null){
-            manager.cancel(intent.getIntExtra("time", 0));
+            manager.cancel(0);
         }
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("RestartService");
         broadcastIntent.setClass(this, dbHelper.class);
         this.sendBroadcast(broadcastIntent);
-
+        Log.i("log", "restarted service ");
         return START_STICKY;
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("RestartService");
-        broadcastIntent.setClass(this, dbHelper.class);
-        this.sendBroadcast(broadcastIntent);
     }
 }

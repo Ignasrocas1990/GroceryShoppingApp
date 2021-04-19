@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp;
+package com.ignas.android.groceryshoppingapp.Service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,11 +12,8 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.RemoteInput;
 
-import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.Service.RestartAlarmService;
 
 public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
@@ -45,7 +42,7 @@ public class Notification extends BroadcastReceiver {
                 .setOngoing(true)
                 .setContentTitle(name+" is running out at "+time)
                 .setContentText(" ")
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(R.drawable.ic_baseline_stop_circle_24,"Brought",pendingIntent)
                 .setSound(uri);
 

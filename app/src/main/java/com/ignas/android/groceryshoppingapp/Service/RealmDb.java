@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.Service;
 
+
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
@@ -9,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -110,7 +109,7 @@ public class RealmDb{
 
         });
         } catch (Exception e) {
-            Log.d("log", "getNextAlarm: did not get alarm"+e.getLocalizedMessage());
+            Log.d("log", "getNextAlarm: did not get alarm"+e.getMessage());
         }finally{
             realm.refresh();
             realm.close();
@@ -129,11 +128,12 @@ public class RealmDb{
                     list.addAll(realm.copyFromRealm(results));
                 }
             } catch (Exception e) {
-                Log.d(TAG, "getItems: " + e.getLocalizedMessage());
+                Log.d("log", "getItems: " + e.getLocalizedMessage());
             }
         }catch (Exception e){
 
         }finally{
+            realm.refresh();
             realm.close();
         }
         return list;
@@ -191,8 +191,8 @@ public class RealmDb{
         }catch (Exception e){
             Log.d(TAG, "addItem: error adding items");
         }finally{
-            realm.close();
             realm.refresh();
+            realm.close();
         }
     }
     //remove all data from db

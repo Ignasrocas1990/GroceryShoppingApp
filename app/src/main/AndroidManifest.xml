@@ -21,10 +21,9 @@
             </intent-filter>
         </activity>
         <receiver android:name=".Logic.dbHelper"/>
-        <receiver android:name=".Alarm"/>
-        <receiver android:name=".Notification"/>
-        <service android:name=".Service.UpdateDbService"/>
+        <receiver android:name=".Service.Notification"/>
         <service android:name=".Service.RestartAlarmService"/>
+        <service android:name=".Service.Alarm"/>
     </application>
 
 </manifest>

@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Random;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 public class Item extends RealmObject implements Parcelable {
@@ -161,7 +160,7 @@ public class Item extends RealmObject implements Parcelable {
         if(this == obj)return true;
         if(obj == null || getClass() != obj.getClass()) return false;
         Item i = (Item) obj;
-        return item_iD == i.getItem_id() && itemName.equals(i.getItemName())
+        return  itemName.equals(i.getItemName())
                 && Float.compare(price,i.getPrice())==0 && amount == i.getAmount()
                 && (runOutDate.compareTo(i.getRunOutDate())==0) && lastingDays == i.getLastingDays()
                 && running == i.isRunning();

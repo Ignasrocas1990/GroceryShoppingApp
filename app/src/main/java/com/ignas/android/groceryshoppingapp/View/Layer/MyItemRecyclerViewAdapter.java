@@ -66,7 +66,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                     || Integer.parseInt(newQuantity) != item.getAmount() || Float.parseFloat(newPrice) != item.getPrice()){
 
                 add(itemToAdd,newName,newDays,newQuantity,newPrice);
-                Log.d(TAG, "to be updated ");//---------TODO-------################
+                Log.i(TAG, "to be updated ");//---------TODO-------################
 
             }
 
@@ -78,7 +78,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             Item itemToRemove = mValues.get(position);
             if(!itemToRemove.getItemName().equals("")){
                 //mItemClickListener.onItemRemoveClick(itemToRemove);
-                removeUpdate(position,itemToRemove);
+                removeUpdate(itemToRemove);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position,mValues.size());
             }
@@ -95,8 +95,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
                 //notifyItemRangeChanged(0,mValues.size());
         }
-        public void removeUpdate(int position,Item item){
-        Item itemToRemove = new Item();
+        public void removeUpdate(Item item){
             if(getItemCount()>1){
                 mValues.remove(item);
             }else{

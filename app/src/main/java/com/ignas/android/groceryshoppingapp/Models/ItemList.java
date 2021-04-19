@@ -2,9 +2,6 @@ package com.ignas.android.groceryshoppingapp.Models;
 
 import java.util.ArrayList;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 public class ItemList{
 
     //@PrimaryKey

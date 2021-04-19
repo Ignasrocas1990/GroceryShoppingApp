@@ -1,17 +1,12 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-
-import android.app.AlarmManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Alarm;
-import com.ignas.android.groceryshoppingapp.Notification;
+import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
 import java.util.ArrayList;
@@ -56,53 +51,58 @@ public class dbHelper extends BroadcastReceiver {
     }
 
     //add/delete(update) items
-    public void update(ArrayList<Item> app_items) {
-        this.app_items = app_items;
+    public Item update() {
+        Item itemToBeScheduled= null;
+        boolean runningRemoved = false;
+        app_items.remove(app_items.size()-1);
+
         db = new RealmDb();
         ArrayList<Item>dbItems = db.getItems();
         ArrayList<Item>newItems = new ArrayList<>();
         if(dbItems.size()!=0) {
             for (int i = 0; i < app_items.size(); i++) {
 
-                while (i < dbItems.size() && !dbItems.get(i).equals(app_items.get(i))) {
+                while (i < dbItems.size() && dbItems.get(i).getItem_id() !=  app_items.get(i).getItem_id()) {
                     if(dbItems.get(i).isRunning()){
-
-                        //schedule---TODO-------------(cancel all(find/update running),get next smallest)
+                        runningRemoved = true;
                     }
                     db.removeItem(dbItems.get(i));
                     dbItems.remove(dbItems.get(i));
                 }
-                if(i >= dbItems.size()){
+                if(i >= dbItems.size() || !dbItems.get(i).equals(app_items.get(i))){
                     newItems.add(app_items.get(i));
                 }
             }
             if(dbItems.size()>app_items.size()){
                 for(int i = app_items.size(); i < dbItems.size(); i++){
                     if(dbItems.get(i).isRunning()){
-                        //schedule---TODO-------------
+                        runningRemoved = true;
                     }
                     db.removeItem(dbItems.get(i));
                 }
             }
-
         }else{
             newItems.addAll(app_items);
         }
         if(newItems.size()>1) {
             db.addItems(newItems);
-            scheduleAlarm();
+            itemToBeScheduled =getNextItem_toSchedule();
         }else if (newItems.size()==1){
             db.addItem(newItems.get(0));
-            scheduleAlarm();
+            itemToBeScheduled=getNextItem_toSchedule();
+        }else if(runningRemoved){
+            re_scheduleAlarm();
         }
+        return itemToBeScheduled;
     }
     @Override
-    public void onReceive(Context context, Intent intent) { // TODO --- can be deleted maybe
-        Log.i("log", "onReceive: received");
+    public void onReceive(Context context, Intent intent) {
+        Log.i("log", "onReceive: received restart");
         mContext = context;
         re_scheduleAlarm();
 
-    }// can be deleted if working
+
+    }
 
 
     //re-schedule service
@@ -110,28 +110,19 @@ public class dbHelper extends BroadcastReceiver {
         db = new RealmDb();
        app_items = db.getItems();
        if(app_items.size()>0){
-           Item itemToBeScheduled = test();
+           Item itemToBeScheduled = getNextItem_toSchedule();
            if(itemToBeScheduled != null){
-               new Alarm().setAlarm(mContext,itemToBeScheduled.getItemName(),itemToBeScheduled.getRunOutDate());
+               Intent intent = new Intent(mContext,Alarm.class);
+               intent.putExtra("name",itemToBeScheduled.getItemName());
+               intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+               mContext.startService(intent);
                Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName());
-
            }
        }
     }
 
-    //create new schedule service
-    public void scheduleAlarm(){
-        //Item item = getSmallestDateItem(list);//
-        Item item = test();// get smallest lasting days
-        //ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
-
-        if(item != null) {
-            new Alarm().setAlarm(mContext,item.getItemName(),item.getRunOutDate());
-        }
-    }
-
-    //get Smallest number to be scheduled and switch to that number TODO ----for testing(using lasting days) ------------------------
-    private Item test(){
+    //finds current running item/update's it and return next item to be scheduled.
+    private Item getNextItem_toSchedule(){
         Item lowestDateItem = app_items.get(0);
         Item runningItem = null;
 
@@ -162,19 +153,6 @@ public class dbHelper extends BroadcastReceiver {
 
         }else{
             db.addItem(lowestDateItem);
-        }
-        return lowestDateItem;
-    }
-
-    //get Smallest Date
-    private Item getSmallestDateItem(ArrayList<Item>newItems){
-        Item lowestDateItem = newItems.get(0);
-        for(int i=1;i<newItems.size();i++){
-            Item currentItem = newItems.get(i);
-
-            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
-                lowestDateItem = currentItem;
-            }
         }
         return lowestDateItem;
     }
