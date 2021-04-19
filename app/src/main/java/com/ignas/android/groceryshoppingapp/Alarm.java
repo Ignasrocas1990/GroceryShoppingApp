@@ -18,7 +18,10 @@ import com.ignas.android.groceryshoppingapp.Service.RestartAlarmService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
+
+import static android.os.SystemClock.sleep;
 
 public class Alarm extends BroadcastReceiver {
     private long milliseconds = 0;
@@ -50,71 +53,40 @@ public class Alarm extends BroadcastReceiver {
  */
     @Override
     public void onReceive(Context context, Intent intent) {
-/*
-        int hours = getMessage(intent);
-
-        if(hours == 0){
-            this.milliseconds = 10*1000;//10 sec default
-        }else{
-            this.milliseconds = 10*1000;
-        }
-        */
-
-
-        //Intent restartAlarmService = new Intent(context, RestartAlarmService.class);
-       // context.startService(restartAlarmService);
-
-
-        //close notification bar
-
-        /*
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.set(2021,02,26,11,24,0);//NOTE Java month index starts at 0(JAN),(DEC is 11)
-        long mills = 0;
-        mills = calendar.getTimeInMillis();
-
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mills, pendingIntent);
-        }
-        else{
-
-            alarmManager.set(AlarmManager.RTC_WAKEUP, mills, pendingIntent);
-        }
-
-        //Toast.makeText(this,"Alarm set in Seconds",Toast.LENGTH_LONG).show();
-
-
-        */
     }
     public long getModifiedDate(int days){
-        //DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Calendar newCalendar = Calendar.getInstance();
+        Calendar later = Calendar.getInstance();
 
-        newCalendar.add(newCalendar.DAY_OF_WEEK,days);
-        String d = formatter.format(newCalendar.getTime());
-        long mills = newCalendar.getTimeInMillis()-(Calendar.getInstance().getTimeInMillis());
+        //newCalendar.add(newCalendar.DAY_OF_WEEK,days);
+        later.add(later.MILLISECOND,days*1000);//TODO extends by seconds // ----testing
+
+        String d = formatter.format(later.getTime());
+        long mills = later.getTimeInMillis()-(Calendar.getInstance().getTimeInMillis());
 
         Log.d(TAG, "getModifiedDate: "+d);
         Log.d(TAG, "getModifiedSeconds: "+String.valueOf(mills));
 
         //String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         //cal.add(Calendar.DATE,days);
-        return days*1000;
+        return mills;
 
     }
-    public void setAlarm(Context context,Intent intent,String name){
-
+    public void setAlarm(Context context, String name, Date runoutDate){
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar later = Calendar.getInstance();
+        later.setTime(runoutDate);
+        long milliseconds = later.getTimeInMillis()-(Calendar.getInstance().getTimeInMillis());
+        String dateTag = formatter.format(later.getTime());
 
         //create new alarm notification
         Intent newIntent = new Intent(context,Notification.class);
         newIntent.putExtra("name",name);
-        newIntent.putExtra("time",milliseconds);
+        newIntent.putExtra("time",dateTag);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, 0, newIntent, 0);
+                context, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
 
@@ -123,6 +95,11 @@ public class Alarm extends BroadcastReceiver {
             Log.d(TAG, "setAlarm: alarm set");
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                     SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
+        }
+
+        for(int i=0;i< milliseconds/1000;i++){
+            sleep(1000);
+            Log.i("log", "second: "+i);
         }
     }
 }

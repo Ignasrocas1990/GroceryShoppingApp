@@ -60,7 +60,7 @@ public class RealmDb{
          return flag.get();
     }
         */
-    //get smallest date
+    //get smallest date TODO ------ can be deleted maybe
     public ArrayList<Item> getSmallestDate(){
        ArrayList<Item> itemCopy = new ArrayList<>();
         try {
@@ -79,7 +79,7 @@ public class RealmDb{
 
             if (runningItem != null && value != null) {
                 if (runningItem.getLastingDays() > value.intValue()) {
-                    //runningItem.setRunning(false);
+                    runningItem.setRunning(false);
 
                     Date runningDate = runningItem.getRunOutDate();
                     Calendar today = Calendar.getInstance();
@@ -91,7 +91,7 @@ public class RealmDb{
                             .findFirst();
 
                     if (results != null) {
-                        //results.setRunning(true);
+                        results.setRunning(true);
                         Item copy = realm.copyFromRealm(results);
                         itemCopy.add(copy);
                     }
@@ -102,7 +102,7 @@ public class RealmDb{
                         .findFirst();
 
                 if (results != null) {
-                    //results.setRunning(true);
+                    results.setRunning(true);
                     Item copy = realm.copyFromRealm(results);
                     itemCopy.add(copy);
                 }

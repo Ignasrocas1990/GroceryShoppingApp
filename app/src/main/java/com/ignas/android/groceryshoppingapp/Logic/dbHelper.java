@@ -1,12 +1,17 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Alarm;
+import com.ignas.android.groceryshoppingapp.Notification;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
 import java.util.ArrayList;
@@ -52,6 +57,7 @@ public class dbHelper extends BroadcastReceiver {
 
     //add/delete(update) items
     public void update(ArrayList<Item> app_items) {
+        this.app_items = app_items;
         db = new RealmDb();
         ArrayList<Item>dbItems = db.getItems();
         ArrayList<Item>newItems = new ArrayList<>();
@@ -91,58 +97,71 @@ public class dbHelper extends BroadcastReceiver {
         }
     }
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) { // TODO --- can be deleted maybe
+        Log.i("log", "onReceive: received");
+        mContext = context;
+        re_scheduleAlarm();
 
-        ArrayList<Item> list = new RealmDb().getItems();
-        //Item item = getSmallestDateItem(list);//
-        Item item = test(list);//TODO-------------------------testing
-        Alarm alert = new Alarm();
-        alert.setMilliseconds(item.getLastingDays());
-        alert.setAlarm(context, intent,item.getItemName());
-    }
+    }// can be deleted if working
+
+
     //re-schedule service
     public void re_scheduleAlarm(){
-       // ArrayList<Item> list = new RealmDb().getItems(); maybe not like that
-        //Item item = getSmallestDateItem(list);//
-        //Item item = test(list);
-        ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
-        if(items.size()>0){
-            Item item = items.get(0);
-            Alarm alert = new Alarm();
-            alert.setMilliseconds(item.getLastingDays());
-            alert.setAlarm(mContext, null,item.getItemName());
-        }
+        db = new RealmDb();
+       app_items = db.getItems();
+       if(app_items.size()>0){
+           Item itemToBeScheduled = test();
+           if(itemToBeScheduled != null){
+               new Alarm().setAlarm(mContext,itemToBeScheduled.getItemName(),itemToBeScheduled.getRunOutDate());
+               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName());
 
+           }
+       }
     }
-
 
     //create new schedule service
     public void scheduleAlarm(){
-        //ArrayList<Item> list = new RealmDb().getItems();
         //Item item = getSmallestDateItem(list);//
-        //Item item = test(list);  NOTE: change it to getSmallestDate() instead (first check if it is not running)
-        ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
-        if(items.size()>0) {
-            Item item = items.get(0);
-            Alarm alert = new Alarm();
-            alert.setMilliseconds(item.getLastingDays());
-            alert.setAlarm(mContext, null, item.getItemName());
+        Item item = test();// get smallest lasting days
+        //ArrayList<Item> items = db.getSmallestDate();//TODO-------------------------testing
+
+        if(item != null) {
+            new Alarm().setAlarm(mContext,item.getItemName(),item.getRunOutDate());
         }
-
-
-
     }
 
-    //get Smallest number TODO ----for testing ------------------------
-    private Item test(ArrayList<Item>newItems){
+    //get Smallest number to be scheduled and switch to that number TODO ----for testing(using lasting days) ------------------------
+    private Item test(){
+        Item lowestDateItem = app_items.get(0);
+        Item runningItem = null;
 
-        Item lowestDateItem = newItems.get(0);
-        for(int i=1;i<newItems.size();i++){
-            Item currentItem = newItems.get(i);
 
-            if(lowestDateItem.getLastingDays() > currentItem.getLastingDays()){
+        for(int i=0;i<app_items.size();i++){
+            Item currentItem = app_items.get(i);
+            if(currentItem.isRunning()){
+                int value = currentItem.getLastingDays();
+                if(value !=0){
+                    currentItem.setRunOutDate(value);
+                }
+                currentItem.setRunning(false);
+                runningItem = currentItem;
+            }
+            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
                 lowestDateItem = currentItem;
             }
+            }
+        lowestDateItem.setRunning(true);
+
+        if(runningItem!=null){
+            if(runningItem.getItem_id() != lowestDateItem.getItem_id()){
+                ArrayList<Item> list = new ArrayList<Item>();
+                list.add(runningItem);
+                list.add(lowestDateItem);
+                db.addItems(list);
+            }
+
+        }else{
+            db.addItem(lowestDateItem);
         }
         return lowestDateItem;
     }

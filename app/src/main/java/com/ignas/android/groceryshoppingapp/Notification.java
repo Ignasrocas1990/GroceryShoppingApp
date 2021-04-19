@@ -26,14 +26,14 @@ public class Notification extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);
         String name = intent.getStringExtra("name");
-        long time = intent.getLongExtra("time",1);
+        String time = intent.getStringExtra("time");
 
         //create Brought action Button
         Intent brought = new Intent(context, RestartAlarmService.class);
         brought.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getService(
-                context, 0, brought, 0);
+                context, 1, brought, 0);
 
 //-----------------------
 //-----------------------
@@ -43,7 +43,7 @@ public class Notification extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_baseline_no_food_24)
                 .setAutoCancel(true)
                 .setOngoing(true)
-                .setContentTitle(name+" is running out in "+time)
+                .setContentTitle(name+" is running out at "+time)
                 .setContentText(" ")
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .addAction(R.drawable.ic_baseline_stop_circle_24,"Brought",pendingIntent)

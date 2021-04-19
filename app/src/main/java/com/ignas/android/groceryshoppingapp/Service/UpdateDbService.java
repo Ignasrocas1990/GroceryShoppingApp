@@ -33,6 +33,6 @@ public class UpdateDbService extends Service {
         helper.setContext(this);
         helper.update(list);
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 }
