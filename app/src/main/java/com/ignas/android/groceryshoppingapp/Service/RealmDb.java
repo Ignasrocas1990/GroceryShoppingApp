@@ -4,6 +4,7 @@ package com.ignas.android.groceryshoppingapp.Service;
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -122,16 +123,14 @@ public class RealmDb{
         ArrayList<Item> list = new ArrayList<>();
         try {
             realm = Realm.getDefaultInstance();
-            try {
+            realm.executeTransaction(realm -> {
                 RealmResults<Item> results = realm.where(Item.class).findAll();
                 if (results.size() != 0) {
                     list.addAll(realm.copyFromRealm(results));
                 }
-            } catch (Exception e) {
-                Log.d("log", "getItems: " + e.getLocalizedMessage());
-            }
+            });
         }catch (Exception e){
-
+            Log.i(TAG, "getItems: failed"+e.getMessage());
         }finally{
             realm.refresh();
             realm.close();
@@ -208,5 +207,25 @@ public class RealmDb{
             realm.close();
         }
 
+    }
+
+    //  Get lists
+    public ArrayList<ItemList> getLists() {
+        ArrayList<ItemList> lists = new ArrayList<>();
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(realm -> {
+                RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
+                if (results.size() != 0) {
+                    lists.addAll(realm.copyFromRealm(results));
+                }
+            });
+        }catch (Exception e){
+            Log.i(TAG, "getItems: failed"+e.getMessage());
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+        return lists;
     }
 }

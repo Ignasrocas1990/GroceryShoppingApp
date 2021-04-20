@@ -3,10 +3,12 @@ package com.ignas.android.groceryshoppingapp.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -15,10 +17,10 @@ public class Item extends RealmObject implements Parcelable {
     //ObjectId item_id = new ObjectId(Integer.toString(new Random().nextInt()));
 
     @PrimaryKey
-    private int item_iD;
+    private int item_Id;
     {
         Random r = new Random();
-        item_iD = r.nextInt();
+        item_Id = r.nextInt();
         setRunOutDate(7);
 
     }
@@ -29,10 +31,13 @@ public class Item extends RealmObject implements Parcelable {
     private Date runOutDate;
     private int lastingDays=0;
     private boolean running = false;
+    private RealmList<Integer> list_Ids = new RealmList<Integer>();
 
+    //constructors
     public Item(){}
     public Item(String itemName) {
-        this.itemName = itemName; }
+        this.itemName = itemName;
+    }
 
     public Item(String itemName, float price, int amount, int lastingDays) {
         this.itemName = itemName;
@@ -40,6 +45,11 @@ public class Item extends RealmObject implements Parcelable {
         this.amount = amount;
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
+        
+    }
+
+    public void add_to_List(int list_id){
+
     }
 
     public boolean isRunning() {
@@ -51,7 +61,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     public int getItem_id() {
-        return item_iD;
+        return item_Id;
     }
 
     public String getItemName() {
@@ -112,7 +122,7 @@ public class Item extends RealmObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.item_iD);
+        dest.writeInt(this.item_Id);
         dest.writeString(this.itemName);
         dest.writeFloat(this.price);
         dest.writeInt(this.amount);
@@ -122,7 +132,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     public void readFromParcel(Parcel source) {
-        this.item_iD = source.readInt();
+        this.item_Id = source.readInt();
         this.itemName = source.readString();
         this.price = source.readFloat();
         this.amount = source.readInt();
@@ -133,7 +143,7 @@ public class Item extends RealmObject implements Parcelable {
     }
 
     protected Item(Parcel in) {
-        this.item_iD = in.readInt();
+        this.item_Id = in.readInt();
         this.itemName = in.readString();
         this.price = in.readFloat();
         this.amount = in.readInt();

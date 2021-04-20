@@ -17,8 +17,8 @@ public class DbConnect extends Application {
         super.onCreate();
         Realm.init(this);
 
-        final RealmConfiguration config = new RealmConfiguration.Builder().name("groceryDb.realm")
-                .schemaVersion(3).migration(new RealmMigrations())
+        final RealmConfiguration config = new RealmConfiguration.Builder().name("db.realm")
+                .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)
                 .build();
@@ -42,9 +42,8 @@ class RealmMigrations implements RealmMigration {
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
         final RealmSchema schema = realm.getSchema();
 
-        if (oldVersion == 2) {
+        if (oldVersion == 0) {
             final RealmObjectSchema userSchema = schema.get("UserData");
-            userSchema.addField("running", Item.class);
 
         }
     }

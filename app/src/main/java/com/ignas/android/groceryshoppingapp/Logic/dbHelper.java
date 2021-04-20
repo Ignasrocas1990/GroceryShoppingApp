@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
@@ -17,15 +18,17 @@ public class dbHelper extends BroadcastReceiver {
     Context mContext = null;
 
     private ArrayList<Item> app_items;
-
+    private ArrayList<ItemList> app_lists;
     RealmDb db;
 
     public dbHelper() {
         db = new RealmDb();
         //db.removeAll();
         app_items=setItems();
+        app_lists = setLists();
         addEmpty();
     }
+
 
     public static dbHelper getInstance(){
         if(dbHelper ==null){
@@ -34,9 +37,14 @@ public class dbHelper extends BroadcastReceiver {
         return dbHelper;
     }
 
+    private ArrayList<ItemList> setLists() {
+        return db.getLists();
+    }
+
     public void setContext(Context context){
         mContext = context;
     }
+
     private ArrayList<Item> setItems(){
        return db.getItems();
     }
@@ -44,6 +52,10 @@ public class dbHelper extends BroadcastReceiver {
     public ArrayList<Item> getItems() {
         return app_items;
     }
+
+
+
+
     public void addEmpty(){
         if(app_items.size()==0 || !app_items.get(app_items.size()-1).getItemName().equals("")) {
             app_items.add(new Item());

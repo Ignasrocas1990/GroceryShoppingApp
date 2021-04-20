@@ -1,59 +1,53 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class ItemList{
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-    //@PrimaryKey
-    private int listID=0;
+public class ItemList extends RealmObject {
+
+    @PrimaryKey
+    private int list_Id;
+
 
     private String listName="";
     private float totalPrice=0;
     private String shopName="";
-    private ArrayList<Item> items = new ArrayList<Item>();
-    private Item item=null;
-
+    private RealmList<Integer> itemIds = new RealmList<Integer>();
+    //constructors
     {
-        this.listID++;
+        Random r = new Random();
+        list_Id = r.nextInt();
     }
     public ItemList(){}
+    public ItemList(String listName) {
+        this.listName = listName;
+    }
     public ItemList(String listName, String shopName) {
         this.listName = listName;
         this.shopName = shopName;
     }
-    public ItemList(String listName) {
-        this.listName = listName;
-    }
 
-    //items manipulation methods
-    public Item createItem(String itemName,float price,int amount,int lastingDays){
-        item = new Item(itemName,price,amount,lastingDays);
-        return item;
+    public void addItem(int itemId,float price){
+        itemIds.add(itemId);
+        totalPrice +=price;
     }
-    public void addItem(Item item){
-        if(item != null){
-            items.add(item);
-            float itemPrice = item.getPrice();
-            if(itemPrice != 0){
-                totalPrice+=itemPrice;
-            }
-        }
-    }
-    public void removeItem(Item item){
-        if(!items.isEmpty()){
-            items.remove(item);
-            float itemPrice = item.getPrice();
-            if(itemPrice != 0){
-                totalPrice-=itemPrice;
+    public void removeItem(int itemId,float price){
+        if(!itemIds.isEmpty()){
+            itemIds.remove(itemId);
+            if(price != 0){
+                totalPrice-=price;
             }
         }
     }
 
-    //Setters & getters for ItemList
-    public ArrayList<Item> getItems() {
-        return items;
+    //Setters & getters
+    public int getList_Id(){
+        return list_Id;
     }
-
     public void setShopName(String shopName) {
         this.shopName = shopName;
     }
