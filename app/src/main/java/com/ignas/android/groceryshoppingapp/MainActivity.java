@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
@@ -15,6 +14,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
@@ -22,8 +23,12 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
+import com.ignas.android.groceryshoppingapp.View.Layer.ViewModel;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager;
         TabItem manageItems;
         Toolbar toolbar;
+
+        private ViewModel viewModel;
 
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
@@ -44,11 +51,25 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
+        manageItems = findViewById(R.id.ItemFragment);
+        viewPager = findViewById(R.id.pageView);
         mNavigationView = findViewById(R.id.navigation_view);
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        setSupportActionBar(toolbar);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
+        viewPager.setAdapter(tabAdapter);
+
+        viewModel = ViewModelProviders.of(MainActivity.this).get(ViewModel.class);
+
+        viewModel.getLiveLists().observe(MainActivity.this, new Observer<ArrayList<ItemList>>() {
+            @Override
+            public void onChanged(ArrayList<ItemList> itemLists) {
+                //tabAdapter.updateViewLists(itemLists);
+            }
+        });
+
         mNavigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -63,15 +84,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-        manageItems = findViewById(R.id.ItemFragment);
-        viewPager = findViewById(R.id.pageView);
-        tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
-        viewPager.setAdapter(tabAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
@@ -86,7 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                if(tab.getPosition()==1){
+                    //LayoutInflater inflater = getLayoutInflater();
 
+                    //View view =  inflater.inflate(R.layout.fragment_manage_lists, null, false);
+                    //RecyclerView rec = view.findViewById(R.id.test_list);
+                }
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -95,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
 
     }
     public void refreshDrawer(){
@@ -114,20 +133,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
-       Item  itemToBeScheduled = dbHelper.getInstance().update();
+        Item  itemToBeScheduled = viewModel.refreshDB();
         if(itemToBeScheduled != null){
             Intent intent = new Intent(this, Alarm.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());
             intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-            this.startService(intent);
+            startService(intent);
             Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName());
+            
+ 
         }
-    }
 
+    }
     @Override
     protected void onRestart() {
         super.onRestart();
-        dbHelper.getInstance().addEmpty();
+        viewModel.addItem(new Item());
     }
 }

@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import java.util.ArrayList;
@@ -30,8 +33,7 @@ public class ItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     public final String TAG = "log";
-    ArrayList<Item> list;
-
+    private ArrayList<Item> items;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,7 +41,7 @@ public class ItemFragment extends Fragment {
      */
     public ItemFragment() {}
     public ItemFragment(ArrayList<Item> list){
-        this.list = list;
+        this.items = list;
     }
 
     // TODO: Customize parameter initialization
@@ -54,9 +56,8 @@ public class ItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
-            list = getArguments().getParcelableArrayList("list");
+            items = getArguments().getParcelableArrayList("list");
         }
     }
 
@@ -67,20 +68,37 @@ public class ItemFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(list, new MyItemRecyclerViewAdapter.ItemClickListener() {
+            ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
+            MyItemRecyclerViewAdapter adapter = new MyItemRecyclerViewAdapter(new MyItemRecyclerViewAdapter.ItemClickListener() {
                 @Override
                 public void onItemSaveClick(Item item) {
+                    viewModel.addItem(item);
+
+                }
+                @Override
+                public void onItemRemoveClick(Item item) {
+                    viewModel.removeItem(item);
                 }
 
                 @Override
-                public void onItemRemoveClick(Item item) {
+                public void onItemChangeClick(Item item) {
+                    viewModel.changeItem(item);
                 }
-            }));
+            });
+
+            recyclerView.setAdapter(adapter);
+            viewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
+                @Override
+                public void onChanged(ArrayList<Item> items) {
+                    adapter.updateViewItems(items);
+                   // adapter.notifyDataSetChanged();
+                    Log.i(TAG, "onChanged: message");
+                }
+            });
         }
         return view;
     }

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
@@ -33,7 +34,7 @@ public class Item extends RealmObject implements Parcelable {
     private boolean running = false;
     private RealmList<Integer> list_Ids = new RealmList<Integer>();
 
-    //constructors
+//constructors
     public Item(){}
     public Item(String itemName) {
         this.itemName = itemName;
@@ -48,8 +49,13 @@ public class Item extends RealmObject implements Parcelable {
         
     }
 
-    public void add_to_List(int list_id){
+//getters & setters
+    public RealmList<Integer> getList_Ids() {
+        return list_Ids;
+    }
 
+    public void setList_Ids(RealmList<Integer> list_Ids) {
+        this.list_Ids = list_Ids;
     }
 
     public boolean isRunning() {
@@ -103,7 +109,6 @@ public class Item extends RealmObject implements Parcelable {
 
 
     }
-
     public int getLastingDays() {
         return lastingDays;
     }
@@ -112,9 +117,27 @@ public class Item extends RealmObject implements Parcelable {
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
     }
+    //for comparing objects
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        Item i = (Item) obj;
+        if (list_Ids.size() != i.getList_Ids().size()) return false;
+        if(itemName.equals(i.getItemName()) && Float.compare(price,i.getPrice())==0
+                && amount == i.getAmount() && (runOutDate.compareTo(i.getRunOutDate())==0)
+                && lastingDays == i.getLastingDays() && running == i.isRunning()) {
 
-    //Parcelable methods
+            if(list_Ids.equals(i.getList_Ids())) return true;
+            Collections.sort(list_Ids);
+            Collections.sort(i.getList_Ids());
+            return list_Ids.equals(i.getList_Ids());
 
+        }
+        return false;
+    }
+
+//Parcelable methods - auto generated
     @Override
     public int describeContents() {
         return 0;
@@ -129,6 +152,7 @@ public class Item extends RealmObject implements Parcelable {
         dest.writeLong(this.runOutDate != null ? this.runOutDate.getTime() : -1);
         dest.writeInt(this.lastingDays);
         dest.writeBoolean(this.running);
+        dest.writeList(this.list_Ids);
     }
 
     public void readFromParcel(Parcel source) {
@@ -140,6 +164,7 @@ public class Item extends RealmObject implements Parcelable {
         this.runOutDate = tmpRunOutDate == -1 ? null : new Date(tmpRunOutDate);
         this.lastingDays = source.readInt();
         this.running = source.readBoolean();
+        source.readList(this.list_Ids, Integer.class.getClassLoader());
     }
 
     protected Item(Parcel in) {
@@ -151,6 +176,7 @@ public class Item extends RealmObject implements Parcelable {
         this.runOutDate = tmpRunOutDate == -1 ? null : new Date(tmpRunOutDate);
         this.lastingDays = in.readInt();
         this.running = in.readBoolean();
+        in.readList(this.list_Ids, Integer.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
@@ -164,15 +190,4 @@ public class Item extends RealmObject implements Parcelable {
             return new Item[size];
         }
     };
-    //for comparing objects
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj)return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
-        Item i = (Item) obj;
-        return  itemName.equals(i.getItemName())
-                && Float.compare(price,i.getPrice())==0 && amount == i.getAmount()
-                && (runOutDate.compareTo(i.getRunOutDate())==0) && lastingDays == i.getLastingDays()
-                && running == i.isRunning();
-    }
 }

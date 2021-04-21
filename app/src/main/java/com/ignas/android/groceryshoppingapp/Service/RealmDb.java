@@ -160,7 +160,7 @@ public class RealmDb{
         realm.executeTransaction(realm -> {
 
                 realm.where(Item.class)
-                        .equalTo("item_iD", item.getItem_id())
+                        .equalTo("item_Id", item.getItem_id())
                         .findFirst()
                         .deleteFromRealm();
         });

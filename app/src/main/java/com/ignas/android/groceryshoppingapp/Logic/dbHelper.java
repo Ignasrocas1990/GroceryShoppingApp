@@ -14,25 +14,26 @@ import java.util.ArrayList;
 
 public class dbHelper extends BroadcastReceiver {
     private static final String TAG ="log" ;//extends ViewModel {
-    private static dbHelper dbHelper =null ;
+    private static com.ignas.android.groceryshoppingapp.Logic.dbHelper dbHelper =null ;
     Context mContext = null;
 
     private ArrayList<Item> app_items;
     private ArrayList<ItemList> app_lists;
     RealmDb db;
 
-    public dbHelper() {
+    public dbHelper(Context context) {
         db = new RealmDb();
         //db.removeAll();
-        app_items=setItems();
+        app_items = setItems();
         app_lists = setLists();
+        mContext = context;
         addEmpty();
     }
+    public dbHelper(){}
 
-
-    public static dbHelper getInstance(){
+    public static dbHelper getInstance(Context context){
         if(dbHelper ==null){
-           dbHelper = new dbHelper();
+           dbHelper = new dbHelper(context);
         }
         return dbHelper;
     }
@@ -40,6 +41,7 @@ public class dbHelper extends BroadcastReceiver {
     private ArrayList<ItemList> setLists() {
         return db.getLists();
     }
+
 
     public void setContext(Context context){
         mContext = context;
@@ -53,8 +55,9 @@ public class dbHelper extends BroadcastReceiver {
         return app_items;
     }
 
-
-
+    public ArrayList<ItemList> getApp_lists() {
+        return app_lists;
+    }
 
     public void addEmpty(){
         if(app_items.size()==0 || !app_items.get(app_items.size()-1).getItemName().equals("")) {
@@ -63,7 +66,7 @@ public class dbHelper extends BroadcastReceiver {
     }
 
     //add/delete(update) items
-    public Item update() {
+    public Item update(ArrayList<Item> app_items) {
         Item itemToBeScheduled= null;
         boolean runningRemoved = false;
         app_items.remove(app_items.size()-1);
@@ -105,6 +108,7 @@ public class dbHelper extends BroadcastReceiver {
         }else if(runningRemoved){
             re_scheduleAlarm();
         }
+
         return itemToBeScheduled;
     }
     @Override

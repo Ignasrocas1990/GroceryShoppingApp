@@ -1,6 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import io.realm.RealmList;
@@ -43,30 +44,46 @@ public class ItemList extends RealmObject {
             }
         }
     }
-
     //Setters & getters
-    public int getList_Id(){
-        return list_Id;
-    }
     public void setShopName(String shopName) {
         this.shopName = shopName;
     }
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+    public void setTotalPrice(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    public void setItemIds(RealmList<Integer> itemIds) {
+        this.itemIds = itemIds;
+    }
+
     public String getShopName() {
         return shopName;
     }
     public String getListName() {
         return listName;
     }
-
-    public void setListName(String listName) {
-        this.listName = listName;
-    }
-
     public float getTotalPrice() {
         return totalPrice;
     }
-
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
+    public RealmList<Integer> getItemIds() {
+        return itemIds;
     }
+
+    public boolean equals(Object obj) {
+        if(this == obj)return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        ItemList i = (ItemList) obj;
+        if (itemIds.size() != i.getItemIds().size()) return false;
+        if(listName.equals(i.getListName()) && Float.compare(totalPrice,i.getTotalPrice())==0
+                && shopName.equals(i.getShopName())) {
+            if(itemIds.equals(i.getItemIds())) return true;
+            Collections.sort(itemIds);
+            Collections.sort(i.getItemIds());
+            return itemIds.equals(i.getItemIds());
+        }
+        return false;
+    }
+
 }
