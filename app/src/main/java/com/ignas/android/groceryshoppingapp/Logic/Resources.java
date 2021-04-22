@@ -12,57 +12,27 @@ import com.ignas.android.groceryshoppingapp.Service.RealmDb;
 
 import java.util.ArrayList;
 
-public class dbHelper extends BroadcastReceiver {
-    private static final String TAG ="log" ;//extends ViewModel {
-    private static com.ignas.android.groceryshoppingapp.Logic.dbHelper dbHelper =null ;
+public class Resources extends BroadcastReceiver {
+    private static final String TAG ="log" ;
     Context mContext = null;
-
-    private ArrayList<Item> app_items;
-    private ArrayList<ItemList> app_lists;
     RealmDb db;
 
-    public dbHelper(Context context) {
+    public Resources(Context context) {
         db = new RealmDb();
-        //db.removeAll();
-        app_items = setItems();
-        app_lists = setLists();
         mContext = context;
-        addEmpty();
     }
-    public dbHelper(){}
+    public Resources(){}
 
-    public static dbHelper getInstance(Context context){
-        if(dbHelper ==null){
-           dbHelper = new dbHelper(context);
-        }
-        return dbHelper;
-    }
-
-    private ArrayList<ItemList> setLists() {
+    public ArrayList<ItemList> getLists() {
         return db.getLists();
     }
-
 
     public void setContext(Context context){
         mContext = context;
     }
 
-    private ArrayList<Item> setItems(){
+    public ArrayList<Item> getItems(){
        return db.getItems();
-    }
-
-    public ArrayList<Item> getItems() {
-        return app_items;
-    }
-
-    public ArrayList<ItemList> getApp_lists() {
-        return app_lists;
-    }
-
-    public void addEmpty(){
-        if(app_items.size()==0 || !app_items.get(app_items.size()-1).getItemName().equals("")) {
-            app_items.add(new Item());
-        }
     }
 
     //add/delete(update) items
@@ -70,7 +40,6 @@ public class dbHelper extends BroadcastReceiver {
         Item itemToBeScheduled= null;
         boolean runningRemoved = false;
         app_items.remove(app_items.size()-1);
-
         db = new RealmDb();
         ArrayList<Item>dbItems = db.getItems();
         ArrayList<Item>newItems = new ArrayList<>();
@@ -101,10 +70,10 @@ public class dbHelper extends BroadcastReceiver {
         }
         if(newItems.size()>1) {
             db.addItems(newItems);
-            itemToBeScheduled =getNextItem_toSchedule();
+            itemToBeScheduled = getNextItem_toSchedule(app_items);
         }else if (newItems.size()==1){
             db.addItem(newItems.get(0));
-            itemToBeScheduled=getNextItem_toSchedule();
+            itemToBeScheduled=getNextItem_toSchedule(app_items);
         }else if(runningRemoved){
             re_scheduleAlarm();
         }
@@ -116,17 +85,15 @@ public class dbHelper extends BroadcastReceiver {
         Log.i("log", "onReceive: received restart");
         mContext = context;
         re_scheduleAlarm();
-
-
     }
 
 
     //re-schedule service
     public void re_scheduleAlarm(){
         db = new RealmDb();
-       app_items = db.getItems();
+        ArrayList<Item>app_items = db.getItems();
        if(app_items.size()>0){
-           Item itemToBeScheduled = getNextItem_toSchedule();
+           Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
                Intent intent = new Intent(mContext,Alarm.class);
                intent.putExtra("name",itemToBeScheduled.getItemName());
@@ -138,7 +105,7 @@ public class dbHelper extends BroadcastReceiver {
     }
 
     //finds current running item/update's it and return next item to be scheduled.
-    private Item getNextItem_toSchedule(){
+    private Item getNextItem_toSchedule(ArrayList<Item> app_items){
         Item lowestDateItem = app_items.get(0);
         Item runningItem = null;
 
@@ -156,7 +123,7 @@ public class dbHelper extends BroadcastReceiver {
             if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
                 lowestDateItem = currentItem;
             }
-            }
+        }
         lowestDateItem.setRunning(true);
 
         if(runningItem!=null){
@@ -166,18 +133,39 @@ public class dbHelper extends BroadcastReceiver {
                 list.add(lowestDateItem);
                 db.addItems(list);
             }
-
         }else{
             db.addItem(lowestDateItem);
         }
         return lowestDateItem;
     }
-    /*
-   private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
-    private LiveData<String> mText = Transformations.map(mIndex, input -> "Hello world from section: " + input);
-    public void setIndex(int index) {mIndex.setValue(index);}
-    public LiveData<String> getText() {return mText;}
 
- */
+    public void updateLists(ArrayList<ItemList> app_lists) {
+        int i;
+        ArrayList<ItemList>dbLists = db.getLists();
+        ArrayList<ItemList>newLists = new ArrayList<>();
+        if(dbLists.size()!=0 && app_lists.size()>1) {
+            for (i = 0; i < app_lists.size(); i++) {
 
+                while (i < dbLists.size() && dbLists.get(i).getList_Id() !=  app_lists.get(i).getList_Id()) {
+                    db.removeList(dbLists.get(i));
+                    dbLists.remove(dbLists.get(i));
+                }
+                if(i >= dbLists.size() || !dbLists.get(i).equals(app_lists.get(i))){
+                    newLists.add(app_lists.get(i));
+                }
+            }
+            if(dbLists.size()>app_lists.size()) {
+                for (i = app_lists.size(); i < dbLists.size(); i++) {
+                    db.removeList(dbLists.get(i));
+                }
+            }
+        }else{
+            newLists.addAll(app_lists);
+        }
+        if(newLists.size()>1){
+            db.addLists(newLists);
+        }else if(newLists.size()==1){
+            db.addList(newLists.get(0));
+        }
+    }
 }

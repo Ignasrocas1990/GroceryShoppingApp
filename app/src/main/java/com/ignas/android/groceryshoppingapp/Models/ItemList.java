@@ -57,6 +57,9 @@ public class ItemList extends RealmObject {
     public void setItemIds(RealmList<Integer> itemIds) {
         this.itemIds = itemIds;
     }
+    public void setList_Id(int list_Id) {
+        this.list_Id = list_Id;
+    }
 
     public String getShopName() {
         return shopName;
@@ -70,6 +73,10 @@ public class ItemList extends RealmObject {
     public RealmList<Integer> getItemIds() {
         return itemIds;
     }
+    public int getList_Id() {
+        return list_Id;
+    }
+
 
     public boolean equals(Object obj) {
         if(this == obj)return true;

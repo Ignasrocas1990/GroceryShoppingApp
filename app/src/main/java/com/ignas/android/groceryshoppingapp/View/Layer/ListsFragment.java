@@ -14,53 +14,52 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import java.util.ArrayList;
 
-public class ManageListsFragment extends Fragment {
+public class ListsFragment extends Fragment {
 
     private static final String TAG = "log";
-    private ArrayList<ItemList> app_lists;
-    private ArrayList<Item> app_items;
-
-
-    public ManageListsFragment() {
-    }
-
-    public ManageListsFragment(ArrayList<ItemList> app_lists, ArrayList<Item> items) {
-        this.app_lists = app_lists;
-        app_items = items;
+    public ListsFragment() {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static ManageListsFragment newInstance(ArrayList<ItemList> app_lists, ArrayList<Item> items) {
-        ManageListsFragment fragment = new ManageListsFragment(app_lists,items);
-        //Bundle args = new Bundle();
-        //fragment.setArguments(args);
+    public static ListsFragment newInstance() {
+        ListsFragment fragment = new ListsFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-        //}
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_manage_lists, container, false);
-        Button btn = view.findViewById(R.id.CreateList);
-
+        View view =  inflater.inflate(R.layout.lists_recycler, container, false);
+        ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
+        Button createBtn = view.findViewById(R.id.createList);
         RecyclerView rec = view.findViewById(R.id.test_list);
-
-
-        //TODO ----------------------------------------------------VV|VV maybe passdown the list instead of get from here
         Context context = view.getContext();
+        EditText listName_Box = view.findViewById(R.id.listName);
+        EditText shopName_Box = view.findViewById(R.id.shopname);
+
+
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String listName = listName_Box.getText().toString();
+                String shopName = shopName_Box.getText().toString();
+                if(!listName.equals("")){
+                    viewModel.createList(listName,shopName);
+                    rec.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         rec.setLayoutManager(new LinearLayoutManager(context));
         ListRecyclerViewAdapter adapter = new ListRecyclerViewAdapter(new ListRecyclerViewAdapter.ItemClickListener() {
 
@@ -75,7 +74,6 @@ public class ManageListsFragment extends Fragment {
             }
         });
         rec.setAdapter(adapter);
-        ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
         viewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
             @Override
             public void onChanged(ArrayList<Item> items) {

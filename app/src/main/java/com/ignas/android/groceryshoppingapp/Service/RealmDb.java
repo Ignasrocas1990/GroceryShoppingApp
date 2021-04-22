@@ -61,6 +61,7 @@ public class RealmDb{
     }
         */
     //get smallest date TODO ------ can be deleted maybe
+    /*
     public ArrayList<Item> getSmallestDate(){
        ArrayList<Item> itemCopy = new ArrayList<>();
         try {
@@ -118,6 +119,7 @@ public class RealmDb{
 
         return itemCopy;
     }
+    */
     //  Get all items
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
@@ -175,18 +177,10 @@ public class RealmDb{
     public void addItem(Item item){
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(@NotNull Realm realm) {
-                    realm.copyToRealmOrUpdate(item);
-                    Log.d(TAG, "execute: added item...");
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-                    Log.d("log", "onSuccess: Item save");
-                }
-            }, error -> Log.d("log", "onError: Item did not save"));
+            realm.executeTransaction(realm -> {
+                realm.copyToRealmOrUpdate(item);
+                Log.d(TAG, "execute: added item...");
+            });
         }catch (Exception e){
             Log.d(TAG, "addItem: error adding items");
         }finally{
@@ -195,21 +189,10 @@ public class RealmDb{
         }
     }
     //remove all data from db
-    public void removeAll(){
-        try{
-            realm.beginTransaction();
-            realm.deleteAll();
-            realm.commitTransaction();
-        }catch(Exception e){
-            Log.d(TAG, "removeAll: error");
-        }finally{
-            realm.refresh();
-            realm.close();
-        }
 
-    }
 
-    //  Get lists
+//  Lists methods--------------------------------------
+// get all Lists
     public ArrayList<ItemList> getLists() {
         ArrayList<ItemList> lists = new ArrayList<>();
         try {
@@ -228,4 +211,73 @@ public class RealmDb{
         }
         return lists;
     }
+// add/copy list of items
+    public void addLists(ArrayList<ItemList>lists){
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(realm -> {
+
+                realm.copyToRealmOrUpdate(lists);
+                Log.i("log", "execute: added lists...");
+            });
+        }catch (Exception e){
+            Log.i("log", "lists: did not save"+e.getLocalizedMessage());
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+    }
+//remove single list
+    public void removeList(ItemList list) {
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(realm -> {
+
+                realm.where(ItemList.class)
+                        .equalTo("list_Id", list.getList_Id())
+                        .findFirst()
+                        .deleteFromRealm();
+                Log.i("log", "removeList:successful ");
+            });
+        } catch (Exception e) {
+            Log.i("log", "delete list. not found ");
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+    }
+// add single list
+    public void addList(ItemList list){
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(realm -> {
+
+                realm.copyToRealmOrUpdate(list);
+                Log.i(TAG, "execute: added list...");
+            });
+        }catch (Exception e){
+            Log.i(TAG, "add list: error adding lists");
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+    }
+
+
+
+    //--- for reset----
+    public void removeAll(){
+        try{
+            realm.beginTransaction();
+            realm.deleteAll();
+            realm.commitTransaction();
+        }catch(Exception e){
+            Log.d(TAG, "removeAll: error");
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+
+    }
+
 }

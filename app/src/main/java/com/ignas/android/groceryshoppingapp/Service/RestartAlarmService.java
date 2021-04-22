@@ -9,7 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
+import com.ignas.android.groceryshoppingapp.Logic.Resources;
 
 public class RestartAlarmService extends Service {
     @Nullable
@@ -27,7 +27,7 @@ public class RestartAlarmService extends Service {
             manager.cancel(0);
         }
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setClass(this, dbHelper.class);
+        broadcastIntent.setClass(this, Resources.class);
         this.sendBroadcast(broadcastIntent);
         Log.i("log", "restarted service ");
         return START_STICKY;

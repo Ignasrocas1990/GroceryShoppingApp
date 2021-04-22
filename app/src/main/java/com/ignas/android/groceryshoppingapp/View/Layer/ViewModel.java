@@ -7,23 +7,25 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
+import com.ignas.android.groceryshoppingapp.Logic.Resources;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
 
 public class ViewModel extends AndroidViewModel {
-    private dbHelper dbData;
+    private Resources dbData;
     private MutableLiveData<ArrayList<Item>> items = new MutableLiveData<>();
     private MutableLiveData<ArrayList<ItemList>> lists = new MutableLiveData<>();
 
     public ViewModel(@NonNull Application application) {
         super(application);
-        dbData= dbHelper.getInstance(application);
+        dbData= new Resources(application);
         items.setValue(dbData.getItems());
-        lists.setValue(dbData.getApp_lists());
+        lists.setValue(dbData.getLists());
+        addItem(new Item());
     }
+    //unique item methods
     public void addItem(Item item){
         ArrayList<Item> temp = items.getValue();
         temp.add(item);
@@ -34,20 +36,42 @@ public class ViewModel extends AndroidViewModel {
         temp.remove(item);
         items.setValue(temp);
     }
-    public void changeItem(Item item){
-        ArrayList<Item> temp = items.getValue();
-        Item result = temp.stream()
-                .filter(tempItem ->item.getItem_id() == tempItem.getItem_id())
-                .findAny()
-                .orElse(null);
-        if (result!=null){
-            temp.remove(result);
-            temp.add(item);
-        }
-        items.setValue(temp);
-    }
-    public Item refreshDB(){
 
+    public void changeItem(int position, String newName, String newDays, String newQuantity, String newPrice) {
+        ArrayList<Item> tempArray = items.getValue();
+        Item oldItem = tempArray.get(position);
+
+        oldItem.setItemName(newName);
+        if(newQuantity.equals("")){
+            oldItem.setAmount(0);
+        }else{
+            oldItem.setAmount(Integer.parseInt(newQuantity));
+        }
+        if(newDays.equals("")){
+            oldItem.setLastingDays(0);
+        }else{
+            oldItem.setLastingDays(Integer.parseInt(newDays));
+        }
+        if(newPrice.equals("")){
+            oldItem.setPrice(0.f);
+        }else{
+            oldItem.setPrice(Float.parseFloat(newPrice));
+        }
+        items.setValue(tempArray);
+    }
+
+    //lists methods
+    public void createList(String listName,String shopName){
+        ItemList list = new ItemList(listName,shopName);
+        ArrayList<ItemList> oldList = lists.getValue();
+        oldList.add(list);
+        lists.setValue(oldList);
+    }
+    public void refresh_Db_Lists(){
+        dbData.updateLists(lists.getValue());
+    }
+
+    public Item refresh_Db_Items(){
         return dbData.update(items.getValue());
     }
 
@@ -58,6 +82,5 @@ public class ViewModel extends AndroidViewModel {
     public LiveData<ArrayList<ItemList>> getLiveLists() {
         return lists;
     }
-
 
 }

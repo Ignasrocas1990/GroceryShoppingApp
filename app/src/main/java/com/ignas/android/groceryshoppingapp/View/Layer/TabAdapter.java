@@ -5,27 +5,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
-
-import java.util.ArrayList;
-
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;
     ViewModel viewModel;
     private int numberOfTabs;
-    ArrayList<Item> items;
-    ArrayList<ItemList> itemLists;
     public TabAdapter(@NonNull FragmentManager fm, int tabCount) {
         super(fm, tabCount);
         numberOfTabs = tabCount;
-
-    }
-    public void updateViewItems(ArrayList<Item> items){
-        this.items = items;
-    }
-    public void updateViewLists(ArrayList<ItemList> lists){
-        this.itemLists = lists;
 
     }
     @NonNull
@@ -34,10 +20,10 @@ public class TabAdapter extends FragmentPagerAdapter {
         Fragment fragment=null;
         switch (position){
             case 0:
-                fragment = ItemFragment.newInstance(items);
+                fragment = ItemFragment.newInstance();
                 break;
             case 1:
-                fragment = ManageListsFragment.newInstance(itemLists,items);
+                fragment = ListsFragment.newInstance();
         }
         return fragment;
     }

@@ -3,6 +3,7 @@ package com.ignas.android.groceryshoppingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -21,7 +22,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.ignas.android.groceryshoppingapp.Logic.dbHelper;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
+        Menu menu;
         final MenuItem[] previousMenuItem = {null};
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +63,10 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(tabAdapter);
 
         viewModel = ViewModelProviders.of(MainActivity.this).get(ViewModel.class);
-
         viewModel.getLiveLists().observe(MainActivity.this, new Observer<ArrayList<ItemList>>() {
             @Override
-            public void onChanged(ArrayList<ItemList> itemLists) {
-                //tabAdapter.updateViewLists(itemLists);
+            public void onChanged(ArrayList<ItemList> lists) {
+                addtoDrawer(lists);
             }
         });
 
@@ -117,6 +117,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    public void addtoDrawer(ArrayList<ItemList>lists){
+        menu = mNavigationView.getMenu();
+        if(!menu.hasVisibleItems()){
+            for(ItemList list:lists){
+                menu.add(list.getListName()+" "+list.getShopName());
+            }
+        }else{
+            ItemList list = lists.get(lists.size()-1);
+            menu.add(list.getListName()+" "+list.getShopName());
+        }
+        refreshDrawer();
+    }
+    //not my code -----------------
     public void refreshDrawer(){
         for (int i = 0, count = mNavigationView.getChildCount(); i < count; i++) {
             final View child = mNavigationView.getChildAt(i);
@@ -133,15 +146,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Item  itemToBeScheduled = viewModel.refreshDB();
+        viewModel.refresh_Db_Lists();
+        Item  itemToBeScheduled = viewModel.refresh_Db_Items();
         if(itemToBeScheduled != null){
             Intent intent = new Intent(this, Alarm.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());
             intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
             startService(intent);
             Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName());
-            
- 
         }
 
     }

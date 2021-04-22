@@ -2,7 +2,6 @@ package com.ignas.android.groceryshoppingapp.View.Layer;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
+public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
 
    private List<Item> mValues = new ArrayList<>();
    private ItemClickListener mItemClickListener;
    private String TAG = "log";
 
-    public MyItemRecyclerViewAdapter(ArrayList<Item> items,ItemClickListener itemClickListener){
-        this.mValues = items;
-        this.mItemClickListener = itemClickListener;
-    }
-
-    public MyItemRecyclerViewAdapter(ItemClickListener itemClickListener) {
+    public ItemRecyclerViewAdapter(ItemClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
     }
     public void updateViewItems(ArrayList<Item> mValues){
@@ -39,7 +33,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -47,28 +41,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mValues.get(position);
         //show the hints
-        if(item.getLastingDays()==0){
-            holder.lasting_days.setText("");
-        }else{
-            holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
-        }
-        if(item.getAmount()==0){
-            holder.quantity.setText("");
-        }else{
-            holder.quantity.setText(String.valueOf(item.getAmount()));
-        }
-        if(item.getPrice()==0.f){
-            holder.price.setText("");
-        }else{
-            holder.price.setText(String.valueOf(item.getPrice()));
-        }
-        holder.product_name.setText(item.getItemName());
+        applyChanges(item,holder);
 
         holder.saveBtn.setOnClickListener(vew ->{
             String newName = holder.product_name.getText().toString();
             String newDays = holder.lasting_days.getText().toString();
             String newQuantity = holder.quantity.getText().toString();
             String newPrice = holder.price.getText().toString();
+
 
             Item itemToAdd = mValues.get(position);
             if (item.getItemName().equals("") && !newName.equals("")) {
@@ -77,18 +57,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 mItemClickListener.onItemSaveClick(new Item());
                 notifyItemInserted(mValues.size()-1);
 
-            }else if(!newName.equals(item.getItemName()) || Integer.parseInt(newDays)!=item.getLastingDays()
-                    || Integer.parseInt(newQuantity) != item.getAmount() || Float.parseFloat(newPrice) != item.getPrice()){
-
-                ;
-                mItemClickListener.onItemChangeClick(new Item(newName,Float.parseFloat(newPrice),
-                        Integer.parseInt(newDays),Integer.parseInt(newQuantity)));
-
-                Log.i(TAG, "to be updated ");
-
+            }else{
+                mItemClickListener.onItemChangeClick(position,newName,newDays,newQuantity,newPrice);
             }
-
-            //mItemClickListener.onItemSaveClick(itemToAdd);
             });
 
         holder.deleteBtn.setOnClickListener(vew->{
@@ -122,6 +93,25 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                     item.setPrice(Float.parseFloat(newPrice));
                 }
         }
+        public void applyChanges(Item item, ViewHolder holder){
+            if(item.getLastingDays()==0){
+                holder.lasting_days.setText("");
+            }else{
+                holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
+            }
+            if(item.getAmount()==0){
+                holder.quantity.setText("");
+            }else{
+                holder.quantity.setText(String.valueOf(item.getAmount()));
+            }
+            if(item.getPrice()==0.f){
+                holder.price.setText("");
+            }else{
+                holder.price.setText(String.valueOf(item.getPrice()));
+            }
+            holder.product_name.setText(item.getItemName());
+        }
+
         public void removeUpdate(Item item){
             if(getItemCount()>1){
                 mValues.remove(item);
@@ -136,7 +126,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public interface ItemClickListener{
         void onItemSaveClick(Item item);
         void onItemRemoveClick(Item item);
-        void onItemChangeClick(Item item);
+        void onItemChangeClick(int position,String newName,String newDays,String newQuantity,String newPrice);
     }
 
     @Override

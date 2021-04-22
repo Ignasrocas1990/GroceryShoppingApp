@@ -20,51 +20,28 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import java.util.ArrayList;
 
-/**
- * A fragment representing a list of Items.
- */
 public class ItemFragment extends Fragment {
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     public final String TAG = "log";
-    private ArrayList<Item> items;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public ItemFragment() {}
-    public ItemFragment(ArrayList<Item> list){
-        this.items = list;
-    }
 
-    // TODO: Customize parameter initialization
-    public static ItemFragment newInstance(ArrayList<Item> list) {
-        ItemFragment fragment = new ItemFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList("list",list);
-        fragment.setArguments(args);
-        return fragment;
+    public static ItemFragment newInstance() {
+        return new ItemFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            items = getArguments().getParcelableArrayList("list");
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        View view = inflater.inflate(R.layout.item_recycler, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -73,7 +50,7 @@ public class ItemFragment extends Fragment {
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
-            MyItemRecyclerViewAdapter adapter = new MyItemRecyclerViewAdapter(new MyItemRecyclerViewAdapter.ItemClickListener() {
+            ItemRecyclerViewAdapter adapter = new ItemRecyclerViewAdapter(new ItemRecyclerViewAdapter.ItemClickListener() {
                 @Override
                 public void onItemSaveClick(Item item) {
                     viewModel.addItem(item);
@@ -85,8 +62,8 @@ public class ItemFragment extends Fragment {
                 }
 
                 @Override
-                public void onItemChangeClick(Item item) {
-                    viewModel.changeItem(item);
+                public void onItemChangeClick(int position, String newName, String newDays, String newQuantity, String newPrice) {
+                    viewModel.changeItem(position,newName,newDays,newQuantity,newPrice);
                 }
             });
 
@@ -95,7 +72,6 @@ public class ItemFragment extends Fragment {
                 @Override
                 public void onChanged(ArrayList<Item> items) {
                     adapter.updateViewItems(items);
-                   // adapter.notifyDataSetChanged();
                     Log.i(TAG, "onChanged: message");
                 }
             });
