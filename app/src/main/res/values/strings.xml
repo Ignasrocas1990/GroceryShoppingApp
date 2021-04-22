@@ -17,4 +17,8 @@
 
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
+    <string name="create_list">Create List</string>
+    <string name="shop_name">shop name</string>
+    <string name="name">name</string>
+    <string name="remove_list">remove list</string>
 </resources>

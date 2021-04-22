@@ -3,12 +3,14 @@ package com.ignas.android.groceryshoppingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +27,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
+import com.ignas.android.groceryshoppingapp.View.Layer.CurListViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.ViewModel;
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar;
 
         private ViewModel viewModel;
+        private CurListViewModel curListViewModel;
 
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
@@ -62,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
 
-        viewModel = ViewModelProviders.of(MainActivity.this).get(ViewModel.class);
-        viewModel.getLiveLists().observe(MainActivity.this, new Observer<ArrayList<ItemList>>() {
+        curListViewModel = ViewModelProviders.of(this).get(CurListViewModel.class);
+
+        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        viewModel.getLiveLists().observe(this, new Observer<ArrayList<ItemList>>() {
             @Override
             public void onChanged(ArrayList<ItemList> lists) {
                 addtoDrawer(lists);
@@ -76,10 +82,22 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         if(previousMenuItem[0] !=null){
                             previousMenuItem[0].setChecked(false);
+
+                            if(previousMenuItem[0].getItemId() == menuItem.getItemId()){
+                                menuItem.setChecked(false);
+                                curListViewModel.setCurrentList(null);
+                                previousMenuItem[0]=null;
+                            }
+                        }else{
+                            previousMenuItem[0] = menuItem;
+                            menuItem.setChecked(true);
+                            int id = menuItem.getItemId();
+                            ItemList curList = viewModel.findList(id);
+                            curListViewModel.setCurrentList(curList);
+                            viewPager.setCurrentItem(1);
                         }
-                        previousMenuItem[0] = menuItem;
-                        menuItem.setChecked(true);
                         drawerLayout.closeDrawers();
+
                         return true;
                     }
                 });
@@ -121,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
         menu = mNavigationView.getMenu();
         if(!menu.hasVisibleItems()){
             for(ItemList list:lists){
-                menu.add(list.getListName()+" "+list.getShopName());
+                menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,list.getListName()+" "+list.getShopName());
+               // menu.add(list.getListName()+" "+list.getShopName());
             }
         }else{
             ItemList list = lists.get(lists.size()-1);

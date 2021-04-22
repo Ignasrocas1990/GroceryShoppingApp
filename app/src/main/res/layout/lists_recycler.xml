@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="name"
+                android:hint="@string/name"
                 android:inputType="text" />
 
             <EditText
@@ -39,18 +39,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/shopname"
-                android:hint="shop name"
+                android:hint="@string/shop_name"
                 android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:orientation="vertical"
             android:layout_height="match_parent">
             <Button
-                android:layout_gravity="center"
                 android:id="@+id/createList"
-                android:text="Create List"
+                android:text="@string/create_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/delList"
+                android:text="@string/remove_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

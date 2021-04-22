@@ -67,6 +67,18 @@ public class ViewModel extends AndroidViewModel {
         oldList.add(list);
         lists.setValue(oldList);
     }
+    public void removeList(String listName, String shopName) {
+        //TODO-------------
+    }
+    public ItemList findList(int id) {
+        ArrayList<ItemList> allList = lists.getValue();
+        ItemList curList = allList.stream()
+                .filter(list -> id == list.getList_Id())
+                .findAny().orElse(null);
+
+        return curList;
+    }
+
     public void refresh_Db_Lists(){
         dbData.updateLists(lists.getValue());
     }
@@ -82,5 +94,7 @@ public class ViewModel extends AndroidViewModel {
     public LiveData<ArrayList<ItemList>> getLiveLists() {
         return lists;
     }
+
+
 
 }

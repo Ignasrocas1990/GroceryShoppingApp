@@ -15,19 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import java.util.ArrayList;
 
 public class ListsFragment extends Fragment {
-
+    CurListViewModel curListViewModel;
     private static final String TAG = "log";
     public ListsFragment() {
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ListsFragment newInstance() {
         ListsFragment fragment = new ListsFragment();
         return fragment;
@@ -41,12 +42,39 @@ public class ListsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.lists_recycler, container, false);
         ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
-        Button createBtn = view.findViewById(R.id.createList);
+        curListViewModel = ViewModelProviders.of(requireActivity()).get(CurListViewModel.class);
+
         RecyclerView rec = view.findViewById(R.id.test_list);
         Context context = view.getContext();
+        Button createBtn = view.findViewById(R.id.createList);
+        Button deleteBtn = view.findViewById(R.id.delList);
         EditText listName_Box = view.findViewById(R.id.listName);
         EditText shopName_Box = view.findViewById(R.id.shopname);
 
+        curListViewModel.getCurrentList().observe(requireActivity(), new Observer<ItemList>() {
+            @Override
+            public void onChanged(ItemList itemList) {
+                if(itemList == null){
+                    listName_Box.setText("");
+                    shopName_Box.setText("");
+                    rec.setVisibility(View.INVISIBLE);
+                }else{
+                    listName_Box.setText(itemList.getListName());
+                    shopName_Box.setText(itemList.getShopName());
+                    rec.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+        deleteBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String listName = listName_Box.getText().toString();
+                String shopName = shopName_Box.getText().toString();
+                viewModel.removeList(listName,shopName);
+                Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +84,7 @@ public class ListsFragment extends Fragment {
                 if(!listName.equals("")){
                     viewModel.createList(listName,shopName);
                     rec.setVisibility(View.VISIBLE);
+                    Toast.makeText(context, "List created,Please add ur items", Toast.LENGTH_SHORT).show();
                 }
             }
         });
