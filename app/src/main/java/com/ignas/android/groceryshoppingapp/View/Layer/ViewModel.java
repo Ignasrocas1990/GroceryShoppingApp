@@ -67,8 +67,11 @@ public class ViewModel extends AndroidViewModel {
         oldList.add(list);
         lists.setValue(oldList);
     }
-    public void removeList(String listName, String shopName) {
-        //TODO-------------
+    public void removeList(ItemList list) {
+        ArrayList<ItemList> allList = lists.getValue();
+        allList.remove(list);
+
+        lists.setValue(allList);
     }
     public ItemList findList(int id) {
         ArrayList<ItemList> allList = lists.getValue();

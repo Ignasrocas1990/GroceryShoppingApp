@@ -72,7 +72,11 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getLiveLists().observe(this, new Observer<ArrayList<ItemList>>() {
             @Override
             public void onChanged(ArrayList<ItemList> lists) {
-                addtoDrawer(lists);
+                if(curListViewModel.getDeleteList() !=null){
+                    delDrawerList(curListViewModel.getDeleteList());
+                }else{
+                    addtoDrawer(lists);
+                }
             }
         });
 
@@ -87,17 +91,24 @@ public class MainActivity extends AppCompatActivity {
                                 menuItem.setChecked(false);
                                 curListViewModel.setCurrentList(null);
                                 previousMenuItem[0]=null;
+                            }else{
+                                menuItem.setChecked(true);
+                                int id = menuItem.getItemId();
+                                ItemList curList = viewModel.findList(id);
+                                curListViewModel.setCurrentList(curList);
+                                viewPager.setCurrentItem(1);
+                                previousMenuItem[0] = menuItem;
                             }
                         }else{
-                            previousMenuItem[0] = menuItem;
+                            Log.d(TAG, "onNavigationItemSelected: selected");
                             menuItem.setChecked(true);
                             int id = menuItem.getItemId();
                             ItemList curList = viewModel.findList(id);
                             curListViewModel.setCurrentList(curList);
                             viewPager.setCurrentItem(1);
+                            previousMenuItem[0] = menuItem;
                         }
                         drawerLayout.closeDrawers();
-
                         return true;
                     }
                 });
@@ -135,6 +146,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    public void delDrawerList(ItemList list){
+        menu = mNavigationView.getMenu();
+        if(menu.hasVisibleItems()){
+            menu.removeItem(list.getList_Id());
+            previousMenuItem[0]=null;
+            curListViewModel.deleted();
+        }
+        refreshDrawer();
+
+    }
     public void addtoDrawer(ArrayList<ItemList>lists){
         menu = mNavigationView.getMenu();
         if(!menu.hasVisibleItems()){
@@ -144,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }else{
             ItemList list = lists.get(lists.size()-1);
-            menu.add(list.getListName()+" "+list.getShopName());
+            menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,list.getListName()+" "+list.getShopName());
         }
         refreshDrawer();
     }

@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.View.Layer;
 
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -22,6 +23,7 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListsFragment extends Fragment {
     CurListViewModel curListViewModel;
@@ -69,10 +71,19 @@ public class ListsFragment extends Fragment {
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String listName = listName_Box.getText().toString();
-                String shopName = shopName_Box.getText().toString();
-                viewModel.removeList(listName,shopName);
-                Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
+                if(!listName_Box.getText().toString().equals("")){
+                    ItemList list = curListViewModel.setItemtoDel();
+                    if(list != null){
+                        viewModel.removeList(list);
+                        curListViewModel.setCurrentList(null);
+                        Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(context, "no list selected", Toast.LENGTH_SHORT).show();
+                    }
+
+                }else{
+                    Toast.makeText(context, "list name is missing", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
