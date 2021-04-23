@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class ListsViewModel extends AndroidViewModel {
 
-    private MutableLiveData<ArrayList<ItemList>> lists = new MutableLiveData<>();
-    private ListResources listResources;
+    private final MutableLiveData<ArrayList<ItemList>> lists = new MutableLiveData<>();
+    private final ListResources listResources;
 
-    MutableLiveData<ItemList> currentList = new MutableLiveData<>();
+    private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
     private ItemList list_to_del;
 
     public ListsViewModel(@NonNull Application application) {
@@ -47,13 +47,12 @@ public class ListsViewModel extends AndroidViewModel {
 
         return curList;
     }
-
     public void refresh_Db_Lists(){
         listResources.updateLists(lists.getValue());
     }
 
 
-
+    //current list methods
     public ItemList getDeleteList(){
         return list_to_del;
     }
@@ -67,6 +66,12 @@ public class ListsViewModel extends AndroidViewModel {
         currentList.setValue(current);
     }
 
+    public ItemList getConvertedList(){
+        return currentList.getValue();
+    }
+
+
+    //live data methods
     public LiveData<ItemList> getCurrentList() {
         return currentList;
     }

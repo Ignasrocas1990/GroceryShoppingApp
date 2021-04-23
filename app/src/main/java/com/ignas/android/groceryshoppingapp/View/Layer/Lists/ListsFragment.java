@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
+import com.ignas.android.groceryshoppingapp.View.Layer.Item.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class ListsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.lists_recycler, container, false);
         ListsViewModel listsViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
+        AssoViewModel assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
+
 
         RecyclerView rec = view.findViewById(R.id.test_list);
         Context context = view.getContext();
@@ -62,8 +65,8 @@ public class ListsFragment extends Fragment {
                     listName_Box.setText(itemList.getListName());
                     shopName_Box.setText(itemList.getShopName());
                     rec.setVisibility(View.VISIBLE);
+                    assoViewModel.getAsso(itemList.getList_Id());
                 }
-
             }
         });
         deleteBtn.setOnClickListener(new View.OnClickListener(){
@@ -102,8 +105,9 @@ public class ListsFragment extends Fragment {
         ListRecyclerViewAdapter adapter = new ListRecyclerViewAdapter(new ListRecyclerViewAdapter.ItemClickListener() {
 
             @Override
-            public void onItemSaveClick(Item item) {
-
+            public void onItemSaveClick(int item_Id, int quantity) {
+                int list_Id = listsViewModel.getConvertedList().getList_Id();//TODO make sure current selected in the ListViewmodel
+                assoViewModel.addAsso(list_Id,item_Id,quantity);
             }
 
             @Override
@@ -112,13 +116,14 @@ public class ListsFragment extends Fragment {
             }
         });
         rec.setAdapter(adapter);
-        itemViewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
-            @Override
-            public void onChanged(ArrayList<Item> items) {
-                adapter.updateViewItems(items);
-                adapter.notifyDataSetChanged();
-                Log.i(TAG, "onChanged: message");
-            }
+        itemViewModel.getLiveItems().observe(requireActivity(), items -> {
+            adapter.updateViewItems(items);
+            adapter.notifyDataSetChanged();
+        });
+        assoViewModel.getLiveAssos().observe(requireActivity(),items ->{
+            adapter.updateListItems(assoViewModel.getCurAsso());
+
+            adapter.notifyDataSetChanged();
         });
 
 

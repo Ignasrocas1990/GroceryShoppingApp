@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
+import com.ignas.android.groceryshoppingapp.View.Layer.Item.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         private ItemViewModel itemViewModel;
         private ListsViewModel listsViewModel;
+        private AssoViewModel assoViewModel;
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
         Menu menu;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(tabAdapter);
 
         listsViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
+        assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
 
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
         listsViewModel.getLiveLists().observe(this, lists -> {
@@ -160,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     protected void onStop() {

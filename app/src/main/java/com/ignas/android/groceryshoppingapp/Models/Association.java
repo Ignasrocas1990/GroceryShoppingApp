@@ -7,7 +7,7 @@ import java.util.Random;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class List_Asso_Item extends RealmObject {
+public class Association extends RealmObject {
 
     @PrimaryKey
     private int asso_Id;
@@ -21,8 +21,8 @@ public class List_Asso_Item extends RealmObject {
     private int quantity=0;
 
     //constructor
-    public List_Asso_Item(){}
-    public List_Asso_Item(int list_Id, int item_Id, int quantity) {
+    public Association(){}
+    public Association(int list_Id, int item_Id, int quantity) {
         this.list_Id = list_Id;
         this.item_Id = item_Id;
         this.quantity = quantity;
