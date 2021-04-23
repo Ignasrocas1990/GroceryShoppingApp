@@ -13,11 +13,9 @@ public class ItemList extends RealmObject {
     @PrimaryKey
     private int list_Id;
 
-
     private String listName="";
     private float totalPrice=0;
     private String shopName="";
-    private RealmList<Integer> itemIds = new RealmList<Integer>();
     //constructors
     {
         Random r = new Random();
@@ -32,18 +30,6 @@ public class ItemList extends RealmObject {
         this.shopName = shopName;
     }
 
-    public void addItem(int itemId,float price){
-        itemIds.add(itemId);
-        totalPrice +=price;
-    }
-    public void removeItem(int itemId,float price){
-        if(!itemIds.isEmpty()){
-            itemIds.remove(itemId);
-            if(price != 0){
-                totalPrice-=price;
-            }
-        }
-    }
     //Setters & getters
     public void setShopName(String shopName) {
         this.shopName = shopName;
@@ -53,9 +39,6 @@ public class ItemList extends RealmObject {
     }
     public void setTotalPrice(float totalPrice) {
         this.totalPrice = totalPrice;
-    }
-    public void setItemIds(RealmList<Integer> itemIds) {
-        this.itemIds = itemIds;
     }
     public void setList_Id(int list_Id) {
         this.list_Id = list_Id;
@@ -70,27 +53,16 @@ public class ItemList extends RealmObject {
     public float getTotalPrice() {
         return totalPrice;
     }
-    public RealmList<Integer> getItemIds() {
-        return itemIds;
-    }
     public int getList_Id() {
         return list_Id;
     }
-
 
     public boolean equals(Object obj) {
         if(this == obj)return true;
         if(obj == null || getClass() != obj.getClass()) return false;
         ItemList i = (ItemList) obj;
-        if (itemIds.size() != i.getItemIds().size()) return false;
-        if(listName.equals(i.getListName()) && Float.compare(totalPrice,i.getTotalPrice())==0
-                && shopName.equals(i.getShopName())) {
-            if(itemIds.equals(i.getItemIds())) return true;
-            Collections.sort(itemIds);
-            Collections.sort(i.getItemIds());
-            return itemIds.equals(i.getItemIds());
-        }
-        return false;
-    }
+        return (listName.equals(i.getListName()) && Float.compare(totalPrice,i.getTotalPrice())==0
+                && shopName.equals(i.getShopName()));
 
+    }
 }

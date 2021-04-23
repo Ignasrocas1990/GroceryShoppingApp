@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer;
+package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +43,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
         Item item = mValues.get(position);
         holder.product_name.setText(item.getItemName());
-        holder.quantity.setText(String.valueOf(item.getAmount()));
+        holder.quantity.setText("");
 
 
 
@@ -74,7 +74,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
     @Override
     public int getItemCount() {
-        return  mValues.size()-1;
+        return  mValues.size();
     }
 
 

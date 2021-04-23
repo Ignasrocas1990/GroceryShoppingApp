@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.Service;
+package com.ignas.android.groceryshoppingapp.Service.Realm;
 
 
 import android.util.Log;
@@ -125,7 +125,7 @@ public class RealmDb{
         ArrayList<Item> list = new ArrayList<>();
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
+            realm.executeTransactionAsync(realm -> {
                 RealmResults<Item> results = realm.where(Item.class).findAll();
                 if (results.size() != 0) {
                     list.addAll(realm.copyFromRealm(results));
@@ -139,11 +139,29 @@ public class RealmDb{
         }
         return list;
     }
+    public ArrayList<Item> getItemsOffline() {
+        ArrayList<Item> list = new ArrayList<>();
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+                RealmResults<Item> results = realm.where(Item.class).findAll();
+                if (results.size() != 0) {
+                    list.addAll(realm.copyFromRealm(results));
+                }
+            realm.commitTransaction();
+        }catch (Exception e){
+            Log.i(TAG, "getItems: failed"+e.getMessage());
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+        return list;
+    }
     // add/copy list of items
     public void addItems(ArrayList<Item>items){
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
+            realm.executeTransactionAsync(realm -> {
 
                     realm.copyToRealmOrUpdate(items);
                     Log.d("log", "execute: added items...");
@@ -159,13 +177,12 @@ public class RealmDb{
     public void removeItem(Item item) {
         try {
         realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm -> {
-
+            realm.beginTransaction();
                 realm.where(Item.class)
                         .equalTo("item_Id", item.getItem_id())
                         .findFirst()
                         .deleteFromRealm();
-        });
+            realm.commitTransaction();
         } catch (Exception e) {
             Log.d("log", "delete item. not found ");
         }finally{
@@ -177,7 +194,7 @@ public class RealmDb{
     public void addItem(Item item){
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
+            realm.executeTransactionAsync(realm -> {
                 realm.copyToRealmOrUpdate(item);
                 Log.d(TAG, "execute: added item...");
             });
@@ -197,14 +214,16 @@ public class RealmDb{
         ArrayList<ItemList> lists = new ArrayList<>();
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
+            realm.beginTransaction();
+
                 RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
                 if (results.size() != 0) {
                     lists.addAll(realm.copyFromRealm(results));
                 }
-            });
+
+            realm.commitTransaction();
         }catch (Exception e){
-            Log.i(TAG, "getItems: failed"+e.getMessage());
+            Log.i("log", "getItems: failed"+e.getMessage());
         }finally{
             realm.refresh();
             realm.close();
@@ -215,11 +234,9 @@ public class RealmDb{
     public void addLists(ArrayList<ItemList>lists){
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
-
+            realm.beginTransaction();
                 realm.copyToRealmOrUpdate(lists);
-                Log.i("log", "execute: added lists...");
-            });
+            realm.commitTransaction();
         }catch (Exception e){
             Log.i("log", "lists: did not save"+e.getLocalizedMessage());
         }finally{
@@ -231,14 +248,13 @@ public class RealmDb{
     public void removeList(ItemList list) {
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
-
+            realm.beginTransaction();
                 realm.where(ItemList.class)
                         .equalTo("list_Id", list.getList_Id())
                         .findFirst()
                         .deleteFromRealm();
-                Log.i("log", "removeList:successful ");
-            });
+            realm.commitTransaction();
+            Log.i("log", "removeList:successful ");
         } catch (Exception e) {
             Log.i("log", "delete list. not found ");
         }finally{
@@ -250,13 +266,13 @@ public class RealmDb{
     public void addList(ItemList list){
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm -> {
+            realm.beginTransaction();
 
-                realm.copyToRealmOrUpdate(list);
-                Log.i(TAG, "execute: added list...");
-            });
+            realm.copyToRealmOrUpdate(list);
+            realm.commitTransaction();
+            Log.i("log", "execute: added list...");
         }catch (Exception e){
-            Log.i(TAG, "add list: error adding lists");
+            Log.i("log", "add list: error adding lists");
         }finally{
             realm.refresh();
             realm.close();
@@ -272,7 +288,7 @@ public class RealmDb{
             realm.deleteAll();
             realm.commitTransaction();
         }catch(Exception e){
-            Log.d(TAG, "removeAll: error");
+            Log.d("log", "removeAll: error");
         }finally{
             realm.refresh();
             realm.close();
@@ -280,4 +296,9 @@ public class RealmDb{
 
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        realm.close();
+    }
 }

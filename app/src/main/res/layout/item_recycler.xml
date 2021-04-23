@@ -1,13 +1,102 @@
-<androidx.recyclerview.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.ignas.android.groceryshoppingapp.ui.main.ItemFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".View.Layer.ItemFragment"
-    tools:listitem="@layout/item" />
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".View.Layer.Lists.ListsFragment">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:name="com.ignas.android.groceryshoppingapp.ui.main.ItemFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="16dp"
+        android:background="#3F51B5"
+        android:backgroundTint="@color/blue"
+        android:clickable="true"
+        tools:listitem="@layout/item" />
+
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/cur_productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Bread"
+                android:gravity="center"
+                android:inputType="text"
+                android:hint="@string/item_name" />
+
+            <EditText
+                android:id="@+id/cur_lastingDays"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="6"
+                android:gravity="center"
+                android:inputType="number"
+                android:hint="@string/lasting_days" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/cur_price"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="2.50"
+                android:gravity="center"
+                android:hint="@string/price"
+                android:inputType="numberDecimal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_marginStart="40dp"
+
+                android:id="@+id/saveFab"
+                android:src="@drawable/ic_baseline_save_alt_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                android:contentDescription="@string/none" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_marginStart="40dp"
+                android:id="@+id/delFab"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                android:contentDescription="none" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</FrameLayout>

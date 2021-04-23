@@ -1,8 +1,6 @@
-package com.ignas.android.groceryshoppingapp.Service;
+package com.ignas.android.groceryshoppingapp.Service.Realm;
 
 import android.app.Application;
-
-import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -17,7 +15,7 @@ public class DbConnect extends Application {
         super.onCreate();
         Realm.init(this);
 
-        final RealmConfiguration config = new RealmConfiguration.Builder().name("db.realm")
+        final RealmConfiguration config = new RealmConfiguration.Builder().name("grocery.realm")
                 .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)

@@ -1,6 +1,5 @@
-package com.ignas.android.groceryshoppingapp.View.Layer;
+package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -21,12 +20,11 @@ import android.widget.Toast;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
+import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListsFragment extends Fragment {
-    CurListViewModel curListViewModel;
     private static final String TAG = "log";
     public ListsFragment() {
     }
@@ -43,8 +41,8 @@ public class ListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.lists_recycler, container, false);
-        ViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewModel.class);
-        curListViewModel = ViewModelProviders.of(requireActivity()).get(CurListViewModel.class);
+        ListsViewModel listsViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
+        ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
 
         RecyclerView rec = view.findViewById(R.id.test_list);
         Context context = view.getContext();
@@ -53,7 +51,7 @@ public class ListsFragment extends Fragment {
         EditText listName_Box = view.findViewById(R.id.listName);
         EditText shopName_Box = view.findViewById(R.id.shopname);
 
-        curListViewModel.getCurrentList().observe(requireActivity(), new Observer<ItemList>() {
+        listsViewModel.getCurrentList().observe(requireActivity(), new Observer<ItemList>() {
             @Override
             public void onChanged(ItemList itemList) {
                 if(itemList == null){
@@ -72,10 +70,10 @@ public class ListsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!listName_Box.getText().toString().equals("")){
-                    ItemList list = curListViewModel.setItemtoDel();
+                    ItemList list = listsViewModel.setItemtoDel();
                     if(list != null){
-                        viewModel.removeList(list);
-                        curListViewModel.setCurrentList(null);
+                        listsViewModel.removeList(list);
+                        listsViewModel.setCurrentList(null);
                         Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(context, "no list selected", Toast.LENGTH_SHORT).show();
@@ -93,7 +91,7 @@ public class ListsFragment extends Fragment {
                 String listName = listName_Box.getText().toString();
                 String shopName = shopName_Box.getText().toString();
                 if(!listName.equals("")){
-                    viewModel.createList(listName,shopName);
+                    listsViewModel.createList(listName,shopName);
                     rec.setVisibility(View.VISIBLE);
                     Toast.makeText(context, "List created,Please add ur items", Toast.LENGTH_SHORT).show();
                 }
@@ -114,7 +112,7 @@ public class ListsFragment extends Fragment {
             }
         });
         rec.setAdapter(adapter);
-        viewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
+        itemViewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
             @Override
             public void onChanged(ArrayList<Item> items) {
                 adapter.updateViewItems(items);

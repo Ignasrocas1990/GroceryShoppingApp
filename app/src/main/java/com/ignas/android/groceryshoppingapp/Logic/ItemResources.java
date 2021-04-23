@@ -6,42 +6,36 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
-import com.ignas.android.groceryshoppingapp.Service.RealmDb;
+import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 
-public class Resources extends BroadcastReceiver {
-    private static final String TAG ="log" ;
+public class ItemResources extends BroadcastReceiver {
+    private static final String TAG ="log";
+
     Context mContext = null;
     RealmDb db;
 
-    public Resources(Context context) {
+    public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
+        //db.removeAll();
     }
-    public Resources(){}
-
-    public ArrayList<ItemList> getLists() {
-        return db.getLists();
-    }
-
     public void setContext(Context context){
         mContext = context;
     }
 
     public ArrayList<Item> getItems(){
-       return db.getItems();
+        return db.getItems();
     }
 
     //add/delete(update) items
     public Item update(ArrayList<Item> app_items) {
         Item itemToBeScheduled= null;
         boolean runningRemoved = false;
-        app_items.remove(app_items.size()-1);
         db = new RealmDb();
-        ArrayList<Item>dbItems = db.getItems();
+        ArrayList<Item>dbItems = db.getItemsOffline();
         ArrayList<Item>newItems = new ArrayList<>();
         if(dbItems.size()!=0) {
             for (int i = 0; i < app_items.size(); i++) {
@@ -91,7 +85,7 @@ public class Resources extends BroadcastReceiver {
     //re-schedule service
     public void re_scheduleAlarm(){
         db = new RealmDb();
-        ArrayList<Item>app_items = db.getItems();
+        ArrayList<Item>app_items = db.getItemsOffline();
        if(app_items.size()>0){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
@@ -106,7 +100,7 @@ public class Resources extends BroadcastReceiver {
 
     //finds current running item/update's it and return next item to be scheduled.
     private Item getNextItem_toSchedule(ArrayList<Item> app_items){
-        Item lowestDateItem = app_items.get(0);
+        Item lowestDateItem = new Item(1);// set to now
         Item runningItem = null;
 
 
@@ -121,6 +115,7 @@ public class Resources extends BroadcastReceiver {
                 runningItem = currentItem;
             }
             if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
+                currentItem.setRunOutDate(currentItem.getLastingDays());
                 lowestDateItem = currentItem;
             }
         }
@@ -128,7 +123,7 @@ public class Resources extends BroadcastReceiver {
 
         if(runningItem!=null){
             if(runningItem.getItem_id() != lowestDateItem.getItem_id()){
-                ArrayList<Item> list = new ArrayList<Item>();
+                ArrayList<Item> list = new ArrayList<>();
                 list.add(runningItem);
                 list.add(lowestDateItem);
                 db.addItems(list);
@@ -137,35 +132,5 @@ public class Resources extends BroadcastReceiver {
             db.addItem(lowestDateItem);
         }
         return lowestDateItem;
-    }
-
-    public void updateLists(ArrayList<ItemList> app_lists) {
-        int i;
-        ArrayList<ItemList>dbLists = db.getLists();
-        ArrayList<ItemList>newLists = new ArrayList<>();
-        if(dbLists.size()!=0 && app_lists.size()>1) {
-            for (i = 0; i < app_lists.size(); i++) {
-
-                while (i < dbLists.size() && dbLists.get(i).getList_Id() !=  app_lists.get(i).getList_Id()) {
-                    db.removeList(dbLists.get(i));
-                    dbLists.remove(dbLists.get(i));
-                }
-                if(i >= dbLists.size() || !dbLists.get(i).equals(app_lists.get(i))){
-                    newLists.add(app_lists.get(i));
-                }
-            }
-            if(dbLists.size()>app_lists.size()) {
-                for (i = app_lists.size(); i < dbLists.size(); i++) {
-                    db.removeList(dbLists.get(i));
-                }
-            }
-        }else{
-            newLists.addAll(app_lists);
-        }
-        if(newLists.size()>1){
-            db.addLists(newLists);
-        }else if(newLists.size()==1){
-            db.addList(newLists.get(0));
-        }
     }
 }
