@@ -28,9 +28,12 @@ public class ListsViewModel extends AndroidViewModel {
     }
     //lists methods
     public void createList(String listName,String shopName){
-        ItemList list = new ItemList(listName,shopName);
         ArrayList<ItemList> oldList = lists.getValue();
-        oldList.add(list);
+
+        ItemList newItemList = new ItemList(listName,shopName);
+        setCurrentList(newItemList);
+
+        oldList.add(newItemList);
         lists.setValue(oldList);
     }
     public void removeList(ItemList list) {
@@ -72,7 +75,7 @@ public class ListsViewModel extends AndroidViewModel {
 
 
     //live data methods
-    public LiveData<ItemList> getCurrentList() {
+    public LiveData<ItemList> getLiveList() {
         return currentList;
     }
     public LiveData<ArrayList<ItemList>> getLiveLists() {

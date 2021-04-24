@@ -9,31 +9,32 @@ import com.ignas.android.groceryshoppingapp.Models.Association;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.TreeSet;
 
 public class AssoViewModel extends ViewModel {
-    private MutableLiveData<ArrayList<Association>> associations = new MutableLiveData<>();
-
-    private HashMap<Integer,ArrayList<Association>> beenSelected = new HashMap<>();
-
     private final AssoResources assoResources;
+
+    private final MutableLiveData<ArrayList<Association>> AllAssociations = new MutableLiveData<>();
+    private final HashMap<Integer,ArrayList<Association>> beenSelected = new HashMap<>();
+
     private ArrayList<Association> current=null;
+    private final MutableLiveData<ArrayList <Association>> currentLive = new MutableLiveData<>();
+
 
     public AssoViewModel(){
         assoResources = new AssoResources();
-        associations.setValue(assoResources.getAssos());
+        AllAssociations.setValue(assoResources.getAssos());
     }
 
     //gets Associations if found  by list_id (filtering)
-    public ArrayList<Association> getAsso(int list_Id){ // the same as set Association
-
-        if(beenSelected.containsKey(list_Id)){
+    public ArrayList<Association> setAsso(int list_Id){
+        if(list_Id == -1){
+            this.current = null;
+        }else if(beenSelected.containsKey(list_Id)){
             this.current=beenSelected.get(list_Id);
         }else{
             this.current = new ArrayList<>();
             beenSelected.put(list_Id,current);
+            currentLive.setValue(current);
         }
         return current;
     }
@@ -44,23 +45,25 @@ public class AssoViewModel extends ViewModel {
     public void addAsso(int list_Id,int item_Id,int quantity){
 
         Association a = new Association(list_Id,item_Id,quantity);
-        ArrayList<Association> copy = associations.getValue();
-        current=getAsso(list_Id);
+        ArrayList<Association> copy = AllAssociations.getValue();
+        current=setAsso(list_Id);
         current.add(a);
 
         copy.add(a);
-        associations.setValue(copy);
+        AllAssociations.setValue(copy);
     }
     public void deleteAsso(int list_Id,int item_Id){
-        //------TODO---------------------------
+        //TODO---------------------------
 
     }
     public ArrayList<Association> getAllAssos(){
-        return associations.getValue();
+        return AllAssociations.getValue();
     }
 
-
     public LiveData<ArrayList<Association>> getLiveAssos() {
-        return associations;
+        return AllAssociations;
+    }
+    public LiveData<ArrayList<Association>> getCurrentLive() {
+        return currentLive;
     }
 }

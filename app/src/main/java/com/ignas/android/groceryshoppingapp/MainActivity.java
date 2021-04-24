@@ -34,6 +34,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
+    private static final int MANAGE_LISTS_TAB = 1;
+    private static final int DESELECT = -1;
 
         TabLayout tabLayout;
         TabAdapter tabAdapter;
@@ -67,19 +69,13 @@ public class MainActivity extends AppCompatActivity {
 
         listsViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
-
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
-        listsViewModel.getLiveLists().observe(this, lists -> {
-            if(listsViewModel.getDeleteList() !=null){
-                delDrawerList(listsViewModel.getDeleteList());
-            }else{
-                addtoDrawer(lists);
-            }
-        });
 
+        Observers();
+//drawer on select
         mNavigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    if(previousMenuItem[0] !=null){
+                    if(previousMenuItem[0] != null){
                         previousMenuItem[0].setChecked(false);
 
                         if(previousMenuItem[0].getItemId() == menuItem.getItemId()){
@@ -91,42 +87,63 @@ public class MainActivity extends AppCompatActivity {
                             int id = menuItem.getItemId();
                             ItemList curList = listsViewModel.findList(id);
                             listsViewModel.setCurrentList(curList);
-                            viewPager.setCurrentItem(1);
+                            viewPager.setCurrentItem(MANAGE_LISTS_TAB);
+
                             previousMenuItem[0] = menuItem;
                         }
                     }else{
-                        Log.d(TAG, "onNavigationItemSelected: selected");
                         menuItem.setChecked(true);
                         int id = menuItem.getItemId();
                         ItemList curList = listsViewModel.findList(id);
                         listsViewModel.setCurrentList(curList);
-                        viewPager.setCurrentItem(1);
+                        viewPager.setCurrentItem(MANAGE_LISTS_TAB);
                         previousMenuItem[0] = menuItem;
                     }
                     drawerLayout.closeDrawers();
                     return true;
                 });
-
+//tabs on click
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if(tab.getPosition()==0){
-                    Log.d(TAG, "onTabUnselected: list");
-                }
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+    }
+    private void Observers(){
+        listsViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
+
+            if(listsViewModel.getDeleteList() !=null){
+                delDrawerList(listsViewModel.getDeleteList());
+            }else{
+                addtoDrawer(lists);
+            }
+        });
+// select current list after creation
+        listsViewModel.getLiveList().observe(this,curList->{
+            //synchronizes current list <=> its associations to items
+            if(curList==null){
+                assoViewModel.setAsso(DESELECT);
+            }else{
+                assoViewModel.setAsso(curList.getList_Id());
+            }
+            if(previousMenuItem[0] == null){
+                MenuItem menuItem =menu.findItem(curList.getList_Id());
+                menuItem.setChecked(true);
+                previousMenuItem[0] = menuItem;
+            }
+
+        });
+        //TODO continue here (make sure current asso connected to foundASSO & create observer  list<=>asso)
 
     }
     public void delDrawerList(ItemList list){

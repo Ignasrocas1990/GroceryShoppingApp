@@ -22,12 +22,20 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
    private List<Item> mValues = new ArrayList<>();
    private List<Association> aValues = new ArrayList<>();
-   private ItemClickListener mItemClickListener;
-   private String TAG = "log";
+   private int list_Id=-1;
+   private final ItemClickListener mItemClickListener;
+   private final String TAG = "log";
 
+//constructor
     public ListRecyclerViewAdapter(ItemClickListener itemClickListener){
         this.mItemClickListener = itemClickListener;
     }
+    public interface ItemClickListener{
+        void onItemSaveClick(int list_Id,int item_Id,int quantity);
+        void onItemRemoveClick(Item item);
+    }
+
+    //observe update methods
     public void updateViewItems(ArrayList<Item> mValues){
         this.mValues = mValues;
     }
@@ -35,6 +43,11 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
     public void updateListItems(ArrayList<Association> aValues){
         this.aValues = aValues;
     }
+    public void updateListId(int list_Id){
+        this.list_Id = list_Id;
+    }
+
+//default methods
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,15 +58,14 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {//need to fix if 0 then its empty space (so hints seen)
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         Item item = mValues.get(position);
-        if(aValues!=null) {
+        if(aValues.size() !=0) {
             Association assoItem = aValues.stream()
                     .filter(value -> item.getItem_id() == value.getItem_Id())
                     .findFirst().orElse(null);
             if(assoItem != null){
-
-                holder.quantity.setText(assoItem.getQuantity());
+                holder.quantity.setText(String.valueOf(assoItem.getQuantity()));
                 holder.quantity.setClickable(false);
                 holder.deleteBtn.setVisibility(View.VISIBLE);
                 holder.saveBtn.setVisibility(View.INVISIBLE);
@@ -69,21 +81,21 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
 
         holder.saveBtn.setOnClickListener(vew ->{
-            holder.deleteBtn.setVisibility(View.VISIBLE);
-            holder.saveBtn.setVisibility(View.INVISIBLE);
-            holder.quantity.setClickable(false);
+            int item_Id = item.getItem_id();
+            int quantity=0;
 
             //add----
-            int quantity=0;
-            String qString = holder.quantity.getText().toString();
-            if(!qString.equals("")){
-                quantity = Integer.parseInt(qString);
+            if(list_Id!=-1){
+                holder.deleteBtn.setVisibility(View.VISIBLE);
+                holder.saveBtn.setVisibility(View.INVISIBLE);
+                holder.quantity.setClickable(false);
+
+                String qString = holder.quantity.getText().toString();
+                if(!qString.equals("")){
+                    quantity = Integer.parseInt(qString);
+                }
             }
-            mItemClickListener.onItemSaveClick(mValues.get(position).getItem_id(),quantity);
-
-            //String newQuantity = holder.quantity.getText().toString();
-
-
+            mItemClickListener.onItemSaveClick(list_Id,item_Id,quantity);
             });
 
         holder.deleteBtn.setOnClickListener(vew->{
@@ -97,17 +109,10 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
         }
 
-    public interface ItemClickListener{
-        void onItemSaveClick(int item_Id,int quantity);
-        void onItemRemoveClick(Item item);
-    }
-
     @Override
     public int getItemCount() {
         return  mValues.size();
     }
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView product_name;
         EditText quantity;
