@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
     }
     public interface ItemClickListener{
         void onItemSaveClick(int list_Id,int item_Id,int quantity);
-        void onItemRemoveClick(Item item);
+        void onItemRemoveClick(int item_Id);
     }
 
     //observe update methods
@@ -40,11 +41,11 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         this.mValues = mValues;
     }
 
-    public void updateListItems(ArrayList<Association> aValues){
+    public void updateListItems(ArrayList<Association> aValues,int listID){
         this.aValues = aValues;
-    }
-    public void updateListId(int list_Id){
-        this.list_Id = list_Id;
+        Log.d(TAG, "updateListItems: "+ aValues.size());
+        list_Id = listID;
+
     }
 
 //default methods
@@ -67,15 +68,16 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             if(assoItem != null){
                 holder.quantity.setText(String.valueOf(assoItem.getQuantity()));
                 holder.quantity.setClickable(false);
-                holder.deleteBtn.setVisibility(View.VISIBLE);
-                holder.saveBtn.setVisibility(View.INVISIBLE);
+                toggleBtn(holder,true);
 
             }else{
                 holder.product_name.setText(item.getItemName());
+                toggleBtn(holder,false);
                 holder.quantity.setText("");
             }
         }else{
             holder.quantity.setText("");
+            toggleBtn(holder,false);
             holder.product_name.setText(item.getItemName());
         }
 
@@ -84,10 +86,9 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             int item_Id = item.getItem_id();
             int quantity=0;
 
-            //add----
+//add--------------------------------------------------------
             if(list_Id!=-1){
-                holder.deleteBtn.setVisibility(View.VISIBLE);
-                holder.saveBtn.setVisibility(View.INVISIBLE);
+                toggleBtn(holder,true);
                 holder.quantity.setClickable(false);
 
                 String qString = holder.quantity.getText().toString();
@@ -98,17 +99,32 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             mItemClickListener.onItemSaveClick(list_Id,item_Id,quantity);
             });
 
+//remove item from list association.----------------------
         holder.deleteBtn.setOnClickListener(vew->{
-            holder.saveBtn.setVisibility(View.VISIBLE);
-            holder.deleteBtn.setVisibility(View.INVISIBLE);
-
             Item itemToRemove = mValues.get(position);
+            String quantityText = holder.quantity.getText().toString();
+            if(quantityText!=""){
+                holder.quantity.setClickable(true);
+                holder.quantity.setText("");
+                toggleBtn(holder,false);
+                mItemClickListener.onItemRemoveClick(itemToRemove.getItem_id());
+            }else{
+                mItemClickListener.onItemRemoveClick(-1);
+            }
 
-            mItemClickListener.onItemRemoveClick(itemToRemove);
+
         });
 
         }
-
+    private void toggleBtn(ViewHolder holder,boolean added){
+        if(added){
+            holder.saveBtn.setVisibility(View.INVISIBLE);
+            holder.deleteBtn.setVisibility(View.VISIBLE);
+        }else{
+            holder.saveBtn.setVisibility(View.VISIBLE);
+            holder.deleteBtn.setVisibility(View.INVISIBLE);
+        }
+    }
     @Override
     public int getItemCount() {
         return  mValues.size();

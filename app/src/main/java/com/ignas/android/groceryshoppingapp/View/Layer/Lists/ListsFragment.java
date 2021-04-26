@@ -1,6 +1,5 @@
 package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -9,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +91,17 @@ public class ListsFragment extends Fragment {
 
             }
             @Override
-            public void onItemRemoveClick(Item item) {
+            public void onItemRemoveClick(int item_Id) {
+                if(item_Id!=-1){
+                    if(assoViewModel.deleteAsso(item_Id)){
+                        Toast.makeText(context, "item has been removed from the list", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(context, "error! item has not been removed", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(context, "Please specify quantity", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         rec.setAdapter(adapter);
@@ -102,12 +112,8 @@ public class ListsFragment extends Fragment {
             adapter.notifyDataSetChanged();
         });
 
-        assoViewModel.getLiveAssos().observe(requireActivity(),assoList ->{
-            adapter.updateListItems(assoList);
-            adapter.notifyDataSetChanged();
-        });
-
-        listsViewModel.getLiveList().observe(requireActivity(), itemList -> {
+        listsViewModel.getCurrLiveList().observe(requireActivity(), itemList -> {
+            int list_Id = -1;
             if(itemList == null){
                 listName_Box.setText("");
                 shopName_Box.setText("");
@@ -119,14 +125,11 @@ public class ListsFragment extends Fragment {
                 shopName_Box.setText(itemList.getShopName());
                 rec.setVisibility(View.VISIBLE);
                 assoViewModel.setAsso(itemList.getList_Id());
+                list_Id = itemList.getList_Id();
+                Log.d("log", "selected list name : "+itemList.getListName());
             }
-        });
-        listsViewModel.getLiveList().observe(requireActivity(),curList->{
-            int list_Id = -1;
-            if(curList !=null ){
-                list_Id = curList.getList_Id();
-            }
-            adapter.updateListId(list_Id);
+            adapter.updateListItems(assoViewModel.getCurrentAsso(),list_Id);
+            adapter.notifyDataSetChanged();
         });
 
         return view;

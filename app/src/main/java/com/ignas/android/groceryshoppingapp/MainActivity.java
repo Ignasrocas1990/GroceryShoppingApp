@@ -2,7 +2,6 @@ package com.ignas.android.groceryshoppingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -119,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
     }
+//all the data observers
     private void Observers(){
         listsViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
 
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 // select current list after creation
-        listsViewModel.getLiveList().observe(this,curList->{
+        listsViewModel.getCurrLiveList().observe(this, curList->{
             //synchronizes current list <=> its associations to items
             if(curList==null){
                 assoViewModel.setAsso(DESELECT);
@@ -143,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        //TODO continue here (make sure current asso connected to foundASSO & create observer  list<=>asso)
-
     }
     public void delDrawerList(ItemList list){
         menu = mNavigationView.getMenu();
