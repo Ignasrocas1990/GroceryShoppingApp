@@ -71,9 +71,18 @@ public class ListsFragment extends Fragment {
             String listName = listName_Box.getText().toString();
             String shopName = shopName_Box.getText().toString();
             if(!listName.equals("")){
-                listsViewModel.createList(listName,shopName);
-                rec.setVisibility(View.VISIBLE);
-                Toast.makeText(context, "List created,Please add ur items", Toast.LENGTH_SHORT).show();
+                if(listsViewModel.getConvertedList() == null){
+                    listsViewModel.createList(listName,shopName);
+                    rec.setVisibility(View.VISIBLE);
+                    Toast.makeText(context, "List created,Please add ur items", Toast.LENGTH_SHORT).show();
+                }else{
+                    listsViewModel.modifyList(listName,shopName);
+                    Toast.makeText(context, "List details has been modified", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }else{
+                Toast.makeText(context, "Please specify list name", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -68,11 +68,16 @@ public class ListsViewModel extends AndroidViewModel {
     public void setCurrentList(ItemList current){
         currentList.setValue(current);
     }
+    public void modifyList(String listName, String shopName) {
+        ItemList curList = getConvertedList();
+        curList.setShopName(shopName);
+        curList.setListName(listName);
+        currentList.setValue(curList);
+    }
 
     public ItemList getConvertedList(){
         return currentList.getValue();
     }
-
 
     //live data methods
     public LiveData<ItemList> getCurrLiveList() {
@@ -81,6 +86,7 @@ public class ListsViewModel extends AndroidViewModel {
     public LiveData<ArrayList<ItemList>> getLiveLists() {
         return lists;
     }
+
 
 
 }

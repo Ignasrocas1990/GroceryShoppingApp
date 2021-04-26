@@ -52,7 +52,7 @@
             android:layout_height="match_parent">
             <Button
                 android:id="@+id/createList"
-                android:text="@string/create_list"
+                android:text="Create/Modify list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <Button

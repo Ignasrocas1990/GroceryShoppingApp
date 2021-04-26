@@ -16,8 +16,6 @@ import java.util.HashMap;
 public class AssoViewModel extends ViewModel {
     private final AssoResources assoResources;
 
-    //private final MutableLiveData<ArrayList<Association>> AllAssociations = new MutableLiveData<>();
-   //MutableLiveData <HashMap<Integer,ArrayList<Association>>> allAssociation = new MutableLiveData<>();
 
     private final  HashMap<Integer,ArrayList<Association>> allAssociations = new HashMap<>();
     private final MutableLiveData<ArrayList <Association>> currentLive = new MutableLiveData<>();
@@ -25,7 +23,6 @@ public class AssoViewModel extends ViewModel {
 
     public AssoViewModel(){
         assoResources = new AssoResources();
-        //AllAssociations.setValue(assoResources.getAssos());
     }
 
     //gets Associations if found  by list_id (filtering)
@@ -37,18 +34,6 @@ public class AssoViewModel extends ViewModel {
                 allAssociations.put(list_Id,newAsso);
                 currentLive.setValue(newAsso);
         }
-        /*
-        //-----------------------------------testing
-        ArrayList<Association> temp =  currentLive.getValue();
-        if(temp.size()==0){
-            Log.d("log", "se Asso: empty list");
-        }else{
-            for(Association i : temp ){
-                Log.d("log", "setAsso: "+String.valueOf(i.getQuantity()));
-            }
-        }
-
-         */
         return currentLive.getValue();
     }
     //add new Association

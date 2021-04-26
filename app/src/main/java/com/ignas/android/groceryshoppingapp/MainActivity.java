@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ import com.ignas.android.groceryshoppingapp.View.Layer.Item.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
+
+import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
     }
-//all the data observers
+//all the data observers----------------------
     private void Observers(){
         listsViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
 
@@ -130,15 +133,21 @@ public class MainActivity extends AppCompatActivity {
 // select current list after creation
         listsViewModel.getCurrLiveList().observe(this, curList->{
             //synchronizes current list <=> its associations to items
+            MenuItem menuItem;
             if(curList==null){
                 assoViewModel.setAsso(DESELECT);
             }else{
                 assoViewModel.setAsso(curList.getList_Id());
-            }
-            if(previousMenuItem[0] == null){
-                MenuItem menuItem =menu.findItem(curList.getList_Id());
-                menuItem.setChecked(true);
-                previousMenuItem[0] = menuItem;
+
+                if(previousMenuItem[0] == null){
+                    menuItem =menu.findItem(curList.getList_Id());
+                    menuItem.setChecked(true);
+                    previousMenuItem[0] = menuItem;
+                }else{
+                    menuItem = menu.findItem(curList.getList_Id());
+                    menuItem.setTitle(curList.getListName()+" "+curList.getShopName());
+                }
+
             }
 
         });

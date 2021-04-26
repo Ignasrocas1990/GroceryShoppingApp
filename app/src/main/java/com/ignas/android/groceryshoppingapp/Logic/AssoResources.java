@@ -15,8 +15,12 @@ public class AssoResources {
         db = new RealmDb();
         db_list = db.getAllAssos();
     }
-    public ArrayList<Association> getAssos(){
+    public ArrayList<Association> getAssociations(){
+
         return db_list;
+    }
+    public void updateDatabase(){
+
     }
 
 
