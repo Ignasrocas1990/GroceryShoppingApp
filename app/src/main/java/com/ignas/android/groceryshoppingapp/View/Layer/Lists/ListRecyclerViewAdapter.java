@@ -69,27 +69,31 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
                 holder.quantity.setText(String.valueOf(assoItem.getQuantity()));
                 holder.quantity.setClickable(false);
                 toggleBtn(holder,true);
+                holder.quantity.setEnabled(false);
+
 
             }else{
                 holder.product_name.setText(item.getItemName());
                 toggleBtn(holder,false);
                 holder.quantity.setText("");
+                holder.quantity.setEnabled(true);
+
             }
         }else{
             holder.quantity.setText("");
+            holder.quantity.setEnabled(true);
             toggleBtn(holder,false);
             holder.product_name.setText(item.getItemName());
         }
 
-
+//add item
         holder.saveBtn.setOnClickListener(vew ->{
             int item_Id = item.getItem_id();
             int quantity=0;
 
-//add--------------------------------------------------------
             if(list_Id!=-1){
                 toggleBtn(holder,true);
-                holder.quantity.setClickable(false);
+                holder.quantity.setEnabled(false);
 
                 String qString = holder.quantity.getText().toString();
                 if(!qString.equals("")){
@@ -97,30 +101,36 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
                 }
             }
             mItemClickListener.onItemSaveClick(list_Id,item_Id,quantity);
+
+
             });
+
+
 
 //remove item from list association.----------------------
         holder.deleteBtn.setOnClickListener(vew->{
-            Item itemToRemove = mValues.get(position);
-            String quantityText = holder.quantity.getText().toString();
-            if(quantityText!=""){
-                holder.quantity.setClickable(true);
-                holder.quantity.setText("");
-                toggleBtn(holder,false);
-                mItemClickListener.onItemRemoveClick(itemToRemove.getItem_id());
-            }else{
-                mItemClickListener.onItemRemoveClick(-1);
+            if(!holder.quantity.isEnabled()){
+                Item itemToRemove = mValues.get(position);
+                String quantityText = holder.quantity.getText().toString();
+                if(quantityText!=""){
+                    holder.quantity.setEnabled(true);
+                    holder.quantity.setText("");
+                    toggleBtn(holder,false);
+                    mItemClickListener.onItemRemoveClick(itemToRemove.getItem_id());
+                }else{
+                    mItemClickListener.onItemRemoveClick(-1);
+                }
             }
-
-
         });
 
         }
     private void toggleBtn(ViewHolder holder,boolean added){
         if(added){
+            holder.itemView.setBackgroundResource(R.color.red);
             holder.saveBtn.setVisibility(View.INVISIBLE);
             holder.deleteBtn.setVisibility(View.VISIBLE);
         }else{
+            holder.itemView.setBackgroundResource(R.color.blue);
             holder.saveBtn.setVisibility(View.VISIBLE);
             holder.deleteBtn.setVisibility(View.INVISIBLE);
         }

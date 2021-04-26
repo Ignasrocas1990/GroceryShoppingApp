@@ -15,7 +15,7 @@ public class DbConnect extends Application {
         super.onCreate();
         Realm.init(this);
 
-        final RealmConfiguration config = new RealmConfiguration.Builder().name("groceryDB.realm")
+        final RealmConfiguration config = new RealmConfiguration.Builder().name("DB.realm")
                 .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)

@@ -1,8 +1,10 @@
 package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,7 +43,7 @@ public class ListsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.lists_recycler, container, false);
         ListsViewModel listsViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
-        AssoViewModel assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
+        AssoViewModel assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
 
 
         RecyclerView rec = view.findViewById(R.id.test_list);
@@ -55,10 +57,20 @@ public class ListsFragment extends Fragment {
         deleteBtn.setOnClickListener(v -> {
             if(!listName_Box.getText().toString().equals("")){
                 ItemList list = listsViewModel.setItemtoDel();
-                if(list != null){
-                    listsViewModel.removeList(list);
-                    listsViewModel.setCurrentList(null);
-                    Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
+                if(list != null){                                 //show user Dialog Box
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setCancelable(false)
+                            .setIcon(R.drawable.ico_about_to_delete)
+                            .setTitle("Alert, List Deletion")
+                            .setMessage("Your about to delete a list, please select OK to confirm")
+                            .setNegativeButton("Cancel", (dialog, which) -> { dialog.dismiss(); })
+                            .setPositiveButton("OK", (dialog, which) -> {
+
+                                assoViewModel.removeListAssos(list);
+                                listsViewModel.removeList(list);
+                                listsViewModel.setCurrentList(null);
+                                Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show(); }).show();
                 }else{
                     Toast.makeText(context, "no list selected", Toast.LENGTH_SHORT).show();
                 }
@@ -102,15 +114,10 @@ public class ListsFragment extends Fragment {
             @Override
             public void onItemRemoveClick(int item_Id) {
                 if(item_Id!=-1){
-                    if(assoViewModel.deleteAsso(item_Id)){
-                        Toast.makeText(context, "item has been removed from the list", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(context, "error! item has not been removed", Toast.LENGTH_SHORT).show();
-                    }
+                    assoViewModel.deleteAsso(item_Id);
                 }else{
                     Toast.makeText(context, "Please specify quantity", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         rec.setAdapter(adapter);
@@ -142,5 +149,24 @@ public class ListsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public boolean userAlertDialog(Context context){
+        final boolean[] userAnswer = new boolean[1];
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false)
+                .setIcon(R.drawable.ico_about_to_delete)
+                .setTitle("Alert message")
+                .setMessage("Your about to delete a list, please select yes to confirm")
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.cancel();
+                })
+                .setPositiveButton("YES", (dialog, which) -> {
+                    dialog.cancel();
+                    userAnswer[0] = true;
+                }).show();
+
+        return userAnswer[0];
     }
 }

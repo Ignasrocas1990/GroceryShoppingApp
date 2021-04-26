@@ -29,7 +29,6 @@ public class ListsViewModel extends AndroidViewModel {
     //lists methods
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = lists.getValue();
-        // TODO need check if list already exist (for update)
         ItemList newItemList = new ItemList(listName,shopName);
         oldList.add(newItemList);
         lists.setValue(oldList);

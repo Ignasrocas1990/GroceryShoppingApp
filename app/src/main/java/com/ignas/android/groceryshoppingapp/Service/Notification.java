@@ -19,6 +19,7 @@ public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
     NotificationCompat.Builder notification;
     private static final String KEY_TEXT_REPLY = "key";
+    public Notification(){}
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);

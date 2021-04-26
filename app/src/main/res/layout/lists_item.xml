@@ -1,65 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    android:padding="10dp"
     android:orientation="horizontal">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/del_list_copy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="invisible"
-        android:contentDescription="@string/del"
-        app:backgroundTint="#F44336"
-        app:fabSize="mini"
-        app:rippleColor="@color/blue"
-        app:srcCompat="@drawable/ic_baseline_delete_24" />
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/productName_list_copy"
-            android:layout_width="match_parent"
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/del_list_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/del"
+            android:visibility="invisible"
+            app:backgroundTint="#F44336"
+            app:fabSize="mini"
+            app:rippleColor="@color/blue"
+            app:srcCompat="@drawable/ic_baseline_delete_24" />
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text=""
-            android:gravity="center"/>
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/productName_list_copy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:hint="@string/product_name" />
 
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/quantity_list_copy"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:autofillHints="2"
+                android:gravity="center"
+                android:hint="@string/quantity"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_list_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/saveUpdate"
+            app:backgroundTint="#4CAF50"
+            app:fabSize="mini"
+            app:rippleColor="@color/blue"
+            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/quantity_list_copy"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:autofillHints="2"
-            android:gravity="center"
-            android:hint="@string/quantity"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/save_list_copy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="@string/saveUpdate"
-        app:backgroundTint="#4CAF50"
-        app:fabSize="mini"
-        app:rippleColor="@color/blue"
-        app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+   </androidx.cardview.widget.CardView>
 </LinearLayout>

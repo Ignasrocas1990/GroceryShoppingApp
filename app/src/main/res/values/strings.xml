@@ -24,4 +24,6 @@
     <string name="days">days</string>
     <string name="list_name">list name</string>
     <string name="shop_name">shop name</string>
+    <string name="priceText">price</string>
+    <string name="product_name">product name</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
@@ -190,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        assoViewModel.updateAssociations();
         Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
-
         listsViewModel.refresh_Db_Lists();
         if(itemToBeScheduled != null){
             Intent intent = new Intent(this, Alarm.class);

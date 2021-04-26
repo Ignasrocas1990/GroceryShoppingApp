@@ -94,6 +94,7 @@ public class ItemFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(curPosition[0] != -1){
+    //TODO ---------------------------------------------------Check here all the lists that the item is associated to it.
                     itemViewModel.removeItem(curPosition[0]);
                     adapter.notifyItemRemoved(curPosition[0]);
                     adapter.notifyItemRangeChanged(curPosition[0],adapter.getItemCount()-1);

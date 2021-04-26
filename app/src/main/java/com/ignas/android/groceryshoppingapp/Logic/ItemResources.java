@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ItemResources extends BroadcastReceiver {
     private static final String TAG ="log";
@@ -17,11 +19,13 @@ public class ItemResources extends BroadcastReceiver {
     Context mContext = null;
     RealmDb db;
 
+    public ItemResources(){};
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
         //db.removeAll();
     }
+
     public void setContext(Context context){
         mContext = context;
     }
@@ -133,4 +137,5 @@ public class ItemResources extends BroadcastReceiver {
         }
         return lowestDateItem;
     }
+
 }

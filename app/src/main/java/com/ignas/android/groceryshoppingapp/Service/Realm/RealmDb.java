@@ -191,7 +191,6 @@ public class RealmDb{
             if (results.size() != 0) {
                 list.addAll(realm.copyFromRealm(results));
             }
-
             realm.commitTransaction();
         }catch (Exception e){
             Log.d("log", "get Associations: failed"+e.getMessage());
@@ -221,7 +220,7 @@ public class RealmDb{
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(ItemList.class)
+            realm.where(Association.class)
                     .equalTo("asso_Id", asso.getAsso_Id())
                     .findFirst()
                     .deleteFromRealm();
