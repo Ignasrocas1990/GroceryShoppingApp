@@ -11,6 +11,7 @@ import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -18,7 +19,6 @@ public class ItemResources extends BroadcastReceiver {
     private static final String TAG ="log";
     private ArrayList<Item> toUpdate = new ArrayList<>();// merge
     private ArrayList<Item> toCreate = new ArrayList<>();// merge
-
     private ArrayList<Item> toDelete = new ArrayList<>();
     private Item running=null;
     Context mContext = null;
@@ -51,75 +51,31 @@ public class ItemResources extends BroadcastReceiver {
             running = items.get(0);
             running.setRunning(true);
             toUpdate.add(running);
+        }else{
+            running = outOfSync(temp);
         }
     }
     public ArrayList<Item> getItems(){
         return db.getItems();
     }
 
-    //add/delete(update) items
-    /*
-    public Item update(ArrayList<Item> app_items) {
-        Item itemToBeScheduled= null;
-        boolean runningRemoved = false;
-        db = new RealmDb();
-        ArrayList<Item>dbItems = db.getItemsOffline();
-        ArrayList<Item>newItems = new ArrayList<>();
-        if(dbItems.size()!=0) {
-            for (int i = 0; i < app_items.size(); i++) {
-
-                while (i < dbItems.size() && dbItems.get(i).getItem_id() !=  app_items.get(i).getItem_id()) {
-                    if(dbItems.get(i).isRunning()){
-                        runningRemoved = true;
-                    }
-                    db.removeItem(dbItems.get(i));
-                    dbItems.remove(dbItems.get(i));
-                }
-                if(i >= dbItems.size() || !dbItems.get(i).equals(app_items.get(i))){
-                    newItems.add(app_items.get(i));
-                }
-            }
-            if(dbItems.size()>app_items.size()){
-                for(int i = app_items.size(); i < dbItems.size(); i++){
-                    if(dbItems.get(i).isRunning()){
-                        runningRemoved = true;
-                    }
-                    db.removeItem(dbItems.get(i));
-                }
-            }
-        }else{
-            newItems.addAll(app_items);
-        }
-        if(newItems.size()>1) {
-            db.addItems(newItems);
-            itemToBeScheduled = getNextItem_toSchedule(app_items);
-        }else if (newItems.size()==1){
-            db.addItem(newItems.get(0));
-            itemToBeScheduled=getNextItem_toSchedule(app_items);
-        }else if(runningRemoved){
-            re_scheduleAlarm();
-        }
-
-        return itemToBeScheduled;
-    }
-    */
     public Item update(){
         toCreate.addAll(toUpdate);
         if(toCreate.size()>1){
             db.addItems(toCreate);
-        }else{
+        }else if(toCreate.size()!=0){
             db.addItem(toCreate.get(0));
         }
         if(toDelete.size()>1){
             db.deleteItems(toDelete);
-        }else{
+        }else if(toDelete.size()!=0){
             db.removeItem(toDelete.get(0));
         }
         return running;
     }
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("log", "onReceive: received restart");
+        Log.i("log", "Item Resources.java : received restart");
         mContext = context;
         re_scheduleAlarm();
     }
@@ -154,7 +110,10 @@ public class ItemResources extends BroadcastReceiver {
         return current;
     }
     public void removeItem(Item itemToRemove,ArrayList<Item>allItems){
-        if(itemToRemove.getItem_id() == running.getItem_id()){
+        if(running==null){
+            getRunning(allItems);
+        }
+        else if(itemToRemove.getItem_id() == running.getItem_id()){
             if(allItems.size() !=1 ){
                 getRunning(allItems);
             }else{
@@ -205,10 +164,11 @@ public class ItemResources extends BroadcastReceiver {
     //re-schedule service
     public void re_scheduleAlarm(){
         db = new RealmDb();
-        ArrayList<Item>app_items = db.getItemsOffline();
+        ArrayList<Item>app_items = db.getItems();
        if(app_items.size()>0){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
+               db.addItems(toUpdate);
                Intent intent = new Intent(mContext,Alarm.class);
                intent.putExtra("name",itemToBeScheduled.getItemName());
                intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
@@ -218,39 +178,35 @@ public class ItemResources extends BroadcastReceiver {
        }
     }
 
+
     //finds current running item/update's it and return next item to be scheduled.
-    private Item getNextItem_toSchedule(ArrayList<Item> app_items){
-        Item lowestDateItem = new Item(1);// set to now
-        Item runningItem = null;
+    private Item getNextItem_toSchedule(ArrayList<Item> allItems){
+        final Date now = new Item(1).getRunOutDate();// set to now
+        Item lowestDateItem = allItems.get(0);
+        Item currentItem = null;
+        boolean saveFlag=false;
 
+        for(int i=0;i<allItems.size();i++){
+            saveFlag = false;
+            currentItem = allItems.get(i);
 
-        for(int i=0;i<app_items.size();i++){
-            Item currentItem = app_items.get(i);
             if(currentItem.isRunning()){
-                int value = currentItem.getLastingDays();
-                if(value !=0){
-                    currentItem.setRunOutDate(value);
-                }
                 currentItem.setRunning(false);
-                runningItem = currentItem;
+                saveFlag = true;
             }
-            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) > 0){
+            if(now.compareTo(currentItem.getRunOutDate()) > 0){ // extend if in the past
                 currentItem.setRunOutDate(currentItem.getLastingDays());
+                saveFlag = true;
+            }
+            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0 ){
                 lowestDateItem = currentItem;
+            }
+
+            if(saveFlag){
+                toUpdate.add(currentItem);
             }
         }
         lowestDateItem.setRunning(true);
-
-        if(runningItem!=null){
-            if(runningItem.getItem_id() != lowestDateItem.getItem_id()){
-                ArrayList<Item> list = new ArrayList<>();
-                list.add(runningItem);
-                list.add(lowestDateItem);
-                db.addItems(list);
-            }
-        }else{
-            db.addItem(lowestDateItem);
-        }
         return lowestDateItem;
     }
 
@@ -281,5 +237,12 @@ public class ItemResources extends BroadcastReceiver {
         toUpdate.add(running);
 
     }
-
+    //check if running is inValid(in the past/ not up to date)
+    public Item outOfSync(Item item){
+        Item now = new Item(1);
+        if(now.getRunOutDate().compareTo(item.getRunOutDate()) > 0){
+            item.setRunOutDate(item.getLastingDays());
+        }
+        return item;
+    }
 }

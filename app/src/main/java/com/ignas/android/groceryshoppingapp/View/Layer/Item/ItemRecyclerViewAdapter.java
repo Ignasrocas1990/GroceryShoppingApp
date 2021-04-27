@@ -41,7 +41,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mValues.get(position);
-
+        holder.itemView.setBackgroundResource(R.color.blue);
         holder.product_name.setText(item.getItemName());
         holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
         holder.price.setText(String.valueOf(item.getPrice()));
@@ -56,9 +56,11 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
                  newPrice = holder.price.getText().toString();
                 mItemClickListener.onItemClick(position,newName,newDays,newPrice);
             }else if(prevSelected.equals(holder.itemView)){
+
                 prevSelected=null;
                 holder.itemView.setBackgroundResource(R.color.blue);
                 mItemClickListener.onItemClick(-1,"","","");
+
             }else{
                 prevSelected.setBackgroundResource(R.color.blue);
                 prevSelected=holder.itemView;

@@ -30,7 +30,7 @@ public class RestartAlarmService extends Service {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setClass(this, ItemResources.class);
         this.sendBroadcast(broadcastIntent);
-        Log.i("log", "restarted service ");
+        Log.i("log", "restart of alarm ---------> ");
         return START_STICKY;
     }
 }

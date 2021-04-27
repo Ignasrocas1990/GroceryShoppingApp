@@ -25,9 +25,13 @@ public class Alarm extends Service {
         Long runoutDate = intent.getLongExtra("time",1);
 
 
+
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         long milliseconds = runoutDate-(Calendar.getInstance().getTimeInMillis());
         String dateTag = formatter.format(runoutDate);
+
+
+        Log.i("log", "alarm second for: "+milliseconds);
 
         //create new alarm notification
         Intent newIntent = new Intent(this,Notification.class);
@@ -38,7 +42,6 @@ public class Alarm extends Service {
                 this, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
-
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         if( alarmManager != null) {
             Log.i("log", "setAlarm: alarm set");
@@ -46,7 +49,7 @@ public class Alarm extends Service {
                     SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
         }
 
-            Log.i("log", "Alarm started for item "+name);
+            Log.i("log", "Alarm started for item ---------> "+name);
         return START_STICKY;
     }
 

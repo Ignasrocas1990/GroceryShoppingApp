@@ -24,14 +24,6 @@ public class DbConnect extends Application {
         Realm.getInstance(config);
 
     }
-/*
-    @Override
-    public void onTerminate() {
-        Realm.getDefaultInstance().close();
-        super.onTerminate();
-    }
-
- */
 
 }
 class RealmMigrations implements RealmMigration {

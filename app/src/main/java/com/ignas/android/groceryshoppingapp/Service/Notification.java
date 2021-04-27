@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -18,13 +19,16 @@ import com.ignas.android.groceryshoppingapp.R;
 public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
     NotificationCompat.Builder notification;
-    private static final String KEY_TEXT_REPLY = "key";
     public Notification(){}
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);
+
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
+
+        Log.i("log", "creating notification for  ---------> "+name);
+
 
         //create Brought action Button
         Intent brought = new Intent(context, RestartAlarmService.class);
@@ -43,7 +47,7 @@ public class Notification extends BroadcastReceiver {
                 .setOngoing(true)
                 .setContentTitle(name+" is running out at "+time)
                 .setContentText(" ")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .addAction(R.drawable.ic_baseline_stop_circle_24,"Brought",pendingIntent)
                 .setSound(uri);
 

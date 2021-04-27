@@ -84,7 +84,7 @@ public class Item extends RealmObject implements Parcelable {
         if(lastingDays != 0){
             calendar.add(Calendar.MILLISECOND,lastingDays*1000);//TODO ------testing (need to be changed)
         }else{
-            calendar.add(Calendar.MILLISECOND,10);
+            calendar.add(Calendar.MILLISECOND,10*1000);// default
         }
         this.runOutDate = calendar.getTime();
 
