@@ -25,51 +25,27 @@ public class ItemViewModel extends AndroidViewModel {
         itemResources = new ItemResources(application);
         items.setValue(itemResources.getItems());
     }
-    //unique item methods
     public void addItem(String newName, String newDays, String newPrice){
-        ArrayList<Item> temp = items.getValue();
-        Item item = new Item();
-        item.setItemName(newName);
-        if(newDays.equals("")){
-            item.setLastingDays(0);
-        }else{
-            item.setLastingDays(Integer.parseInt(newDays));
-        }
-        if(newPrice.equals("")){
-            item.setPrice(0.f);
-        }else{
-            item.setPrice(Float.parseFloat(newPrice));
-        }
-        temp.add(item);
-        items.setValue(temp);
+        items.setValue(itemResources.createItem( newName, newDays, newPrice,items.getValue()));
     }
+
     public void removeItem(int position){
         ArrayList<Item> temp = items.getValue();
+        itemResources.removeItem(temp.get(position),items.getValue());
         temp.remove(position);
         items.setValue(temp);
     }
     public void changeItem(int position, String newName, String newDays, String newPrice) {
         ArrayList<Item> tempArray = items.getValue();
-        Item oldItem = tempArray.get(position);
+       itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice,items.getValue());
 
-        oldItem.setItemName(newName);
-        if(newDays.equals("")){
-            oldItem.setLastingDays(0);
-        }else{
-            oldItem.setLastingDays(Integer.parseInt(newDays));
-        }
-        if(newPrice.equals("")){
-            oldItem.setPrice(0.f);
-        }else{
-            oldItem.setPrice(Float.parseFloat(newPrice));
-        }
         items.setValue(tempArray);
     }
 
 
 
     public Item refresh_Db_Items(){
-        return itemResources.update(items.getValue());
+        return itemResources.update();
     }
 
     public LiveData<ArrayList<Item>> getLiveItems() {

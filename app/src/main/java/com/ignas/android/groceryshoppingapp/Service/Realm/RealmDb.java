@@ -59,12 +59,11 @@ public class RealmDb{
     }
     // add/copy list of items
     public void addItems(ArrayList<Item>items){
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransactionAsync(realm -> {
+        try (Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransactionAsync(inRealm -> {
+                inRealm.copyToRealmOrUpdate(items);
 
-                    realm.copyToRealmOrUpdate(items);
-                    Log.d("log", "execute: added items...");
+                Log.d("log", "execute: added items...");
             });
         }catch (Exception e){
             Log.d("log", "addItems: did not save"+e.getLocalizedMessage());
@@ -75,16 +74,29 @@ public class RealmDb{
     }
     //remove single item
     public void removeItem(Item item) {
-        try {
-        realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-                realm.where(Item.class)
-                        .equalTo("item_Id", item.getItem_id())
-                        .findFirst()
-                        .deleteFromRealm();
-            realm.commitTransaction();
+        try (Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm -> inRealm.where(Item.class)
+                    .equalTo("item_Id", item.getItem_id())
+                    .findFirst()
+                    .deleteFromRealm());
+
         } catch (Exception e) {
             Log.d("log", "delete item. not found ");
+        }finally{
+            realm.refresh();
+            realm.close();
+        }
+    }
+    public void deleteItems(ArrayList<Item> toDelete) {
+        try (Realm realm = Realm.getDefaultInstance()){
+            for(Item currItem : toDelete){
+                realm.executeTransaction(inRealm -> inRealm.where(Item.class)
+                        .equalTo("item_Id", currItem.getItem_id())
+                        .findFirst()
+                        .deleteFromRealm());
+            }
+        } catch (Exception e) {
+            Log.d("log", "delete items. not found ");
         }finally{
             realm.refresh();
             realm.close();
@@ -105,7 +117,6 @@ public class RealmDb{
             realm.close();
         }
     }
-    //remove all data from db
 
 
 //  Lists methods--------------------------------------
@@ -270,4 +281,6 @@ public class RealmDb{
         super.finalize();
         realm.close();
     }
+
+
 }
