@@ -1,6 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Service;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -8,34 +9,51 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
+import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Timer;
+
+import static android.os.SystemClock.sleep;
 
 public class Alarm extends Service {
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        String dateTag;
-        String name = intent.getStringExtra("name");
-        Long runoutDate = intent.getLongExtra("time",1);
+        //super.onStartCommand(intent, flags, startId);
+        String dateTag,name;
+        long runoutDate;
+        int flag=-1;
+        flag = intent.getIntExtra("flag",1);
+        name = intent.getStringExtra("name");
+        runoutDate = intent.getLongExtra("time",1);
+
+        if(flag==1){
+            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            if(intent != null){
+                assert manager != null;
+                manager.cancel(0);
+            }
+            ItemResources rec = new ItemResources();
+            Item item = rec.re_scheduleAlarm();
+            if(item != null){
+                name = item.getItemName();
+                runoutDate = item.getRunOutDate().getTime();
+            }
 
 
-
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        long milliseconds = runoutDate-(Calendar.getInstance().getTimeInMillis());
-        if(milliseconds < 0 ){
-            milliseconds = 10*1000;
-            dateTag = "    now";
-        }else{
-            dateTag = formatter.format(runoutDate);
         }
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+        dateTag = formatter.format(runoutDate);
+
         
         //create new alarm notification
         Intent newIntent = new Intent(this,Notification.class);
@@ -47,19 +65,25 @@ public class Alarm extends Service {
                 this, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
+
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         if( alarmManager != null) {
-            Log.i("log", "setAlarm: alarm set");
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, runoutDate, pendingIntent);
         }
 
-            Log.i("log", "Alarm started for item ---------> "+name+" with seconds "+ milliseconds/1000);
-        return START_STICKY;
+        Log.i("log", "alarm :"+dateTag);
+        return START_REDELIVER_INTENT;
     }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //stopSelf();
+        //Toast.makeText(this, "alarm service canceled", Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,22 +1,21 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
 import android.util.Log;
 
-import com.ignas.android.groceryshoppingapp.Models.Association;
+import androidx.annotation.Nullable;
+
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
-public class ItemResources extends BroadcastReceiver {
+public class ItemResources{
     private static final String TAG ="log";
     private ArrayList<Item> toUpdate = new ArrayList<>();// merge
     private ArrayList<Item> toCreate = new ArrayList<>();// merge
@@ -24,7 +23,11 @@ public class ItemResources extends BroadcastReceiver {
     Context mContext = null;
     RealmDb db;
 
-    public ItemResources(){};
+    public ItemResources(){}
+
+
+
+    ;
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
@@ -41,6 +44,7 @@ public class ItemResources extends BroadcastReceiver {
     }
 
     public Item update(ArrayList<Item> app_items){
+        Item itemToBeScheduled=null;
     //updates data
         toCreate.addAll(toUpdate);
         if(toCreate.size()>1){
@@ -54,17 +58,13 @@ public class ItemResources extends BroadcastReceiver {
             db.removeItem(toDelete.get(0));
         }
     //gets next item to be scheduled
-        Item itemToBeScheduled =  getNextItem_toSchedule(app_items);
-        Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
+        itemToBeScheduled =  getNextItem_toSchedule(app_items);
+        if(itemToBeScheduled !=null){
+            Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
+        }
         return itemToBeScheduled;
 
         //return running;
-    }
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.i("log", "Item Resources.java : received restart");
-        mContext = context;
-        re_scheduleAlarm();
     }
 
     //unique item methods
@@ -124,32 +124,41 @@ public class ItemResources extends BroadcastReceiver {
             }
         }
     }
-
-
     //re-schedule service
-    public void re_scheduleAlarm(){
+    public Item re_scheduleAlarm(){
         db = new RealmDb();
         ArrayList<Item>app_items = db.getItems();
        if(app_items.size()>1){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
                db.addItems(toUpdate);
-               Intent intent = new Intent(mContext,Alarm.class);
-               intent.putExtra("name",itemToBeScheduled.getItemName());
-               intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-               mContext.startService(intent);
-               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
+               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
+                       " lasting days of "+itemToBeScheduled.getLastingDays());
+
+               return itemToBeScheduled;
+               /*
+               //Intent intent = new Intent(mContext,Alarm.class);
+               //intent.putExtra("name",itemToBeScheduled.getItemName());
+               //intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+               //mContext.startService(intent);
+
+                */
            }
        }else if(app_items.size() == 1){
            Item itemToBeScheduled = app_items.get(0);
            itemToBeScheduled.setRunOutDate(itemToBeScheduled.getLastingDays());
            db.addItems(toUpdate);
-           Intent intent = new Intent(mContext,Alarm.class);
-           intent.putExtra("name",itemToBeScheduled.getItemName());
-           intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-           mContext.startService(intent);
-           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
+           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
+                   " lasting days of "+itemToBeScheduled.getLastingDays());
+
+           return itemToBeScheduled;
+
+           //Intent intent = new Intent(mContext,Alarm.class);
+           //intent.putExtra("name",itemToBeScheduled.getItemName());
+           //intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+           //mContext.startService(intent);
        }
+        return null;
     }
     //finds current running item/update's it and return next item to be scheduled.
     private Item getNextItem_toSchedule(ArrayList<Item> allItems){

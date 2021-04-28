@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
     }
 //all the data observers----------------------
     private void Observers(){
@@ -183,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -194,7 +192,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Alarm.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());
             intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+            intent.putExtra("flag",0);
             startService(intent);
+
         }
 
     }

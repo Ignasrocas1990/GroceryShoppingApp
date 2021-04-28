@@ -52,4 +52,7 @@ public class AssoViewModel extends ViewModel {
         return assoResources.findItemAssos(item.getItem_id());
 
     }
+    public void removeItemsAssos(ArrayList<ItemList> removed, Item deleteItem){
+        assoResources.severItem(removed,deleteItem);
+    }
 }

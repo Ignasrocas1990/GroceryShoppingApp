@@ -1,6 +1,8 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
+import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
@@ -86,25 +88,26 @@ public class AssoResources {
         }
         return curr;
     }
-    //set multiple items to be deleted
+    //set multiple items to be deleted from one list
     public void severList(ArrayList<Association> listToDelete){
-        for(Association curr : listToDelete){
-            if(toSave.containsKey(curr.getList_Id())){
-                ArrayList<Association> toSaveTemp = toSave.get(curr.getList_Id());
+        if(listToDelete.size() !=0){
+            for(Association curr : listToDelete){
+                if(toSave.containsKey(curr.getList_Id())){
+                    ArrayList<Association> toSaveTemp = toSave.get(curr.getList_Id());
 
-                Association result = toSaveTemp.stream()
-                        .filter(asso->asso.getItem_Id()==curr.getList_Id())
-                        .findFirst().orElse(null);
-                if(result!=null){
-                    toSaveTemp.remove(result);
+                    Association result = toSaveTemp.stream()
+                            .filter(asso->asso.getItem_Id()==curr.getList_Id())
+                            .findFirst().orElse(null);
+                    if(result!=null){
+                        toSaveTemp.remove(result);
 
+                    }
+                }else{
+                    toDelete.add(curr);
+                    listToDelete.remove(curr);
                 }
-            }else{
-                toDelete.add(curr);
-                listToDelete.remove(curr);
             }
         }
-
     }
     public ArrayList<Association> findItemAssos(int item_Id){
         Association curAsso;
@@ -122,6 +125,27 @@ public class AssoResources {
         }
         return foundAssos;
     }
+
+// remove item associations from list/s
+    public void severItem(ArrayList<ItemList> removed, Item deleteItem){
+
+        for(ItemList itemList : removed){
+            int list_id = itemList.getList_Id();
+            ArrayList<Association> currentAsso=null;
+// check if each list id is here.
+            if(allAssociations.containsKey(list_id)){
+                currentAsso = allAssociations.get(list_id);
+                Association assoTodelete = currentAsso.stream()
+                        .filter(index -> index.getItem_Id() == deleteItem.getItem_id())
+                        .findFirst().orElse(null);
+                if(assoTodelete!=null){
+                    currentAsso.remove(assoTodelete);
+                }
+
+            }
+        }
+    }
+
 
 
 //db methods

@@ -98,16 +98,22 @@ public class ItemFragment extends Fragment {
                 }
             }
         });
+
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                ArrayList<ItemList> foundList = null;
                 String messageString="";
                 if(curPosition[0] != -1){
+    //find item to be deleted & assoc's for that item
+                    Item deleteItem = itemViewModel.findItem(curPosition[0]);
+                    final ArrayList<Association> foundAssos = assoViewModel.apartOfList(deleteItem);
 
-                    final ArrayList<Association> found = assoViewModel.apartOfList(itemViewModel.findItem(curPosition[0]));
-                    if(found.size()!=0){
-                        ArrayList<ItemList>foundList = listsViewModel.findLists_forItem(found);
+     //find lists that that item is part of
+                    if(foundAssos.size()!=0){
+                        foundList = listsViewModel.findLists_forItem(foundAssos);
                         if(foundList.size()!=0){
+      //compile error message
                             for(ItemList list: foundList){
                                 messageString+=list.getListName()+" ";
                             }
@@ -115,13 +121,17 @@ public class ItemFragment extends Fragment {
                     }
                     if(!messageString.equals("")){
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        ArrayList<ItemList> foundLists = foundList;
                         builder.setCancelable(false)
                                 .setIcon(R.drawable.ico_about_to_delete)
                                 .setTitle("Item deletion Notice")
                                 .setMessage("Item is part of these lists : "+messageString)
                                 .setNegativeButton("CANCEL", (dialog, which) -> { dialog.dismiss(); })
                                 .setPositiveButton("OK",(dialog,which)->{
-             //deletion confirmed
+
+             //deletion confirmed -- remove any item associations to lists & actual item
+                                    assoViewModel.removeItemsAssos(foundLists,deleteItem);
                                     itemViewModel.removeItem(curPosition[0]);
                                     adapter.notifyItemRemoved(curPosition[0]);
                                     adapter.notifyItemRangeChanged(curPosition[0],adapter.getItemCount()-1);

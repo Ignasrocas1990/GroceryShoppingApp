@@ -67,7 +67,8 @@ public class ListsFragment extends Fragment {
                                 assoViewModel.removeListAssos(list);
                                 listsViewModel.removeList(list);
                                 listsViewModel.setCurrentList(null);
-                                Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show(); }).show();
+                                Toast.makeText(context, "List has been removed", Toast.LENGTH_SHORT).show();
+                            }).show();
                 }else{
                     Toast.makeText(context, "no list selected", Toast.LENGTH_SHORT).show();
                 }
@@ -146,24 +147,5 @@ public class ListsFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public boolean userAlertDialog(Context context){
-        final boolean[] userAnswer = new boolean[1];
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setCancelable(false)
-                .setIcon(R.drawable.ico_about_to_delete)
-                .setTitle("Alert message")
-                .setMessage("Your about to delete a list, please select yes to confirm")
-                .setNegativeButton("Cancel", (dialog, which) -> {
-                    dialog.cancel();
-                })
-                .setPositiveButton("YES", (dialog, which) -> {
-                    dialog.cancel();
-                    userAnswer[0] = true;
-                }).show();
-
-        return userAnswer[0];
     }
 }
