@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class AssoResources {
 
     private final RealmDb db;
-    private HashMap<Integer,ArrayList<Association>> allAssociations = new HashMap<>();
+    private final HashMap<Integer,ArrayList<Association>> allAssociations = new HashMap<>();
 
     private final HashMap<Integer,ArrayList<Association>>  toSave = new HashMap<>();
     private final ArrayList<Association> toDelete = new ArrayList<>();
@@ -43,7 +43,6 @@ public class AssoResources {
             newAsso = allAssociations.get(list_Id);
         }else{
             allAssociations.put(list_Id,newAsso);
-            //currentLive.setValue(newAsso);
         }
         return newAsso;
     }
@@ -107,6 +106,22 @@ public class AssoResources {
         }
 
     }
+    public ArrayList<Association> findItemAssos(int item_Id){
+        Association curAsso;
+        ArrayList<Association> foundAssos = new ArrayList<>();
+        for(ArrayList<Association> assoIndexArray : allAssociations.values()){
+            if(assoIndexArray.size() != 0){
+                curAsso = assoIndexArray.stream()
+                        .filter(asso->asso.getItem_Id() == item_Id)
+                        .findFirst().orElse(null);
+
+                if(curAsso!=null){
+                    foundAssos.add(curAsso);
+                }
+            }
+        }
+        return foundAssos;
+    }
 
 
 //db methods
@@ -126,5 +141,4 @@ public class AssoResources {
             db.removeAsso(asso);
         }
     }
-
 }

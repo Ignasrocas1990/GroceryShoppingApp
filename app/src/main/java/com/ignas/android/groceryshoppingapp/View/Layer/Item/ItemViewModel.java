@@ -28,6 +28,10 @@ public class ItemViewModel extends AndroidViewModel {
     public void addItem(String newName, String newDays, String newPrice){
         items.setValue(itemResources.createItem( newName, newDays, newPrice,items.getValue()));
     }
+    public Item findItem(int position){
+        ArrayList<Item> temp = items.getValue();
+        return temp.get(position);
+    }
 
     public void removeItem(int position){
         ArrayList<Item> temp = items.getValue();

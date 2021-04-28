@@ -1,9 +1,11 @@
 package com.ignas.android.groceryshoppingapp.View.Layer.Item;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -20,8 +22,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
+import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
 
 import java.util.ArrayList;
 
@@ -45,7 +51,9 @@ public class ItemFragment extends Fragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.item_recycler, container, false);
         Context context = view.getContext();
+        AssoViewModel assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
+        ListsViewModel listsViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         final int[] curPosition = new int[1];
         curPosition[0]=-1;
 
@@ -93,18 +101,50 @@ public class ItemFragment extends Fragment {
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                String messageString="";
                 if(curPosition[0] != -1){
-    //TODO ---------------------------------------------------Check here all the lists that the item is associated to it.
-                    itemViewModel.removeItem(curPosition[0]);
-                    adapter.notifyItemRemoved(curPosition[0]);
-                    adapter.notifyItemRangeChanged(curPosition[0],adapter.getItemCount()-1);
 
-                    curPosition[0] = -1;
-                    product_name.setText("");
-                    lasting_days.setText("");
-                    price.setText("");
-                    Toast.makeText(context, "Item is created", Toast.LENGTH_SHORT).show();
+                    final ArrayList<Association> found = assoViewModel.apartOfList(itemViewModel.findItem(curPosition[0]));
+                    if(found.size()!=0){
+                        ArrayList<ItemList>foundList = listsViewModel.findLists_forItem(found);
+                        if(foundList.size()!=0){
+                            for(ItemList list: foundList){
+                                messageString+=list.getListName()+" ";
+                            }
+                        }
+                    }
+                    if(!messageString.equals("")){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setCancelable(false)
+                                .setIcon(R.drawable.ico_about_to_delete)
+                                .setTitle("Item deletion Notice")
+                                .setMessage("Item is part of these lists : "+messageString)
+                                .setNegativeButton("CANCEL", (dialog, which) -> { dialog.dismiss(); })
+                                .setPositiveButton("OK",(dialog,which)->{
+             //deletion confirmed
+                                    itemViewModel.removeItem(curPosition[0]);
+                                    adapter.notifyItemRemoved(curPosition[0]);
+                                    adapter.notifyItemRangeChanged(curPosition[0],adapter.getItemCount()-1);
 
+                                    curPosition[0] = -1;
+                                    product_name.setText("");
+                                    lasting_days.setText("");
+                                    price.setText("");
+
+                                    Toast.makeText(context, "Item has been deleted", Toast.LENGTH_SHORT).show();
+                                }).show();
+                    }else{
+                        itemViewModel.removeItem(curPosition[0]);
+                        adapter.notifyItemRemoved(curPosition[0]);
+                        adapter.notifyItemRangeChanged(curPosition[0],adapter.getItemCount()-1);
+
+                        curPosition[0] = -1;
+                        product_name.setText("");
+                        lasting_days.setText("");
+                        price.setText("");
+
+                        Toast.makeText(context, "Item has been deleted", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(context, "No item selected", Toast.LENGTH_SHORT).show();
                 }

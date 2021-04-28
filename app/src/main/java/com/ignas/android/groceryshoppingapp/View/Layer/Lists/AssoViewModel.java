@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.AssoResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
+import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
@@ -45,5 +46,10 @@ public class AssoViewModel extends ViewModel {
     public void removeListAssos(ItemList list) {
         ArrayList<Association> deleted = assoResources.getAsso(list.getList_Id());
         assoResources.severList(deleted);
+    }
+
+    public ArrayList<Association> apartOfList(Item item) {
+        return assoResources.findItemAssos(item.getItem_id());
+
     }
 }

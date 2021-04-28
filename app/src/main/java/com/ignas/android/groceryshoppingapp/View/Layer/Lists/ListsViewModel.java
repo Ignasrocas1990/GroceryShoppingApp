@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ignas.android.groceryshoppingapp.Logic.ListResources;
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
@@ -41,14 +42,29 @@ public class ListsViewModel extends AndroidViewModel {
 
         lists.setValue(allList);
     }
-    public ItemList findList(int id) {
+//find list by list_Id
+    public ItemList findList(int list_Id) {
         ArrayList<ItemList> allList = lists.getValue();
         ItemList curList = allList.stream()
-                .filter(list -> id == list.getList_Id())
+                .filter(list -> list_Id == list.getList_Id())
                 .findAny().orElse(null);
 
         return curList;
     }
+//get lists that contain specific item
+    public ArrayList<ItemList> findLists_forItem(ArrayList<Association> assos){
+        ArrayList<ItemList> found = new ArrayList<>();
+        for(Association asso : assos){
+
+            ItemList curList = findList(asso.getList_Id());
+            if(curList !=null){
+                found.add(curList);
+            }
+        }
+        return found;
+    }
+
+
     public void refresh_Db_Lists(){
         listResources.updateLists(lists.getValue());
     }

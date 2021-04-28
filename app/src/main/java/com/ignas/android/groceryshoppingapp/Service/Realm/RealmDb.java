@@ -184,9 +184,6 @@ public class RealmDb{
             Log.i("log", "asso add single : not successful");
         }
     }
-
-
-
     //--- for reset----
     public void removeAll(){
         try (Realm realm = Realm.getDefaultInstance()) {

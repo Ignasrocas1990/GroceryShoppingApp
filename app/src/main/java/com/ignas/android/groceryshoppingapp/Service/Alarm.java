@@ -55,7 +55,7 @@ public class Alarm extends Service {
         }
 
             Log.i("log", "Alarm started for item ---------> "+name+" with seconds "+ milliseconds/1000);
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
     @Nullable
     @Override
