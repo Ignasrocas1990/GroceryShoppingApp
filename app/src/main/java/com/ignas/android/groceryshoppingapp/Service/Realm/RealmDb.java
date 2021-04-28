@@ -33,31 +33,17 @@ public class RealmDb{
         }
         return list;
     }
-    public ArrayList<Item> getItemsOffline() {
-        ArrayList<Item> list = new ArrayList<>();
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
 
-                RealmResults<Item> results = inRealm.where(Item.class).findAll();
-                if (results.size() != 0) {
-                    list.addAll(inRealm.copyFromRealm(results));
-                }
-        });
-        }catch (Exception e){
-            Log.i("log", "getItems: failed"+e.getMessage());
-        }
-        return list;
-    }
     // add/copy list of items
     public void addItems(ArrayList<Item>items){
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
                 inRealm.copyToRealmOrUpdate(items);
 
-                Log.d("log", "execute: added items...");
+                Log.i("log", "Realm AddItems : save items");
             });
         }catch (Exception e){
-            Log.d("log", "addItems: did not save"+e.getLocalizedMessage());
+            Log.i("log", "addItems: did not save"+e.getMessage());
         }
     }
     //remove single item

@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +21,6 @@ public class ItemResources extends BroadcastReceiver {
     private ArrayList<Item> toUpdate = new ArrayList<>();// merge
     private ArrayList<Item> toCreate = new ArrayList<>();// merge
     private ArrayList<Item> toDelete = new ArrayList<>();
-    private Item running=null;
     Context mContext = null;
     RealmDb db;
 
@@ -28,7 +28,6 @@ public class ItemResources extends BroadcastReceiver {
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
-        getRunning(getItems());
 
         //db.removeAll();
     }
@@ -36,30 +35,13 @@ public class ItemResources extends BroadcastReceiver {
     public void setContext(Context context){
         mContext = context;
     }
-    public void getRunning(ArrayList<Item> items){
-        Item temp=null;
-        if(running == null){
-            temp = items.stream()
-                    .filter(Item::isRunning)
-                    .findFirst()
-                    .orElse(null);
-        }
-        if(temp == null && items.size()>1){
-            getSmallestDate(items);
 
-        }else if (items.size()==1){
-            running = items.get(0);
-            running.setRunning(true);
-            toUpdate.add(running);
-        }else{
-            running = outOfSync(temp);
-        }
-    }
     public ArrayList<Item> getItems(){
         return db.getItems();
     }
 
-    public Item update(){
+    public Item update(ArrayList<Item> app_items){
+    //updates data
         toCreate.addAll(toUpdate);
         if(toCreate.size()>1){
             db.addItems(toCreate);
@@ -71,7 +53,12 @@ public class ItemResources extends BroadcastReceiver {
         }else if(toDelete.size()!=0){
             db.removeItem(toDelete.get(0));
         }
-        return running;
+    //gets next item to be scheduled
+        Item itemToBeScheduled =  getNextItem_toSchedule(app_items);
+        Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
+        return itemToBeScheduled;
+
+        //return running;
     }
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -94,48 +81,26 @@ public class ItemResources extends BroadcastReceiver {
         }else{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
-        if(running==null){
-            running = newItem;
-            newItem.setRunning(true);
-
-        }else if(newItem.getRunOutDate().compareTo(running.getRunOutDate()) < 0){
-            running.setRunning(false);
-            toUpdate.add(running);
-
-            running = newItem;
-            newItem.setRunning(true);
-        }
         current.add(newItem);
         toCreate.add(newItem);
         return current;
     }
-    public void removeItem(Item itemToRemove,ArrayList<Item>allItems){
-        if(running==null){
-            getRunning(allItems);
-        }
-        else if(itemToRemove.getItem_id() == running.getItem_id()){
-            if(allItems.size() !=1 ){
-                getRunning(allItems);
-            }else{
-                running = null;
-            }
-        }
+    public void removeItem(Item itemToRemove){
         if(toCreate.contains(itemToRemove)) {
             toCreate.remove(itemToRemove);
         }else{
             toDelete.add(itemToRemove);
         }
     }
-    public void modifyItem(Item oldItem,String newName, String newDays, String newPrice,ArrayList<Item> allItems){
+    public void modifyItem(Item oldItem,String newName, String newDays, String newPrice){
 
         oldItem.setItemName(newName);
         if(newDays.equals("")) {
             oldItem.setLastingDays(0);
         }else if(oldItem.getLastingDays() != Integer.parseInt(newDays)){
+
             oldItem.setLastingDays(Integer.parseInt(newDays));
-            if(oldItem.getRunOutDate().compareTo(running.getRunOutDate()) < 0){
-                getRunning(allItems);
-            }
+
         }if(newPrice.equals("")){
             oldItem.setPrice(0.f);
         }else{
@@ -143,7 +108,7 @@ public class ItemResources extends BroadcastReceiver {
         }
 
         Item result = toCreate.stream()
-                .filter(i ->i.getItem_id()==oldItem.getItem_id())
+                .filter(i ->i.getItem_id() == oldItem.getItem_id())
                 .findFirst().orElse(null);
 
         if(result!=null){
@@ -165,7 +130,7 @@ public class ItemResources extends BroadcastReceiver {
     public void re_scheduleAlarm(){
         db = new RealmDb();
         ArrayList<Item>app_items = db.getItems();
-       if(app_items.size()>0){
+       if(app_items.size()>1){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
                db.addItems(toUpdate);
@@ -173,72 +138,53 @@ public class ItemResources extends BroadcastReceiver {
                intent.putExtra("name",itemToBeScheduled.getItemName());
                intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
                mContext.startService(intent);
-               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName());
+               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
            }
+       }else if(app_items.size() == 1){
+           Item itemToBeScheduled = app_items.get(0);
+           itemToBeScheduled.setRunOutDate(itemToBeScheduled.getLastingDays());
+           db.addItems(toUpdate);
+           Intent intent = new Intent(mContext,Alarm.class);
+           intent.putExtra("name",itemToBeScheduled.getItemName());
+           intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+           mContext.startService(intent);
+           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
        }
     }
-
-
     //finds current running item/update's it and return next item to be scheduled.
     private Item getNextItem_toSchedule(ArrayList<Item> allItems){
+        if(allItems.size()==0){
+            return null;
+        }else if(allItems.size()==1){
+            return allItems.get(0);
+        }
         final Date now = new Item(1).getRunOutDate();// set to now
         Item lowestDateItem = allItems.get(0);
-        Item currentItem = null;
-        boolean saveFlag=false;
+        Item currentItem;
 
         for(int i=0;i<allItems.size();i++){
-            saveFlag = false;
             currentItem = allItems.get(i);
 
             if(currentItem.isRunning()){
+                currentItem=extendTime(currentItem); // extend items time
                 currentItem.setRunning(false);
-                saveFlag = true;
-            }
-            if(now.compareTo(currentItem.getRunOutDate()) > 0){ // extend if in the past
-                currentItem.setRunOutDate(currentItem.getLastingDays());
-                saveFlag = true;
+                toUpdate.add(currentItem);
+
             }
             if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0 ){
                 lowestDateItem = currentItem;
             }
-
-            if(saveFlag){
-                toUpdate.add(currentItem);
-            }
         }
         lowestDateItem.setRunning(true);
+
+        if(!toUpdate.contains(lowestDateItem)){
+            toUpdate.add(lowestDateItem);
+        }
         return lowestDateItem;
     }
 
-    //find smallest date item
-    private void getSmallestDate(ArrayList<Item> allItems){
-        Item now = new Item(1);// set to now
-        Item lowestDateItem = allItems.get(0);
-        Date currentItemDate;
-
-        for(int i=0;i<allItems.size();i++) {
-            boolean saveFlag = false;
-            Item currentItem = allItems.get(i);
-            currentItemDate = currentItem.getRunOutDate();
-
-            if(now.getRunOutDate().compareTo(currentItemDate) > 0 ){
-                currentItem.setRunOutDate(currentItem.getLastingDays());
-                saveFlag=true;
-            }
-            if(lowestDateItem.getRunOutDate().compareTo(currentItemDate) >= 0 ){
-                lowestDateItem = currentItem;
-            }
-            if(saveFlag){
-                toUpdate.add(currentItem);
-            }
-        }
-        running = lowestDateItem;
-        running.setRunning(true);
-        toUpdate.add(running);
-
-    }
     //check if running is inValid(in the past/ not up to date)
-    public Item outOfSync(Item item){
+    public Item extendTime(Item item){
         Item now = new Item(1);
         if(now.getRunOutDate().compareTo(item.getRunOutDate()) > 0){
             item.setRunOutDate(item.getLastingDays());

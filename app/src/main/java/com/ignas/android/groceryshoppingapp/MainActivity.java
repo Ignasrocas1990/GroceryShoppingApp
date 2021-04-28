@@ -2,7 +2,6 @@ package com.ignas.android.groceryshoppingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +20,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
-
-import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 

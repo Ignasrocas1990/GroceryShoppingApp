@@ -1,7 +1,6 @@
 package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,10 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 
 public class ListsFragment extends Fragment {

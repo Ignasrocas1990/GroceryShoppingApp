@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +22,7 @@ public class Alarm extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
+        String dateTag;
         String name = intent.getStringExtra("name");
         Long runoutDate = intent.getLongExtra("time",1);
 
@@ -28,15 +30,18 @@ public class Alarm extends Service {
 
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         long milliseconds = runoutDate-(Calendar.getInstance().getTimeInMillis());
-        String dateTag = formatter.format(runoutDate);
-
-
-        Log.i("log", "alarm second for: "+milliseconds);
-
+        if(milliseconds < 0 ){
+            milliseconds = 10*1000;
+            dateTag = "    now";
+        }else{
+            dateTag = formatter.format(runoutDate);
+        }
+        
         //create new alarm notification
         Intent newIntent = new Intent(this,Notification.class);
         newIntent.putExtra("name",name);
         newIntent.putExtra("time",dateTag);
+
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -45,14 +50,13 @@ public class Alarm extends Service {
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         if( alarmManager != null) {
             Log.i("log", "setAlarm: alarm set");
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
                     SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
         }
 
-            Log.i("log", "Alarm started for item ---------> "+name);
-        return START_STICKY;
+            Log.i("log", "Alarm started for item ---------> "+name+" with seconds "+ milliseconds/1000);
+        return START_REDELIVER_INTENT;
     }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

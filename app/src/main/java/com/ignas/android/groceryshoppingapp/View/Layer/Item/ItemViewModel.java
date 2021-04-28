@@ -31,13 +31,13 @@ public class ItemViewModel extends AndroidViewModel {
 
     public void removeItem(int position){
         ArrayList<Item> temp = items.getValue();
-        itemResources.removeItem(temp.get(position),items.getValue());
+        itemResources.removeItem(temp.get(position));
         temp.remove(position);
         items.setValue(temp);
     }
     public void changeItem(int position, String newName, String newDays, String newPrice) {
         ArrayList<Item> tempArray = items.getValue();
-       itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice,items.getValue());
+       itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);
 
         items.setValue(tempArray);
     }
@@ -45,7 +45,7 @@ public class ItemViewModel extends AndroidViewModel {
 
 
     public Item refresh_Db_Items(){
-        return itemResources.update();
+        return itemResources.update(items.getValue());
     }
 
     public LiveData<ArrayList<Item>> getLiveItems() {

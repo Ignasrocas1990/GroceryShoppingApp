@@ -27,7 +27,7 @@ public class Notification extends BroadcastReceiver {
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
 
-        Log.i("log", "creating notification for  ---------> "+name);
+        Log.i("log", "creating notification for  ---> "+name);
 
 
         //create Brought action Button
@@ -37,8 +37,7 @@ public class Notification extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getService(
                 context, 1, brought, 0);
 
-//-----------------------
-//-----------------------
+
         //create main notification
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         notification = new NotificationCompat.Builder(context,CHANNEL_ID)

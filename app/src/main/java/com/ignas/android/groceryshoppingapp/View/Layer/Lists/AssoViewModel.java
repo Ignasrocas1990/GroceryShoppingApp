@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Item;
+package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
