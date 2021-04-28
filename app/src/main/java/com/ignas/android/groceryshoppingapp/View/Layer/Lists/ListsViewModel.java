@@ -19,7 +19,6 @@ public class ListsViewModel extends AndroidViewModel {
     private final ListResources listResources;
 
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
-    private ItemList list_to_del;
 
     public ListsViewModel(@NonNull Application application) {
         super(application);
@@ -28,18 +27,19 @@ public class ListsViewModel extends AndroidViewModel {
 
     }
     //lists methods
+
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = lists.getValue();
-        ItemList newItemList = new ItemList(listName,shopName);
+        ItemList newItemList =  listResources.createList(listName,shopName);
         oldList.add(newItemList);
         lists.setValue(oldList);
-
         setCurrentList(newItemList);
     }
+
+
     public void removeList(ItemList list) {
         ArrayList<ItemList> allList = lists.getValue();
-        allList.remove(list);
-
+        allList.remove(listResources.removeList(list));
         lists.setValue(allList);
     }
 //find list by list_Id
@@ -48,9 +48,9 @@ public class ListsViewModel extends AndroidViewModel {
         ItemList curList = allList.stream()
                 .filter(list -> list_Id == list.getList_Id())
                 .findAny().orElse(null);
-
         return curList;
     }
+
 //get lists that contain specific item
     public ArrayList<ItemList> findLists_forItem(ArrayList<Association> assos){
         ArrayList<ItemList> found = new ArrayList<>();
@@ -65,33 +65,34 @@ public class ListsViewModel extends AndroidViewModel {
     }
 
 
-    public void refresh_Db_Lists(){
-        listResources.updateLists(lists.getValue());
-    }
 
 
     //current list methods
     public ItemList getDeleteList(){
-        return list_to_del;
+        return listResources.getDeleteList();
     }
-    public void deleted(){ list_to_del=null;}
+    public void deletedCurrent(){ listResources.deletedCurrent();}
 
-    public ItemList setItemtoDel(){
-        list_to_del = currentList.getValue();
-        return list_to_del;
+    public ItemList setCurrentToDel(){
+        listResources.setItemtoDel(currentList.getValue());
+        return currentList.getValue();
     }
     public void setCurrentList(ItemList current){
         currentList.setValue(current);
     }
+
+    //check if list not in toUpdate Array and update it
     public void modifyList(String listName, String shopName) {
-        ItemList curList = getConvertedList();
-        curList.setShopName(shopName);
-        curList.setListName(listName);
-        currentList.setValue(curList);
+        currentList.setValue(listResources.modifyList(listName,shopName,getConvertedList()));
     }
 
     public ItemList getConvertedList(){
         return currentList.getValue();
+    }
+
+//update database
+    public void refresh_Db_Lists(){
+        listResources.updateLists();
     }
 
     //live data methods

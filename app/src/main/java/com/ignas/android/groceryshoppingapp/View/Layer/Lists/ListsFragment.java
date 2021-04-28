@@ -53,7 +53,7 @@ public class ListsFragment extends Fragment {
 //current list button on click
         deleteBtn.setOnClickListener(v -> {
             if(!listName_Box.getText().toString().equals("")){
-                ItemList list = listsViewModel.setItemtoDel();
+                ItemList list = listsViewModel.setCurrentToDel();
                 if(list != null){                                 //show user Dialog Box
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);

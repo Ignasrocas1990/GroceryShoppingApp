@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         if(menu.hasVisibleItems()){
             menu.removeItem(list.getList_Id());
             previousMenuItem[0]=null;
-            listsViewModel.deleted();
+            listsViewModel.deletedCurrent();
         }
         refreshDrawer();
 

@@ -29,8 +29,8 @@ public class Alarm extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //super.onStartCommand(intent, flags, startId);
-        String dateTag,name;
-        long runoutDate;
+        String dateTag="",name="";
+        long runoutDate=1;
         int flag=-1;
         flag = intent.getIntExtra("flag",1);
         name = intent.getStringExtra("name");
@@ -51,39 +51,50 @@ public class Alarm extends Service {
 
 
         }
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
-        dateTag = formatter.format(runoutDate);
-
-        
-        //create new alarm notification
-        Intent newIntent = new Intent(this,Notification.class);
-        newIntent.putExtra("name",name);
-        newIntent.putExtra("time",dateTag);
+        // check if alarm is not empty
+        if(!name.equals("")){
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+            dateTag = formatter.format(runoutDate);
 
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            //create new alarm notification
+            Intent newIntent = new Intent(this,Notification.class);
+            newIntent.putExtra("name",name);
+            newIntent.putExtra("time",dateTag);
+
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this, 0, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
 
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        if( alarmManager != null) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, runoutDate, pendingIntent);
+            AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            if( alarmManager != null) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, runoutDate, pendingIntent);
+            }
+
+            Log.i("log", "alarm :"+dateTag);
+            return START_REDELIVER_INTENT;
+        }else{
+            Log.i("log", "onStartCommand: cancled");
+            stopAlarm();
+            return START_NOT_STICKY;
         }
 
-        Log.i("log", "alarm :"+dateTag);
-        return START_REDELIVER_INTENT;
     }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+    public void stopAlarm(){
+        stopSelf();
+        Toast.makeText(this, "alarm service canceled", Toast.LENGTH_SHORT).show();
+        onDestroy();
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //stopSelf();
-        //Toast.makeText(this, "alarm service canceled", Toast.LENGTH_SHORT).show();
     }
 }
