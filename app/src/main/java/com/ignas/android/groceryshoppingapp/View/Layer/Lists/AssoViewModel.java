@@ -26,21 +26,22 @@ public class AssoViewModel extends ViewModel {
     }
     public ArrayList<Association> getCurrentAsso(){return currentLive.getValue();}
 
-
+//find association and set it to current
     public ArrayList<Association> setAsso(int list_Id){
         currentLive.setValue(assoResources.getAsso(list_Id));
         return currentLive.getValue();
     }
+//add association
     public void addAsso(int list_Id,int item_Id,int quantity){
-        currentLive.setValue(assoResources.addAsso(list_Id,item_Id,quantity));
+        currentLive.setValue(assoResources.addAsso(list_Id,item_Id,quantity,currentLive.getValue()));
     }
+//del association
     public void deleteAsso(int item_Id){
         currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));
     }
 
     public void updateAssociations() {
-        assoResources.saveAssociations();
-        assoResources.deleteAssociations();
+        assoResources.updateDB_Associations();
     }
 
     public void removeListAssos(ItemList list) {

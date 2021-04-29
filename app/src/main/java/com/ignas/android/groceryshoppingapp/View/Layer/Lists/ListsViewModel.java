@@ -64,9 +64,6 @@ public class ListsViewModel extends AndroidViewModel {
         return found;
     }
 
-
-
-
     //current list methods
     public ItemList getDeleteList(){
         return listResources.getDeleteList();

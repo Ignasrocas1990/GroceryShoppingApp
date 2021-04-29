@@ -16,7 +16,9 @@ public class RealmDb{
     final String TAG = "log";
 
 
-    public RealmDb() {}
+    public RealmDb() {
+        //removeAll();
+    }
 
     //  Get all items
     public ArrayList<Item> getItems() {
@@ -121,7 +123,7 @@ public class RealmDb{
                         .equalTo("list_Id", list.getList_Id())
                         .findFirst();
                 if(temp !=null){
-                    temp .deleteFromRealm();
+                    temp.deleteFromRealm();
                 }
             });
         } catch (Exception e) {
@@ -134,7 +136,7 @@ public class RealmDb{
             realm.executeTransaction(inRealm ->{
                 for(ItemList list : toDelete){
                     ItemList temp = inRealm.where(ItemList.class)
-                            .equalTo("item_Id",list.getList_Id())
+                            .equalTo("list_Id",list.getList_Id())
                             .findFirst();
                     if(temp !=null){
                         temp.deleteFromRealm();
@@ -193,6 +195,23 @@ public class RealmDb{
             });
         } catch (Exception e) {
             Log.i("log", "delete Asso. not successful ");
+        }
+    }
+    //remove multiple associations
+    public void removeAssos(ArrayList<Association> toDelete) {
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm ->{
+                for(Association asso : toDelete){
+                    Association temp = inRealm.where(Association.class)
+                            .equalTo("asso_Id",asso.getAsso_Id())
+                            .findFirst();
+                    if(temp !=null){
+                        temp.deleteFromRealm();
+                    }
+                }
+            });
+        }catch (Exception e){
+            Log.i("log", "remove associations: failure ");
         }
     }
     public void addSingeAsso(Association asso){

@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp.Logic;
 
 import android.content.Context;
 
+import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
@@ -9,8 +10,8 @@ import java.util.ArrayList;
 
 public class ListResources {
 
-    private ArrayList<ItemList> toUpdate = new ArrayList<>();// merge
-    private ArrayList<ItemList> toCreate = new ArrayList<>();// merge
+    private ArrayList<ItemList> db_lists = new ArrayList<>();
+    private ArrayList<ItemList> toSave = new ArrayList<>();// merge
     private ArrayList<ItemList> toDelete = new ArrayList<>();
     private ItemList list_to_del;
     Context mContext = null;
@@ -19,6 +20,8 @@ public class ListResources {
     public ListResources(Context context) {
         db = new RealmDb();
         mContext = context;
+        db_lists = getLists();
+
     }
     public ArrayList<ItemList> getLists() {
         return db.getLists();
@@ -61,16 +64,19 @@ public class ListResources {
 //lists methods
 public ItemList createList(String listName,String shopName){
     ItemList newItemList = new ItemList(listName,shopName);
-    toCreate.add(newItemList);
+    toSave.add(newItemList);
     return newItemList;
 }
+
     public ItemList removeList(ItemList list) {
-        if(toUpdate.contains(list)){
-            toUpdate.remove(list);
-        }else if(toCreate.contains(list)){
-            toCreate.remove(list);
-        }else{
+
+        if(Check.listEqual(db_lists,list) && Check.listEqual(toSave,list)){    //check if old item(modified) removing
+            toSave.remove(list);
             toDelete.add(list);
+        }else if (Check.listEqual(db_lists,list)){                      //item is old not modified
+            toDelete.add(list);
+        }else{
+            toSave.remove(list);                                //item is just created
         }
         return list;
     }
@@ -83,26 +89,23 @@ public ItemList createList(String listName,String shopName){
         list_to_del = toDel;
     }
     public void deletedCurrent() {
-    list_to_del =  removeList(list_to_del);
-    list_to_del = null;
+        list_to_del = null;
     }
     public ItemList modifyList(String listName, String shopName, ItemList curList) {
+        if(!Check.listEqual(toSave,curList)){
 
-        if(!toUpdate.contains(curList)){
-            toUpdate.add(curList);
+            toSave.add(curList);
         }
         curList.setShopName(shopName);
         curList.setListName(listName);
         return curList;
     }
     public void updateLists(){
-        if(toUpdate.size()!=0){
-            toCreate.addAll(toUpdate);
-        }
-        if(toCreate.size()>1){
-            db.addLists(toCreate);
-        }else if(toCreate.size()==1){
-            db.addList(toCreate.get(0));
+
+        if(toSave.size()>1){
+            db.addLists(toSave);
+        }else if(toSave.size()==1){
+            db.addList(toSave.get(0));
         }
         if(toDelete.size()>1){
             db.removeLists(toDelete);

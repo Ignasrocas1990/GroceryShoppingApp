@@ -1,15 +1,9 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
-import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
@@ -17,8 +11,8 @@ import java.util.Date;
 
 public class ItemResources{
     private static final String TAG ="log";
-    private ArrayList<Item> toUpdate = new ArrayList<>();// merge
-    private ArrayList<Item> toCreate = new ArrayList<>();// merge
+    //private ArrayList<Item> toUpdate = new ArrayList<>();// merge
+    private ArrayList<Item> toSave = new ArrayList<>();// merge
     private ArrayList<Item> toDelete = new ArrayList<>();
     Context mContext = null;
     RealmDb db;
@@ -26,13 +20,10 @@ public class ItemResources{
     public ItemResources(){}
 
 
-
-    ;
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
 
-        //db.removeAll();
     }
 
     public void setContext(Context context){
@@ -44,13 +35,13 @@ public class ItemResources{
     }
 
     public Item update(ArrayList<Item> app_items){
-        Item itemToBeScheduled=null;
+
+        Item itemToBeScheduled;
     //updates data
-        toCreate.addAll(toUpdate);
-        if(toCreate.size()>1){
-            db.addItems(toCreate);
-        }else if(toCreate.size()!=0){
-            db.addItem(toCreate.get(0));
+        if(toSave.size()>1){
+            db.addItems(toSave);
+        }else if(toSave.size()!=0){
+            db.addItem(toSave.get(0));
         }
         if(toDelete.size()>1){
             db.deleteItems(toDelete);
@@ -63,8 +54,6 @@ public class ItemResources{
             Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
         }
         return itemToBeScheduled;
-
-        //return running;
     }
 
     //unique item methods
@@ -82,17 +71,21 @@ public class ItemResources{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
         current.add(newItem);
-        toCreate.add(newItem);
+        toSave.add(newItem);
         return current;
     }
     public void removeItem(Item itemToRemove){
-        if(toCreate.contains(itemToRemove)) {
-            toCreate.remove(itemToRemove);
+        if( Check.itmesEqual(toSave,itemToRemove)) {
+            toSave.remove(itemToRemove);
         }else{
             toDelete.add(itemToRemove);
         }
     }
     public void modifyItem(Item oldItem,String newName, String newDays, String newPrice){
+
+        if(!Check.itmesEqual(toSave,oldItem)){
+            toSave.add(oldItem);
+        }
 
         oldItem.setItemName(newName);
         if(newDays.equals("")) {
@@ -106,23 +99,6 @@ public class ItemResources{
         }else{
             oldItem.setPrice(Float.parseFloat(newPrice));
         }
-
-        Item result = toCreate.stream()
-                .filter(i ->i.getItem_id() == oldItem.getItem_id())
-                .findFirst().orElse(null);
-
-        if(result!=null){
-            result = oldItem;
-        }else{
-            result = toUpdate.stream()
-                    .filter(i ->i.getItem_id()==oldItem.getItem_id())
-                    .findFirst().orElse(null);
-            if(result!=null){
-                result = oldItem;
-            }else{
-                toUpdate.add(oldItem);
-            }
-        }
     }
     //re-schedule service
     public Item re_scheduleAlarm(){
@@ -131,32 +107,20 @@ public class ItemResources{
        if(app_items.size()>1){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);
            if(itemToBeScheduled != null){
-               db.addItems(toUpdate);
+               db.addItems(toSave);
                Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
                        " lasting days of "+itemToBeScheduled.getLastingDays());
 
                return itemToBeScheduled;
-               /*
-               //Intent intent = new Intent(mContext,Alarm.class);
-               //intent.putExtra("name",itemToBeScheduled.getItemName());
-               //intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-               //mContext.startService(intent);
-
-                */
            }
        }else if(app_items.size() == 1){
            Item itemToBeScheduled = app_items.get(0);
            itemToBeScheduled.setRunOutDate(itemToBeScheduled.getLastingDays());
-           db.addItems(toUpdate);
+           db.addItems(toSave);
            Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
                    " lasting days of "+itemToBeScheduled.getLastingDays());
 
            return itemToBeScheduled;
-
-           //Intent intent = new Intent(mContext,Alarm.class);
-           //intent.putExtra("name",itemToBeScheduled.getItemName());
-           //intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-           //mContext.startService(intent);
        }
         return null;
     }
@@ -177,7 +141,7 @@ public class ItemResources{
             if(currentItem.isRunning()){
                 currentItem=extendTime(currentItem); // extend items time
                 currentItem.setRunning(false);
-                toUpdate.add(currentItem);
+                toSave.add(currentItem);
 
             }
             if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0 ){
@@ -186,8 +150,8 @@ public class ItemResources{
         }
         lowestDateItem.setRunning(true);
 
-        if(!toUpdate.contains(lowestDateItem)){
-            toUpdate.add(lowestDateItem);
+        if( !Check.itmesEqual(toSave,lowestDateItem)){
+            toSave.add(lowestDateItem);
         }
         return lowestDateItem;
     }
