@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+
     }
 //all the data observers----------------------
     private void Observers(){
@@ -185,9 +187,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        assoViewModel.updateAssociations();
-        Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
         listsViewModel.refresh_Db_Lists();
+        Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
+        assoViewModel.updateAssociations();
         if(itemToBeScheduled != null){
             Intent intent = new Intent(this, Alarm.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());

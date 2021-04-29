@@ -81,7 +81,6 @@ public class AssoResources {
 
             if(currentSaved == null){
                 toDelete.add(asso);
-                curr.remove(asso);
                 return curr;
             }
 
@@ -106,9 +105,11 @@ public class AssoResources {
 //set multiple items to be deleted from one list
     public void severList(ArrayList<Association> listToDelete){
         if(listToDelete.size() !=0){
-            for(Association curr : listToDelete){
-                deleteAsso(curr.getItem_Id(),listToDelete);
 
+                for(int i=0;i<listToDelete.size();i++){
+
+                deleteAsso(listToDelete.get(i).getItem_Id(),listToDelete);
+                i--;
                 /*
                 if(toSave.containsKey(curr.getList_Id())){
                     ArrayList<Association> toSaveTemp = toSave.get(curr.getList_Id());
@@ -151,22 +152,15 @@ public class AssoResources {
     public void severItem(ArrayList<ItemList> removed, Item deleteItem){
         int list_id;
         ArrayList<Association> currentAsso;
+            for(int i = 0;i<removed.size();i++){
 
-        for(ItemList itemList : removed){
-             list_id = itemList.getList_Id();
+             list_id = removed.get(i).getList_Id();
 // check if each list id is here.
             if(app_assos.containsKey(list_id)){
                 currentAsso = app_assos.get(list_id); // get Array of association for list_Id
 
                 deleteAsso(deleteItem.getItem_id(),currentAsso);
-                /*
-                Association assoTodelete = currentAsso.stream()
-                        .filter(index -> index.getItem_Id() == deleteItem.getItem_id())
-                        .findFirst().orElse(null);
-                if(assoTodelete!=null){
-                    currentAsso.remove(assoTodelete);
-                }
-                 */
+                i--;
 
             }
         }

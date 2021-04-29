@@ -25,6 +25,7 @@ public class RealmDb{
         ArrayList<Item> list = new ArrayList<>();
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
+
                 RealmResults<Item> results = inRealm.where(Item.class).findAll();
                 if (results.size() != 0) {
                     list.addAll(inRealm.copyFromRealm(results));
@@ -40,6 +41,7 @@ public class RealmDb{
     public void addItems(ArrayList<Item>items){
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
+
                 inRealm.copyToRealmOrUpdate(items);
 
                 Log.i("log", "Realm AddItems : save items");
@@ -52,6 +54,7 @@ public class RealmDb{
     public void removeItem(Item item) {
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
+
                Item tempItem = inRealm.where(Item.class)
                     .equalTo("item_Id", item.getItem_id())
                     .findFirst();
@@ -65,16 +68,17 @@ public class RealmDb{
     }
     public void deleteItems(ArrayList<Item> toDelete) {
         try (Realm realm = Realm.getDefaultInstance()){
-            for(Item currItem : toDelete){
-                realm.executeTransaction(inRealm -> {
+            realm.executeTransaction(inRealm -> {
+
+                for(Item currItem : toDelete){
                     Item tempItem = inRealm.where(Item.class)
                             .equalTo("item_Id", currItem.getItem_id())
                             .findFirst();
                     if (tempItem != null) {
                         tempItem.deleteFromRealm();
                         }
-                });
-            }
+                }
+            });
         } catch (Exception e) {
             Log.d("log", "delete items. not found ");
         }
@@ -82,6 +86,7 @@ public class RealmDb{
     // add single item to database
     public void addItem(Item item){
         try (Realm realm = Realm.getDefaultInstance()){
+
             realm.executeTransaction(inRealm -> {
                 inRealm.copyToRealmOrUpdate(item);
                 Log.d(TAG, "execute: added item...");
@@ -97,6 +102,7 @@ public class RealmDb{
         ArrayList<ItemList> lists = new ArrayList<>();
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
+
             RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
                  if (results.size() != 0) {
                  lists.addAll(realm.copyFromRealm(results));
@@ -134,6 +140,7 @@ public class RealmDb{
     public void removeLists(ArrayList<ItemList> toDelete) {
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm ->{
+
                 for(ItemList list : toDelete){
                     ItemList temp = inRealm.where(ItemList.class)
                             .equalTo("list_Id",list.getList_Id())
@@ -201,6 +208,7 @@ public class RealmDb{
     public void removeAssos(ArrayList<Association> toDelete) {
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm ->{
+
                 for(Association asso : toDelete){
                     Association temp = inRealm.where(Association.class)
                             .equalTo("asso_Id",asso.getAsso_Id())
