@@ -26,4 +26,8 @@
     <string name="shop_name">shop name</string>
     <string name="priceText">price</string>
     <string name="product_name">product name</string>
+    <string name="manage_items">Manage Items</string>
+    <string name="manage_list">Manage List</string>
+    <string name="items">Items</string>
+    <string name="notifications">Notifications</string>
 </resources>

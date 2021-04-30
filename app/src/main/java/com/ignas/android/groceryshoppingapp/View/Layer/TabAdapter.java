@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemFragment;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsFragment;
+import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.ShoppingDateFragment;
+import com.ignas.android.groceryshoppingapp.View.Layer.Report.ReportFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;
@@ -28,6 +30,13 @@ public class TabAdapter extends FragmentPagerAdapter {
                 break;
             case 1:
                 fragment = ListsFragment.newInstance();
+                break;
+            case 2:
+                fragment = ShoppingDateFragment.newInstance();
+                break;
+            case 3:
+                fragment = ReportFragment.newInstance("","");
+
         }
         return fragment;
     }

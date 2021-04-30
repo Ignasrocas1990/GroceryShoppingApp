@@ -26,33 +26,49 @@
             android:theme="?attr/actionBarTheme"
             app:navigationIcon="@drawable/ic_baseline_menu_24" />
 
-    <com.google.android.material.tabs.TabLayout
+        <com.google.android.material.tabs.TabLayout
 
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:tabIconTint="@color/blue"
-        app:tabIndicator="@android:drawable/button_onoff_indicator_off"
-        app:tabIndicatorColor="@color/blue"
-        app:tabIndicatorHeight="5dp"
-        app:tabRippleColor="@color/blue"
-        app:tabSelectedTextColor="@color/red"
-        app:tabTextColor="@color/blue">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/ItemFragment"
-            android:layout_width="wrap_content"
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:icon="@drawable/ic_baseline_lunch_dining_24"
-            android:text="Manage Items" />
+            android:background="@color/white"
+            app:tabIconTint="@color/blue"
+            app:tabIndicator="@android:drawable/bottom_bar"
+            app:tabIndicatorColor="@color/blue"
+            app:tabIndicatorHeight="5dp"
+            app:tabRippleColor="@color/blue"
+            app:tabSelectedTextColor="@color/red"
+            app:tabTextColor="@color/blue">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Blank" />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_items"
+                android:text="@string/items" />
 
-    </com.google.android.material.tabs.TabLayout>
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ListsFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_list"
+                android:text="Lists" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ShoppingDateFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_shopping_cart__1_"
+                android:text="Shopping Date" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ReportFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_report"
+                android:text="Report" />
+
+        </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pageView"
