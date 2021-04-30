@@ -1,5 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
+import android.util.Log;
+
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -22,6 +24,7 @@ public class AssoResources {
         db = new RealmDb();
         db_assos = db.getAllAssos();
         list_to_map();
+
     }
     public HashMap<Integer, ArrayList<Association>> getApp_assos() {
         return app_assos;
@@ -29,12 +32,20 @@ public class AssoResources {
 
 
     public void list_to_map(){
+
+        ArrayList<Association> temp;
+        int key_Id;
         for(Association asso : db_assos){
-            int key_Id = asso.getList_Id();
+            key_Id = asso.getList_Id();
             if(app_assos.containsKey(key_Id)){
-                app_assos.get(key_Id).add(asso);
+
+               temp =  app_assos.get(key_Id);
+                temp.add(asso);
+
             }else{
-                app_assos.put(key_Id, new ArrayList<>());
+                temp = new ArrayList<>();
+                temp.add(asso);
+                app_assos.put(key_Id, temp);
             }
         }
     }

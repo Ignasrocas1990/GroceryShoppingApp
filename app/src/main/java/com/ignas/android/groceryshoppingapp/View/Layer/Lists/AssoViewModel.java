@@ -39,7 +39,7 @@ public class AssoViewModel extends ViewModel {
     public void deleteAsso(int item_Id){
         currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));
     }
-
+//update db with app associations
     public void updateAssociations() {
         assoResources.updateDB_Associations();
     }
