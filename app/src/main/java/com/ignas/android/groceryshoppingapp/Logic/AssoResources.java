@@ -171,7 +171,6 @@ public class AssoResources {
                 currentAsso = app_assos.get(list_id); // get Array of association for list_Id
 
                 deleteAsso(deleteItem.getItem_id(),currentAsso);
-                i--;
 
             }
         }
