@@ -3,11 +3,14 @@ package com.ignas.android.groceryshoppingapp.Service.Realm;
 
 import android.util.Log;
 
+import com.ignas.android.groceryshoppingapp.Models.AlarmSwitch;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -240,6 +243,41 @@ public class RealmDb{
         }
 
     }
+//get Alarm Switch
+    public boolean getSwitch() {
+        AtomicBoolean result= new AtomicBoolean(true);
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm->{
 
+                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
+                if(tempSwitch!=null){
+                    result.set(tempSwitch.isSwitched());
+                }
+            });
+        }catch(Exception e){
+            Log.i(TAG, "getSwitch: get, not successfully");
+        }
+        return result.get();
+    }
+
+//modify alarm switch
+    public void setSwitch(Boolean state){
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm ->{
+                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
+                if(tempSwitch == null){
+
+                    AlarmSwitch alarmSwitch = new AlarmSwitch();
+                    alarmSwitch.setSwitch(state);
+                    inRealm.copyToRealmOrUpdate(alarmSwitch);
+                }else{
+                    tempSwitch.setSwitch(state);
+                }
+            });
+
+        }catch(Exception e){
+            Log.i(TAG, "setSwitch: did not set switch");
+        }
+    }
 
 }

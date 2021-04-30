@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemFragment;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsFragment;
-import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.ShoppingDateFragment;
+import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.DateFragment;
 import com.ignas.android.groceryshoppingapp.View.Layer.Report.ReportFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
@@ -32,7 +32,7 @@ public class TabAdapter extends FragmentPagerAdapter {
                 fragment = ListsFragment.newInstance();
                 break;
             case 2:
-                fragment = ShoppingDateFragment.newInstance();
+                fragment = DateFragment.newInstance();
                 break;
             case 3:
                 fragment = ReportFragment.newInstance("","");

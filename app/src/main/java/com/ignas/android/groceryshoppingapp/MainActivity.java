@@ -25,6 +25,7 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Alarm;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.DateViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
 import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         private ItemViewModel itemViewModel;
         private ListsViewModel listsViewModel;
         private AssoViewModel assoViewModel;
+        private DateViewModel dateViewModel;
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
         Menu menu;
@@ -65,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
 
+//initialize view Models
         listsViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
+        dateViewModel = ViewModelProviders.of(this).get(DateViewModel.class);
 
         Observers();
 //drawer on select
@@ -187,16 +191,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        dateViewModel.updateSwitch();
         listsViewModel.refresh_Db_Lists();
         Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
         assoViewModel.updateAssociations();
-        if(itemToBeScheduled != null){
+        if(dateViewModel.getSwitch() &&  itemToBeScheduled != null){
             Intent intent = new Intent(this, Alarm.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());
             intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
             intent.putExtra("flag",0);
             startService(intent);
-
+        }else{
+            Intent intent = new Intent(this, Alarm.class);
+            intent.putExtra("name","");
+            intent.putExtra("flag",-1);
+            startService(intent);
         }
 
     }

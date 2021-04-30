@@ -48,7 +48,10 @@ public class ItemResources{
         }else if(toDelete.size()!=0){
             db.removeItem(toDelete.get(0));
         }
-    //gets next item to be scheduled
+
+        if(!db.getSwitch())return null; //check if all notifications are turned off
+
+        //gets next item to be scheduled
         itemToBeScheduled =  getNextItem_toSchedule(app_items);
         if(itemToBeScheduled !=null){
             Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
@@ -103,6 +106,9 @@ public class ItemResources{
     //re-schedule service
     public Item re_scheduleAlarm(){
         db = new RealmDb();
+        if(!db.getSwitch()){
+            return null;
+        }
         ArrayList<Item>app_items = db.getItems();
        if(app_items.size()>1){
            Item itemToBeScheduled = getNextItem_toSchedule(app_items);

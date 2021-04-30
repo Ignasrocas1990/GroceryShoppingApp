@@ -26,6 +26,7 @@ import static android.os.SystemClock.sleep;
 public class Alarm extends Service {
 
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //super.onStartCommand(intent, flags, startId);
@@ -76,8 +77,8 @@ public class Alarm extends Service {
             Log.i("log", "alarm :"+dateTag);
             return START_REDELIVER_INTENT;
         }else{
-            Log.i("log", "onStartCommand: cancled");
-            stopAlarm();
+            Log.i("log", "onStartCommand: canceled");
+            stopAlarm(this);
             return START_NOT_STICKY;
         }
 
@@ -87,7 +88,17 @@ public class Alarm extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-    public void stopAlarm(){
+    public void stopAlarm(Context context){
+
+        Intent intent  = new Intent(context, Notification.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        if(pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+        if(pendingIntent==null){ Log.i("log", "stopAlarm: success with pendingIntent"); }
+
         stopSelf();
         Toast.makeText(this, "alarm service canceled", Toast.LENGTH_SHORT).show();
         onDestroy();

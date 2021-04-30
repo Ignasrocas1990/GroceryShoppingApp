@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:foregroundTint="@color/red"
     android:gravity="center"
-    tools:context=".View.Layer.ShoppingDate.ShoppingDateFragment">
+    tools:context=".View.Layer.ShoppingDate.DateFragment">
 
 
     <LinearLayout

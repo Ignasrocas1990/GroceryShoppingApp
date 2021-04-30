@@ -15,7 +15,7 @@ public class DbConnect extends Application {
         super.onCreate();
         Realm.init(this);
 
-        final RealmConfiguration config = new RealmConfiguration.Builder().name("DB.realm")
+        final RealmConfiguration config = new RealmConfiguration.Builder().name("rDB.realm")
                 .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)
