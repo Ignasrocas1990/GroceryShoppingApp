@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
-import com.ignas.android.groceryshoppingapp.Service.Alarm;
+import com.ignas.android.groceryshoppingapp.Service.AlarmService;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.DateViewModel;
@@ -196,13 +196,13 @@ public class MainActivity extends AppCompatActivity {
         Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
         assoViewModel.updateAssociations();
         if(dateViewModel.getSwitch() &&  itemToBeScheduled != null){
-            Intent intent = new Intent(this, Alarm.class);
+            Intent intent = new Intent(this, AlarmService.class);
             intent.putExtra("name",itemToBeScheduled.getItemName());
             intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
             intent.putExtra("flag",0);
             startService(intent);
         }else{
-            Intent intent = new Intent(this, Alarm.class);
+            Intent intent = new Intent(this, AlarmService.class);
             intent.putExtra("name","");
             intent.putExtra("flag",-1);
             startService(intent);

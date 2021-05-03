@@ -15,21 +15,27 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shopping Date" />
+        <LinearLayout
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shopping Date :    " />
+
+            <TextView
+                android:id="@+id/datePicker"
+                android:clickable="true"
+                android:hint="None Date Scheduled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
 
-        <DatePicker
-            android:id="@+id/datePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:backgroundTint="#FFFFFF"
-            android:dayOfWeekBackground="#F32121"
-            android:headerBackground="@color/blue"
-            android:yearListSelectorColor="#03A9F4" />
 
         <Button
             android:id="@+id/schedule"

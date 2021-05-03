@@ -7,7 +7,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,12 +17,8 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Timer;
 
-import static android.os.SystemClock.sleep;
-
-public class Alarm extends Service {
+public class AlarmService extends Service {
 
 
 
@@ -59,7 +54,7 @@ public class Alarm extends Service {
 
 
             //create new alarm notification
-            Intent newIntent = new Intent(this,Notification.class);
+            Intent newIntent = new Intent(this, NotificationService.class);
             newIntent.putExtra("name",name);
             newIntent.putExtra("time",dateTag);
 
@@ -90,7 +85,7 @@ public class Alarm extends Service {
     }
     public void stopAlarm(Context context){
 
-        Intent intent  = new Intent(context, Notification.class);
+        Intent intent  = new Intent(context, NotificationService.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 

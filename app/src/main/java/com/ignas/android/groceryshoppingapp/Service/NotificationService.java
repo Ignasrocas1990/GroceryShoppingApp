@@ -14,13 +14,12 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.R;
 
-public class Notification extends BroadcastReceiver {
+public class NotificationService extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
     NotificationCompat.Builder notification;
-    public Notification(){}
+    public NotificationService(){}
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);
@@ -32,7 +31,7 @@ public class Notification extends BroadcastReceiver {
 
 
         //create Brought action Button
-        Intent brought = new Intent(context, Alarm.class);
+        Intent brought = new Intent(context, AlarmService.class);
         //brought.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getService(
