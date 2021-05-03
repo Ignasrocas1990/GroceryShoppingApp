@@ -121,23 +121,6 @@ public class AssoResources {
 
                 deleteAsso(listToDelete.get(i).getItem_Id(),listToDelete);
                 i--;
-                /*
-                if(toSave.containsKey(curr.getList_Id())){
-                    ArrayList<Association> toSaveTemp = toSave.get(curr.getList_Id());
-
-                    Association result = toSaveTemp.stream()
-                            .filter(asso->asso.getItem_Id()==curr.getList_Id())
-                            .findFirst().orElse(null);
-                    if(result!=null){
-                        toSaveTemp.remove(result);
-
-                    }
-                }else{
-                    toDelete.add(curr);
-                    listToDelete.remove(curr);
-                }
-
-                 */
             }
         }
     }
@@ -176,16 +159,16 @@ public class AssoResources {
         }
     }
 
-//db methods
+//saves,deletes from database
     public void updateDB_Associations(){
             ArrayList<Association> fullSave = new ArrayList<>();
             for(ArrayList<Association> a: toSave.values()){
                 fullSave.addAll(a);
             }
 
-            if(toSave.size()>1){
+            if(fullSave.size()>1){
                 db.addMultipleAsso(fullSave);
-            }else if (toSave.size() != 0){
+            }else if (fullSave.size() != 0){
                 db.addSingeAsso(fullSave.get(0));
             }
             if(toDelete.size()>1){
