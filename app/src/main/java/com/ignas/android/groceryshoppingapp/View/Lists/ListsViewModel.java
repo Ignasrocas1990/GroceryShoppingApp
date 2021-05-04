@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
+package com.ignas.android.groceryshoppingapp.View.Lists;
 
 import android.app.Application;
 

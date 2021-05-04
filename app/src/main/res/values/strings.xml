@@ -30,4 +30,11 @@
     <string name="manage_list">Manage List</string>
     <string name="items">Items</string>
     <string name="notifications">Notifications</string>
+    <string name="shopping_date">Shopping Date</string>
+    <string name="report">Report</string>
+    <string name="lists">Lists</string>
+    <string name="NoDate">no date has been selected</string>
+    <string name="no_date_has_been_selected">no date has been selected</string>
+    <string name="schedule">Schedule</string>
+    <string name="all_notifications">All Notifications</string>
 </resources>

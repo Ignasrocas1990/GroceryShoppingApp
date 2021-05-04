@@ -1,7 +1,5 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.util.Log;
-
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -96,13 +94,13 @@ public class AssoResources {
             }
 
 //its an old object(been modified) -deleting-
-            if(Check.assoEqual(db_assos,asso) && Check.assoEqual(currentSaved,asso)){
+            if(Check.assoEquals(db_assos,asso) && Check.assoEquals(currentSaved,asso)){
                 currentSaved.remove(asso);
                 toDelete.add(asso);
 
                 db_assos.remove(asso);
 //old object not modified -deleting-
-            }else if(Check.assoEqual(db_assos,asso)){
+            }else if(Check.assoEquals(db_assos,asso)){
 
                 toDelete.add(asso);
                 db_assos.remove(asso);

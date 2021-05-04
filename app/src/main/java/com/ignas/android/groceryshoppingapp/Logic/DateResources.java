@@ -3,23 +3,32 @@ package com.ignas.android.groceryshoppingapp.Logic;
 import com.ignas.android.groceryshoppingapp.Models.AlarmSwitch;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
+import java.util.Date;
+
 public class DateResources {
     private final RealmDb db;
-    final private boolean dbSwitch;
+    private final boolean dbSwitch;
+
 
     public DateResources() {
         db = new RealmDb();
-        dbSwitch = getDBSwitch();
-    }
-    public boolean getDBSwitch(){
-        return db.getSwitch();
+        dbSwitch = db.getSwitch();
     }
 
-    public void updateSwitch(boolean appSwitch){
+//notification switch methods
+    public boolean getDBSwitch(){
+        return dbSwitch;
+    }
+
+    public Boolean updateSwitch(boolean appSwitch){
 
         if(appSwitch != dbSwitch){
             db.setSwitch(appSwitch);
         }
+        if(appSwitch && !dbSwitch){
+            return true;
+        }
+        return false;
     }
 
 

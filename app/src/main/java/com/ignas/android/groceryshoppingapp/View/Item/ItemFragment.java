@@ -1,7 +1,6 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Item;
+package com.ignas.android.groceryshoppingapp.View.Item;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,8 +25,8 @@ import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
-import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 
 import java.util.ArrayList;
 
@@ -85,7 +84,7 @@ public class ItemFragment extends Fragment {
                 if(stringName.equals("")){
                     Toast.makeText(context, "List needs a name", Toast.LENGTH_SHORT).show();
                 }else if (curPosition[0] == -1){
-                    itemViewModel.addItem(stringName,stringDays,stringPrice);
+                    itemViewModel.createItem(stringName,stringDays,stringPrice);
                     curPosition[0] = -1;
                     product_name.setText("");
                     lasting_days.setText("");

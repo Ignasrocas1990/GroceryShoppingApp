@@ -52,21 +52,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_list"
-                android:text="Lists" />
+                android:text="@string/lists" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/ShoppingDateFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_shopping_cart__1_"
-                android:text="Shopping Date" />
+                android:text="@string/shopping_date" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/ReportFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_report"
-                android:text="Report" />
+                android:text="@string/report" />
 
         </com.google.android.material.tabs.TabLayout>
 

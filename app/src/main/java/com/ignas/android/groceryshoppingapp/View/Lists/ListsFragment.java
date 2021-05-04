@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Lists;
+package com.ignas.android.groceryshoppingapp.View.Lists;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 
 public class ListsFragment extends Fragment {
     private static final String TAG = "log";

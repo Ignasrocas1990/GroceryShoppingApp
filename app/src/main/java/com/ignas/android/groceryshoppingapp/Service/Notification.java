@@ -16,10 +16,10 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.ignas.android.groceryshoppingapp.R;
 
-public class NotificationService extends BroadcastReceiver {
+public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
     NotificationCompat.Builder notification;
-    public NotificationService(){}
+    public Notification(){}
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);

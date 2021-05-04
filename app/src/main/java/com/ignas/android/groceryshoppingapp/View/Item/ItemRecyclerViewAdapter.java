@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Item;
+package com.ignas.android.groceryshoppingapp.View.Item;
 
 import androidx.recyclerview.widget.RecyclerView;
 

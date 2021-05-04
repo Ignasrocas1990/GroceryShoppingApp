@@ -1,15 +1,15 @@
-package com.ignas.android.groceryshoppingapp.View.Layer;
+package com.ignas.android.groceryshoppingapp.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemFragment;
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
-import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsFragment;
-import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.DateFragment;
-import com.ignas.android.groceryshoppingapp.View.Layer.Report.ReportFragment;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemFragment;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.View.Lists.ListsFragment;
+import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateFragment;
+import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;

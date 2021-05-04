@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.Report;
+package com.ignas.android.groceryshoppingapp.View.Report;
 
 import android.os.Bundle;
 

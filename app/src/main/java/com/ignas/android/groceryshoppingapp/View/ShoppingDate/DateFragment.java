@@ -1,33 +1,29 @@
-package com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate;
+package com.ignas.android.groceryshoppingapp.View.ShoppingDate;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ignas.android.groceryshoppingapp.R;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 
 import org.jetbrains.annotations.NonNls;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class DateFragment extends Fragment {
@@ -50,29 +46,51 @@ public class DateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_date, container, false);
-        DateViewModel dateViewModel = ViewModelProviders.of(requireActivity()).get(DateViewModel.class);
         Context context = view.getContext();
         SwitchCompat notificationSwitch = view.findViewById(R.id.notificationSwitch);
-        TextView datePicker = view.findViewById(R.id.datePicker);
+        TextView dateTextView = view.findViewById(R.id.datePicker);
         Button schedule = view.findViewById(R.id.schedule);
+        DateViewModel dateViewModel = ViewModelProviders.of(requireActivity()).get(DateViewModel.class);
+        ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
 
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Calendar now = Calendar.getInstance(Locale.getDefault());
+        Calendar later = Calendar.getInstance(Locale.getDefault());
 
-        datePicker.setOnClickListener(new View.OnClickListener() {
+
+        itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {
+            if(item !=null){
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                String dateText = formatter.format(item.getRunOutDate());
+                dateTextView.setText(dateText);
+            }else{
+                dateTextView.setText(R.string.NoDate);
+            }
+        });
+
+        dateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dpDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
                         @NonNls String displayDate = dayOfMonth+"/"+month+"/"+year;
-                        datePicker.setText(displayDate);
-                        cal.set(year,month,dayOfMonth);
-                        dateViewModel.setShoppingDate(cal.getTime());
+                        String dateString = dateTextView.getText().toString();
+                            later.set(year,month,dayOfMonth);//for testing need to select hours/min and sec
+                            if(later.compareTo(now) > 0){
+                               // dateTextView.setText(displayDate);
+                                int lastingDays = (int) ((later.getTimeInMillis()-now.getTimeInMillis())/1000/60/60/24);// need testing-----<<<debug
+                                itemViewModel.createShoppingDate(Integer.MAX_VALUE,lastingDays);
+
+                            }else{
+                                Toast.makeText(context, "Error,Date selected is in the past.", Toast.LENGTH_SHORT).show();
+                            }
                     }
-                },cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_WEEK));
+                },now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_WEEK));
                 dpDialog.setCancelable(false);
                 dpDialog.setOnCancelListener(dialog -> {
-                    datePicker.setText("no date has been selected");
+                    dialog.dismiss();
+                    itemViewModel.delShoppingDate();
                 });
                 dpDialog.show();
             }

@@ -23,11 +23,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
-import com.ignas.android.groceryshoppingapp.View.Layer.Lists.AssoViewModel;
-import com.ignas.android.groceryshoppingapp.View.Layer.Lists.ListsViewModel;
-import com.ignas.android.groceryshoppingapp.View.Layer.ShoppingDate.DateViewModel;
-import com.ignas.android.groceryshoppingapp.View.Layer.TabAdapter;
-import com.ignas.android.groceryshoppingapp.View.Layer.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 
 import java.util.ArrayList;
 
@@ -191,17 +191,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        dateViewModel.updateSwitch();
+
+        if(dateViewModel.updateSwitch()){ //checks if switch was off and now its on
+            itemViewModel.reSyncItems();
+        }
+//update db data
         listsViewModel.refresh_Db_Lists();
-        Item  itemToBeScheduled = itemViewModel.refresh_Db_Items();
+        itemViewModel.updateDbItems();
         assoViewModel.updateAssociations();
-        if(dateViewModel.getSwitch() &&  itemToBeScheduled != null){
-            Intent intent = new Intent(this, AlarmService.class);
-            intent.putExtra("name",itemToBeScheduled.getItemName());
-            intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
-            intent.putExtra("flag",0);
-            startService(intent);
-        }else{
+
+        if(dateViewModel.getSwitch()){  //if notification are on
+            Item itemToBeScheduled= itemViewModel.getScheduledItem();
+
+            if( itemToBeScheduled != null){
+                Intent intent = new Intent(this, AlarmService.class);
+                intent.putExtra("name",itemToBeScheduled.getItemName());
+                intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+                intent.putExtra("flag",0);
+                startService(intent);
+            }
+        }else{  //cancel alarms
+
             Intent intent = new Intent(this, AlarmService.class);
             intent.putExtra("name","");
             intent.putExtra("flag",-1);

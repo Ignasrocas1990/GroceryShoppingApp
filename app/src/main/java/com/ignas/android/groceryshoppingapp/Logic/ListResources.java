@@ -2,7 +2,6 @@ package com.ignas.android.groceryshoppingapp.Logic;
 
 import android.content.Context;
 
-import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
@@ -39,10 +38,10 @@ public ItemList createList(String listName,String shopName){
 
     public ItemList removeList(ItemList list) {
 
-        if(Check.listEqual(db_lists,list) && Check.listEqual(toSave,list)){    //check if old item(modified) removing
+        if(Check.listEquals(db_lists,list) && Check.listEquals(toSave,list)){    //check if old item(modified) removing
             toSave.remove(list);
             toDelete.add(list);
-        }else if (Check.listEqual(db_lists,list)){                      //item is old not modified
+        }else if (Check.listEquals(db_lists,list)){                      //item is old not modified
             toDelete.add(list);
         }else{
             toSave.remove(list);                                //item is just created
@@ -61,7 +60,7 @@ public ItemList createList(String listName,String shopName){
         list_to_del = null;
     }
     public ItemList modifyList(String listName, String shopName, ItemList curList) {
-        if(!Check.listEqual(toSave,curList)){
+        if(!Check.listEquals(toSave,curList)){
 
             toSave.add(curList);
         }

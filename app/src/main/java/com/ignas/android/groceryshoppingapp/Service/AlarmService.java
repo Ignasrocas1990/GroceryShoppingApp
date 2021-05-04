@@ -54,7 +54,7 @@ public class AlarmService extends Service {
 
 
             //create new alarm notification
-            Intent newIntent = new Intent(this, NotificationService.class);
+            Intent newIntent = new Intent(this, Notification.class);
             newIntent.putExtra("name",name);
             newIntent.putExtra("time",dateTag);
 
@@ -85,7 +85,7 @@ public class AlarmService extends Service {
     }
     public void stopAlarm(Context context){
 
-        Intent intent  = new Intent(context, NotificationService.class);
+        Intent intent  = new Intent(context, Notification.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 

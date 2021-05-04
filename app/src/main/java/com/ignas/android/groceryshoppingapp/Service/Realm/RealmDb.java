@@ -9,7 +9,9 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -18,12 +20,49 @@ import io.realm.RealmResults;
 public class RealmDb{
     final String TAG = "log";
 
-
     public RealmDb() {
         //removeAll();
     }
 
-    //  Get all items
+//get shopping date TODO (dont know if i need it...)
+    public Date getShoppingDate(){
+        AtomicReference<Date> shoppingDate = new AtomicReference<>(null);
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm ->{
+                Item dateItem = inRealm.where(Item.class)
+                        .equalTo("item_Id",Integer.MAX_VALUE).findFirst();
+                if(dateItem !=null){
+                    shoppingDate.set(dateItem.getRunOutDate());
+                }
+            });
+        }catch(Exception e){
+            Log.i(TAG, "getShoppingDate: fail"+e.getMessage());
+        }
+        return shoppingDate.get();
+    }
+
+//get shopping date item for scheduling TODO (dont know if i need it...)
+    public Item getSDItem(){
+        ArrayList<Item> temp = new ArrayList<Item>(1);
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm ->{
+                Item dateItem = inRealm.where(Item.class)
+                        .equalTo("item_Id",Integer.MAX_VALUE).findFirst();
+                if(dateItem !=null){
+                    temp.add(inRealm.copyFromRealm(dateItem));
+                }
+            });
+        }catch(Exception e){
+            Log.i(TAG, "getShoppingDate: fail"+e.getMessage());
+        }
+        if(temp.size() == 1){
+            return temp.get(0);
+        }
+        return null;
+    }
+
+
+//  Get all items
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -40,7 +79,7 @@ public class RealmDb{
         return list;
     }
 
-    // add/copy list of items
+// add/copy list of items
     public void addItems(ArrayList<Item>items){
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
@@ -86,7 +125,7 @@ public class RealmDb{
             Log.d("log", "delete items. not found ");
         }
     }
-    // add single item to database
+// add single item to database
     public void addItem(Item item){
         try (Realm realm = Realm.getDefaultInstance()){
 

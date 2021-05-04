@@ -36,6 +36,11 @@ public class Item extends RealmObject {
         this.itemName = itemName;
     }
     public Item(int now){ lastingDays = now;}
+    public Item(String name,int item_Id,int lastingDays){
+        setItemName(name);
+        setLastingDays(lastingDays);
+        this.item_Id = item_Id;
+    }
 
     public Item(String itemName, float price, int lastingDays) {
         this.itemName = itemName;

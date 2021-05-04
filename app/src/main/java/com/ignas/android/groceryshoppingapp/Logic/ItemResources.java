@@ -11,9 +11,11 @@ import java.util.Date;
 
 public class ItemResources{
     private static final String TAG ="log";
-    //private ArrayList<Item> toUpdate = new ArrayList<>();// merge
-    private ArrayList<Item> toSave = new ArrayList<>();// merge
+    private ArrayList<Item> toSave = new ArrayList<>();
     private ArrayList<Item> toDelete = new ArrayList<>();
+    private ArrayList<Item> db_items = new ArrayList<>();
+    private Item existentSDate = null;
+
     Context mContext = null;
     RealmDb db;
 
@@ -23,7 +25,10 @@ public class ItemResources{
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
-
+        db_items = db.getItems();
+        existentSDate = db_items.stream()
+                .filter(i-> i.getItem_id() == Integer.MAX_VALUE)
+                .findFirst().orElse(null);
     }
 
     public void setContext(Context context){
@@ -31,12 +36,21 @@ public class ItemResources{
     }
 
     public ArrayList<Item> getItems(){
-        return db.getItems();
+        ArrayList<Item> app_items=null;
+        if(db_items.size() != 0){
+             app_items = new ArrayList<>();
+            app_items.addAll(db_items);
+        }
+        if(existentSDate !=null){
+            app_items.remove(existentSDate);
+        }
+        return app_items;
+
     }
 
-    public Item update(ArrayList<Item> app_items){
 
-        Item itemToBeScheduled;
+    public void update(ArrayList<Item> app_items){ //access db to save/del data
+
     //updates data
         if(toSave.size()>1){
             db.addItems(toSave);
@@ -48,18 +62,9 @@ public class ItemResources{
         }else if(toDelete.size()!=0){
             db.removeItem(toDelete.get(0));
         }
-
-        if(!db.getSwitch())return null; //check if all notifications are turned off
-
-        //gets next item to be scheduled
-        itemToBeScheduled =  getNextItem_toSchedule(app_items);
-        if(itemToBeScheduled !=null){
-            Log.i("log", "item scheduled : "+itemToBeScheduled.getItemName()+" lasting days of "+itemToBeScheduled.getLastingDays());
-        }
-        return itemToBeScheduled;
     }
 
-    //unique item methods
+    //create item with new data and current list
     public ArrayList<Item> createItem(String newName, String newDays, String newPrice,ArrayList<Item>current){
         Item newItem = new Item();
         newItem.setItemName(newName);
@@ -78,18 +83,21 @@ public class ItemResources{
         return current;
     }
     public void removeItem(Item itemToRemove){
-        if( Check.itmesEqual(toSave,itemToRemove)) {
+        if(Check.itemEquals(db_items,itemToRemove) && Check.itemEquals(toSave,itemToRemove)){ //check if old item(modified) removing
             toSave.remove(itemToRemove);
-        }else{
             toDelete.add(itemToRemove);
+        }else if (Check.itemEquals(db_items,itemToRemove)){ //item is old not modified
+            toDelete.add(itemToRemove);
+        }else{
+            toSave.remove(itemToRemove); //item is just created
         }
+
     }
     public void modifyItem(Item oldItem,String newName, String newDays, String newPrice){
 
-        if(!Check.itmesEqual(toSave,oldItem)){
+        if(!Check.itemEquals(toSave,oldItem)){
             toSave.add(oldItem);
         }
-
         oldItem.setItemName(newName);
         if(newDays.equals("")) {
             oldItem.setLastingDays(0);
@@ -111,7 +119,7 @@ public class ItemResources{
         }
         ArrayList<Item>app_items = db.getItems();
        if(app_items.size()>1){
-           Item itemToBeScheduled = getNextItem_toSchedule(app_items);
+           Item itemToBeScheduled = getScheduledItem(app_items);
            if(itemToBeScheduled != null){
                db.addItems(toSave);
                Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
@@ -131,7 +139,7 @@ public class ItemResources{
         return null;
     }
     //finds current running item/update's it and return next item to be scheduled.
-    private Item getNextItem_toSchedule(ArrayList<Item> allItems){
+    public Item getScheduledItem(ArrayList<Item> allItems){
         if(allItems.size()==0){
             return null;
         }else if(allItems.size()==1){
@@ -156,7 +164,7 @@ public class ItemResources{
         }
         lowestDateItem.setRunning(true);
 
-        if( !Check.itmesEqual(toSave,lowestDateItem)){
+        if( !Check.itemEquals(toSave,lowestDateItem)){
             toSave.add(lowestDateItem);
         }
         return lowestDateItem;
@@ -170,4 +178,47 @@ public class ItemResources{
         }
         return item;
     }
+// gets all current data and updates its Running out Date (after NTF switch is on )
+    public void reSyncItems(ArrayList<Item> value) {
+        for(Item current : value){
+            current.setRunOutDate(current.getLastingDays());
+        }
+        if(value.size()>1){
+            db.addItems(value);
+        }else if(value.size()==1){
+            db.addItem(value.get(0));
+        }
+    }
+
+    public Item getShoppingDateItem() { return existentSDate; }
+
+    //create/updates shopping date item.
+    public Item createDateItem(int item_id, int lastingDays) {
+        Item newShoppingDate=null;
+
+        if(existentSDate == null){//no shopping date been set (from db)
+            newShoppingDate = new Item("Shopping$Date", item_id, lastingDays);
+            this.existentSDate = newShoppingDate;
+            toSave.add(existentSDate);
+        }else if(toSave.size() !=0){// check if it is been modified already
+            newShoppingDate = toSave.stream()
+                    .filter(index->index.getItem_id()==item_id).findFirst().orElse(null);
+            if(newShoppingDate !=null){
+                newShoppingDate.setRunOutDate(lastingDays);
+            }
+        }
+       return newShoppingDate;
+    }
+//removes shopping date
+    public void deleteShoppingDate(Item shoppingDate){
+
+        if(existentSDate.getRunOutDate().compareTo(shoppingDate.getRunOutDate()) == 0){//check if they are the same, need to cancel alarm.
+            toDelete.add(shoppingDate);
+        }
+        if (Check.itemEquals(toSave, shoppingDate)) {//if its saved that means its been modified/created
+            toSave.remove(shoppingDate);
+        }
+
+    }
+
 }
