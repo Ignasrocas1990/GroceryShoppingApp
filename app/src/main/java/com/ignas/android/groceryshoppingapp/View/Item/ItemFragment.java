@@ -171,17 +171,4 @@ public class ItemFragment extends Fragment {
 
         return view;
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_items,menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.delete_menu_btn){
-            Toast.makeText(getActivity(), "delete selected", Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }
 }

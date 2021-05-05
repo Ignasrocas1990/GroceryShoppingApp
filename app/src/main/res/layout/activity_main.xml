@@ -24,7 +24,10 @@
             android:keyboardNavigationCluster="true"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            app:navigationIcon="@drawable/ic_baseline_menu_24" />
+            app:navigationIcon="@drawable/ic_baseline_menu_24"
+            app:title="Grocery Shopping App"
+            app:titleMarginStart="50dp"
+            app:titleTextColor="@color/white" />
 
         <com.google.android.material.tabs.TabLayout
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ignas.android.groceryshoppingapp">
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -17,14 +18,25 @@
             android:theme="@style/Theme.GroceryShoppingApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".Service.Notification"
-            android:enabled="true"/>
+        <activity
+            android:name=".View.ShoppingDate.ShoppingActivity"
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="false">
 
-        <service android:name=".Service.AlarmService"
-            android:enabled="true"/>
+        </activity>
+        <receiver
+            android:name=".Service.Notification"
+            android:enabled="true" />
+
+        <service
+            android:name=".Service.AlarmService"
+            android:enabled="true" />
     </application>
 
 </manifest>

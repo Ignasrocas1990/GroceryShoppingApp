@@ -27,11 +27,15 @@ public class AlarmService extends Service {
         //super.onStartCommand(intent, flags, startId);
         String dateTag="",name="";
         long runoutDate=1;
-        int flag=-1;
+        int flag=-1,type=0;
         flag = intent.getIntExtra("flag",1);
         name = intent.getStringExtra("name");
         runoutDate = intent.getLongExtra("time",1);
+        type = intent.getIntExtra("type",0);
 
+
+
+//flag=1 when service from notification (reschedule notification)
         if(flag==1){
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             if(intent != null){
@@ -47,7 +51,7 @@ public class AlarmService extends Service {
 
 
         }
-        // check if alarm is not empty
+// if has a name create alarm -else- cancel alarm (from activity)
         if(!name.equals("")){
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
             dateTag = formatter.format(runoutDate);
@@ -57,6 +61,7 @@ public class AlarmService extends Service {
             Intent newIntent = new Intent(this, Notification.class);
             newIntent.putExtra("name",name);
             newIntent.putExtra("time",dateTag);
+            newIntent.putExtra("type",type);
 
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -74,6 +79,12 @@ public class AlarmService extends Service {
         }else{
             Log.i("log", "onStartCommand: canceled");
             stopAlarm(this);
+
+            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            if(manager != null){
+                manager.cancel(0);
+            }
+
             return START_NOT_STICKY;
         }
 

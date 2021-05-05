@@ -37,4 +37,10 @@
     <string name="no_date_has_been_selected">no date has been selected</string>
     <string name="schedule">Schedule</string>
     <string name="all_notifications">All Notifications</string>
+    <string name="title_activity_main">MainActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>

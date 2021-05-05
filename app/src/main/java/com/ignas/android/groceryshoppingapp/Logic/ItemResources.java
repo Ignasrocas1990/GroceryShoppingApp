@@ -145,18 +145,18 @@ public class ItemResources{
         return null;
     }
     //finds current running item/update's it and return next item to be scheduled.
-    public Item getScheduledItem(ArrayList<Item> allItems){
-        if(allItems.size()==0){
+    public Item getScheduledItem(ArrayList<Item> appItems){
+        if(appItems.size()==0){
             return null;
-        }else if(allItems.size()==1){
-            return allItems.get(0);
+        }else if(appItems.size()==1){
+            return appItems.get(0);
         }
         final Date now = new Item(1).getRunOutDate();// set to now
-        Item lowestDateItem = allItems.get(0);
+        Item lowestDateItem = appItems.get(0);
         Item currentItem;
 
-        for(int i=0;i<allItems.size();i++){
-            currentItem = allItems.get(i);
+        for(int i=0;i<appItems.size();i++){
+            currentItem = appItems.get(i);
 
             if(currentItem.isRunning()){
                 currentItem=extendTime(currentItem); // extend items time
@@ -203,7 +203,7 @@ public class ItemResources{
     public Item createDateItem(int lastingDays,Item app_DateItem) {
 
         if(app_DateItem == null){//it does not exists
-            app_DateItem = new Item("Shopping$Time",Integer.MAX_VALUE,lastingDays);
+            app_DateItem = new Item("Shopping",Integer.MAX_VALUE,lastingDays);
         }else{
             app_DateItem.setLastingDays(lastingDays);
         }

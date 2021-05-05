@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.navigation_view);
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        setSupportActionBar(toolbar);
         FragmentManager fragmentManager = getSupportFragmentManager();
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
@@ -201,17 +200,21 @@ public class MainActivity extends AppCompatActivity {
         assoViewModel.updateAssociations();
 
         if(dateViewModel.getSwitch()){  //if notification are on
-            Item itemToBeScheduled= itemViewModel.getScheduledItem();
+            Item scheduledItem = itemViewModel.getScheduledItem();
 
-            if( itemToBeScheduled != null){
+            if( scheduledItem != null){
+                int ntfType = 0;
                 Intent intent = new Intent(this, AlarmService.class);
-                intent.putExtra("name",itemToBeScheduled.getItemName());
-                intent.putExtra("time",itemToBeScheduled.getRunOutDate().getTime());
+                intent.putExtra("name",scheduledItem.getItemName());
+                intent.putExtra("time",scheduledItem.getRunOutDate().getTime());
                 intent.putExtra("flag",0);
+                if(scheduledItem.getItem_id()==Integer.MAX_VALUE){ ntfType=1; }//sets, if notification is for shopping
+                intent.putExtra("type",ntfType);
+
+
                 startService(intent);
             }
         }else{  //cancel alarms
-
             Intent intent = new Intent(this, AlarmService.class);
             intent.putExtra("name","");
             intent.putExtra("flag",-1);

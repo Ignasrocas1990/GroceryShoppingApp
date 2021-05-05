@@ -45,7 +45,19 @@ public class ItemViewModel extends AndroidViewModel {
 
         items.setValue(tempArray);
     }
-    public Item getScheduledItem() { return itemResources.getScheduledItem(items.getValue());}
+    public Item getScheduledItem() {
+        Item shoppingItem = app_SDate.getValue();//get current shopping date item & adds to all items
+
+        ArrayList<Item> appItems = items.getValue();
+        if(shoppingItem != null){
+            appItems.add(shoppingItem);
+            shoppingItem = itemResources.getScheduledItem(appItems);//remove Shopping date item in case item is not closed after STOP.
+            appItems.remove(shoppingItem);
+
+            return shoppingItem;
+        }
+        return itemResources.getScheduledItem(appItems);
+    }
 
     public void reSyncItems(){
         itemResources.reSyncItems(items.getValue());
