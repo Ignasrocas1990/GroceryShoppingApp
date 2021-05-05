@@ -33,7 +33,7 @@
         android:layout_columnWeight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="% leftover" />
+        android:text="@string/leftover" />
 
     <TextView
         android:id="@+id/shoppingPrice"
@@ -42,5 +42,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="price" />
+        <TextView
+            android:id="@+id/label"
+            android:layout_columnWeight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/part_of" />
+
+        <TextView
+            android:id="@+id/shoppingList"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/list_name" />
+        <TextView
+            android:id="@+id/shoppingShop"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_name" />
     </GridLayout>
 </LinearLayout>

@@ -11,8 +11,8 @@ import java.util.Date;
 
 public class ItemResources{
     private static final String TAG ="log";
-    private ArrayList<Item> toSave = new ArrayList<>();
-    private ArrayList<Item> toDelete = new ArrayList<>();
+    private final ArrayList<Item> toSave = new ArrayList<>();
+    private final ArrayList<Item> toDelete = new ArrayList<>();
     private ArrayList<Item> db_items = new ArrayList<>();
     private Item db_SDate = null;
 

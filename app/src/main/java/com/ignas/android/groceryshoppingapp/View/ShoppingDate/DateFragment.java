@@ -74,7 +74,9 @@ public class DateFragment extends Fragment {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                            later.set(year,month,dayOfMonth);
+                            later.set(year,month,dayOfMonth,
+                                    now.get(Calendar.HOUR_OF_DAY),now.get(Calendar.MINUTE),now.get(Calendar.SECOND));
+
                             if(later.compareTo(now) > 0){
 
                                 int lastingDays = (int) ((later.getTimeInMillis()-now.getTimeInMillis())/1000/60/60/24);

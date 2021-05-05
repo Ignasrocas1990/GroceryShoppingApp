@@ -47,4 +47,7 @@
     <string name="add">add</string>
     <string name="finish">finish</string>
     <string name="total">total</string>
+    <string name="leftover">% leftover</string>
+    <string name="part_of">Part of :</string>
+    <string name="no_price_found">No price set</string>
 </resources>

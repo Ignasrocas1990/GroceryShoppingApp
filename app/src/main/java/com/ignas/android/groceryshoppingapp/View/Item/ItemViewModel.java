@@ -8,14 +8,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
+import com.ignas.android.groceryshoppingapp.Logic.ShoppingDay;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.util.ArrayList;
 
 public class ItemViewModel extends AndroidViewModel {
-    private ItemResources itemResources;
-    private MutableLiveData<ArrayList<Item>> items = new MutableLiveData<>();
-    private MutableLiveData<Item> app_SDate = new MutableLiveData<>();
+    private final ItemResources itemResources;
+    private final MutableLiveData<ArrayList<Item>> items = new MutableLiveData<>();
+    private final MutableLiveData<Item> app_SDate = new MutableLiveData<>();
 
 
 
@@ -76,6 +77,13 @@ public class ItemViewModel extends AndroidViewModel {
     public void delShoppingDate(){
         app_SDate.setValue(null);
     }
+
+//create list of lowest items
+    public void createShoppingItems(){
+        ShoppingDay shoppingDay = new ShoppingDay();//mite need to change----
+        items.setValue(shoppingDay.createShoppingItems(items.getValue()));
+    }
+
 
 
 //live methods
