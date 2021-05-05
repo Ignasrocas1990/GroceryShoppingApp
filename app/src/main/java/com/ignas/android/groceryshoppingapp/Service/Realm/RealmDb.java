@@ -70,6 +70,7 @@ public class RealmDb{
             Log.d("log", "delete item. not found ");
         }
     }
+//delete multiple items
     public void deleteItems(ArrayList<Item> toDelete) {
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {

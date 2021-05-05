@@ -50,21 +50,17 @@ public class DateFragment extends Fragment {
         Context context = view.getContext();
         SwitchCompat notificationSwitch = view.findViewById(R.id.notificationSwitch);
         TextView dateTextView = view.findViewById(R.id.datePicker);
-        Button schedule = view.findViewById(R.id.schedule);
         DateViewModel dateViewModel = ViewModelProviders.of(requireActivity()).get(DateViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
 
         Calendar now = Calendar.getInstance(Locale.getDefault());
         Calendar later = Calendar.getInstance(Locale.getDefault());
-        final String[] displayDate = new String[1];
 
-        final boolean[] flag = {false};//testing (deletable)------------------
+
         itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {
             if(item !=null){
-                dateTextView.setText(TestDate(item));//testing (deletable)---------
-                //if(flag[0]) dateTextView.setText(displayDate[0]);//Testing (deletable)-------------
-                //flag[0] = true;//testing (deletable)------------------
-
+                dateTextView.setText(TestDate(item));//testing (deletable)-(right now show what selected but act's day =  second)
+                                                    //when not testing simple get item's run out date...
             }else{
                 dateTextView.setText(R.string.NoDate);
             }
@@ -72,42 +68,41 @@ public class DateFragment extends Fragment {
         dateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog dpDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                if(dateViewModel.getSwitch()){//if notification switch is on
 
-                        displayDate[0] = dayOfMonth+"/"+month+"/"+year;
-                        String dateString = dateTextView.getText().toString();
-                            later.set(year,month,dayOfMonth);//for testing need to select hours/min and sec
+                    DatePickerDialog dpDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                            later.set(year,month,dayOfMonth);
                             if(later.compareTo(now) > 0){
-                               // dateTextView.setText(displayDate);
-                                int lastingDays = (int) ((later.getTimeInMillis()-now.getTimeInMillis())/1000/60/60/24);// need testing-----<<<debug
+
+                                int lastingDays = (int) ((later.getTimeInMillis()-now.getTimeInMillis())/1000/60/60/24);
                                 itemViewModel.createShoppingDate(lastingDays);
 
                             }else{
                                 Toast.makeText(context, "Error,Date selected is in the past.", Toast.LENGTH_SHORT).show();
                             }
-                    }
-                },now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_WEEK));
-                dpDialog.setCancelable(false);
-                dpDialog.setOnCancelListener(dialog -> {
-                    dialog.dismiss();
-                    itemViewModel.delShoppingDate();
-                });
-                dpDialog.show();
-            }
-        });
+                        }
+                    },now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_WEEK));
+                    dpDialog.setCancelable(false);
+                    dpDialog.setOnCancelListener(dialog -> {
+                        dialog.dismiss();
+                        itemViewModel.delShoppingDate();
+                    });
+                    dpDialog.show();
+                }else{
+                    Toast.makeText(context, "Please switch on notification first", Toast.LENGTH_SHORT).show();
+                }
 
-        //notificationSwitch.set
-        schedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //notificationSwitch.toggle();
             }
         });
 
         dateViewModel.getLiveSwitch().observe(requireActivity(),state->{
             notificationSwitch.setChecked(state);
+            if(!state){
+                itemViewModel.delShoppingDate();
+            }
         });
 
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -122,7 +117,6 @@ public class DateFragment extends Fragment {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_WEEK,item.getLastingDays());
-       String text = formatter.format(calendar.getTime());
-       return text;
+       return formatter.format(calendar.getTime());
     }
 }

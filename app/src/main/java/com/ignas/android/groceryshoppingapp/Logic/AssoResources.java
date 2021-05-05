@@ -28,7 +28,7 @@ public class AssoResources {
         return app_assos;
     }
 
-
+//converts db association to a map.
     public void list_to_map(){
 
         ArrayList<Association> temp;

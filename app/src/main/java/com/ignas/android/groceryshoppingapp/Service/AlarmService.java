@@ -93,9 +93,7 @@ public class AlarmService extends Service {
             alarmManager.cancel(pendingIntent);
         }
         if(pendingIntent==null){ Log.i("log", "stopAlarm: success with pendingIntent"); }
-
         stopSelf();
-        Toast.makeText(this, "alarm service canceled", Toast.LENGTH_SHORT).show();
         onDestroy();
     }
 

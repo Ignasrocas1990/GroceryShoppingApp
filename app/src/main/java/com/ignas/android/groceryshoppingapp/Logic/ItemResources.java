@@ -35,7 +35,7 @@ public class ItemResources{
     }
 //copy db items to app.
     public ArrayList<Item> getItems(){
-        ArrayList<Item> app_items=null;
+        ArrayList<Item> app_items=new ArrayList<>();
         if(db_items.size() != 0){
              app_items = new ArrayList<>();
             app_items.addAll(db_items);
@@ -53,7 +53,7 @@ public class ItemResources{
         //check and add date item to be deleted.
         if(app_SDate != null){
             toSave.add(app_SDate);
-        } else{
+        } else if(db_SDate!=null){
             toDelete.add(db_SDate);
         }
 

@@ -71,5 +71,4 @@ public class ItemViewModel extends AndroidViewModel {
         return items;
     }
     public LiveData<Item> getLiveShoppingDate() { return app_SDate;}
-
     }

@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp.Logic;
 
 import android.content.Context;
 
+import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public class ListResources {
 
-    private ArrayList<ItemList> db_lists = new ArrayList<>();
+    private ArrayList<ItemList> db_lists;
     private ArrayList<ItemList> toSave = new ArrayList<>();// merge
     private ArrayList<ItemList> toDelete = new ArrayList<>();
     private ItemList list_to_del;
@@ -19,11 +20,15 @@ public class ListResources {
     public ListResources(Context context) {
         db = new RealmDb();
         mContext = context;
-        db_lists = getLists();
+        db_lists =  db.getLists();
 
     }
     public ArrayList<ItemList> getLists() {
-        return db.getLists();
+        ArrayList<ItemList> app_lists = new ArrayList<>();
+        if(db_lists.size() != 0){
+            app_lists.addAll(db_lists);
+        }
+        return app_lists;
     }
 
     public void setContext(Context context){
