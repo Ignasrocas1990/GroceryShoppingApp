@@ -35,8 +35,7 @@ public class Notification extends BroadcastReceiver {
 
             //create Brought action Button
             Intent shoppingIntent = new Intent(context, ShoppingActivity.class);
-            shoppingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
+            shoppingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, 0, shoppingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

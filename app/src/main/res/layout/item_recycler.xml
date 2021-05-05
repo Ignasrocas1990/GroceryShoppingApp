@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     tools:context=".View.Lists.ListsFragment">
 
 
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="100dp"
+        android:layout_below="@+id/itemHead"
         android:background="#3F51B5"
         android:backgroundTint="@color/blue"
         android:clickable="true"
@@ -23,6 +23,7 @@
 
 
     <LinearLayout
+        android:id="@+id/itemHead"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,4 +100,4 @@
     </LinearLayout>
 
 
-</FrameLayout>
+</RelativeLayout>

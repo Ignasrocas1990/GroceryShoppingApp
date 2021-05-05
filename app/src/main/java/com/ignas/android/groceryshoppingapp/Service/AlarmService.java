@@ -44,7 +44,11 @@ public class AlarmService extends Service {
             }
             ItemResources rec = new ItemResources();
             Item item = rec.re_scheduleAlarm();
+
             if(item != null){
+                if(item.getItem_id()== Integer.MAX_VALUE){//check if its a shopping item
+                    type = 1;
+                }
                 name = item.getItemName();
                 runoutDate = item.getRunOutDate().getTime();
             }
