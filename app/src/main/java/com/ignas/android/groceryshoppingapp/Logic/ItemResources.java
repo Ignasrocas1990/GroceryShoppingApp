@@ -14,19 +14,18 @@ public class ItemResources{
     private ArrayList<Item> toSave = new ArrayList<>();
     private ArrayList<Item> toDelete = new ArrayList<>();
     private ArrayList<Item> db_items = new ArrayList<>();
-    private Item existentSDate = null;
+    private Item db_SDate = null;
 
     Context mContext = null;
     RealmDb db;
 
     public ItemResources(){}
 
-
     public ItemResources(Context context) {
         db = new RealmDb();
         mContext = context;
         db_items = db.getItems();
-        existentSDate = db_items.stream()
+        db_SDate = db_items.stream()
                 .filter(i-> i.getItem_id() == Integer.MAX_VALUE)
                 .findFirst().orElse(null);
     }
@@ -34,24 +33,31 @@ public class ItemResources{
     public void setContext(Context context){
         mContext = context;
     }
-
+//copy db items to app.
     public ArrayList<Item> getItems(){
         ArrayList<Item> app_items=null;
         if(db_items.size() != 0){
              app_items = new ArrayList<>();
             app_items.addAll(db_items);
         }
-        if(existentSDate !=null){
-            app_items.remove(existentSDate);
+        if(db_SDate !=null){
+            app_items.remove(db_SDate);
         }
         return app_items;
 
     }
 
+//access db to save/del data
+    public void update(ArrayList<Item> app_items, Item app_SDate){
 
-    public void update(ArrayList<Item> app_items){ //access db to save/del data
+        //check and add date item to be deleted.
+        if(app_SDate != null){
+            toSave.add(app_SDate);
+        } else{
+            toDelete.add(db_SDate);
+        }
 
-    //updates data
+        //updates data
         if(toSave.size()>1){
             db.addItems(toSave);
         }else if(toSave.size()!=0){
@@ -170,7 +176,7 @@ public class ItemResources{
         return lowestDateItem;
     }
 
-    //check if running is inValid(in the past/ not up to date)
+//check if running is inValid(in the past/ not up to date)
     public Item extendTime(Item item){
         Item now = new Item(1);
         if(now.getRunOutDate().compareTo(item.getRunOutDate()) > 0){
@@ -180,6 +186,7 @@ public class ItemResources{
     }
 // gets all current data and updates its Running out Date (after NTF switch is on )
     public void reSyncItems(ArrayList<Item> value) {
+        Log.i(TAG, "items are reSynced");
         for(Item current : value){
             current.setRunOutDate(current.getLastingDays());
         }
@@ -190,35 +197,17 @@ public class ItemResources{
         }
     }
 
-    public Item getShoppingDateItem() { return existentSDate; }
+    public Item getShoppingDateItem() { return db_SDate; }
 
-    //create/updates shopping date item.
-    public Item createDateItem(int item_id, int lastingDays) {
-        Item newShoppingDate=null;
+//create/updates shopping date item.
+    public Item createDateItem(int lastingDays,Item app_DateItem) {
 
-        if(existentSDate == null){//no shopping date been set (from db)
-            newShoppingDate = new Item("Shopping$Date", item_id, lastingDays);
-            this.existentSDate = newShoppingDate;
-            toSave.add(existentSDate);
-        }else if(toSave.size() !=0){// check if it is been modified already
-            newShoppingDate = toSave.stream()
-                    .filter(index->index.getItem_id()==item_id).findFirst().orElse(null);
-            if(newShoppingDate !=null){
-                newShoppingDate.setRunOutDate(lastingDays);
-            }
+        if(app_DateItem == null){//it does not exists
+            app_DateItem = new Item("Shopping$Time",Integer.MAX_VALUE,lastingDays);
+        }else{
+            app_DateItem.setLastingDays(lastingDays);
         }
-       return newShoppingDate;
+
+       return app_DateItem;
     }
-//removes shopping date
-    public void deleteShoppingDate(Item shoppingDate){
-
-        if(existentSDate.getRunOutDate().compareTo(shoppingDate.getRunOutDate()) == 0){//check if they are the same, need to cancel alarm.
-            toDelete.add(shoppingDate);
-        }
-        if (Check.itemEquals(toSave, shoppingDate)) {//if its saved that means its been modified/created
-            toSave.remove(shoppingDate);
-        }
-
-    }
-
 }

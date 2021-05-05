@@ -11,12 +11,11 @@ import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ItemViewModel extends AndroidViewModel {
     private ItemResources itemResources;
     private MutableLiveData<ArrayList<Item>> items = new MutableLiveData<>();
-    private MutableLiveData<Item> shoppingItemDate = new MutableLiveData<>();
+    private MutableLiveData<Item> app_SDate = new MutableLiveData<>();
 
 
 
@@ -24,7 +23,7 @@ public class ItemViewModel extends AndroidViewModel {
         super(application);
         itemResources = new ItemResources(application);
         items.setValue(itemResources.getItems());
-        shoppingItemDate.setValue(itemResources.getShoppingDateItem());
+        app_SDate.setValue(itemResources.getShoppingDateItem());
     }
     public void createItem(String newName, String newDays, String newPrice){
         items.setValue(itemResources.createItem( newName, newDays, newPrice,items.getValue()));
@@ -46,23 +45,24 @@ public class ItemViewModel extends AndroidViewModel {
 
         items.setValue(tempArray);
     }
+    public Item getScheduledItem() { return itemResources.getScheduledItem(items.getValue());}
+
     public void reSyncItems(){
         itemResources.reSyncItems(items.getValue());
     }
 
-
     public void updateDbItems(){
-         itemResources.update(items.getValue());
+         itemResources.update(items.getValue(), app_SDate.getValue());
     }
 
-    public Item getScheduledItem() { return itemResources.getScheduledItem(items.getValue());}
+
 
 //shopping date methods
-    public void createShoppingDate(int item_Id, int lastingDays){
-        shoppingItemDate.setValue(itemResources.createDateItem(item_Id,lastingDays));
+    public void createShoppingDate(int lastingDays){
+        app_SDate.setValue(itemResources.createDateItem(lastingDays, app_SDate.getValue()));
     }
     public void delShoppingDate(){
-        itemResources.deleteShoppingDate(shoppingItemDate.getValue());
+        app_SDate.setValue(null);
     }
 
 
@@ -70,6 +70,6 @@ public class ItemViewModel extends AndroidViewModel {
     public LiveData<ArrayList<Item>> getLiveItems() {
         return items;
     }
-    public LiveData<Item> getLiveShoppingDate() { return shoppingItemDate;}
+    public LiveData<Item> getLiveShoppingDate() { return app_SDate;}
 
     }

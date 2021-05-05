@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 
@@ -55,18 +56,19 @@ public class DateFragment extends Fragment {
 
         Calendar now = Calendar.getInstance(Locale.getDefault());
         Calendar later = Calendar.getInstance(Locale.getDefault());
+        final String[] displayDate = new String[1];
 
-
+        final boolean[] flag = {false};//testing (deletable)------------------
         itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {
             if(item !=null){
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                String dateText = formatter.format(item.getRunOutDate());
-                dateTextView.setText(dateText);
+                dateTextView.setText(TestDate(item));//testing (deletable)---------
+                //if(flag[0]) dateTextView.setText(displayDate[0]);//Testing (deletable)-------------
+                //flag[0] = true;//testing (deletable)------------------
+
             }else{
                 dateTextView.setText(R.string.NoDate);
             }
         });
-
         dateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,13 +76,13 @@ public class DateFragment extends Fragment {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        @NonNls String displayDate = dayOfMonth+"/"+month+"/"+year;
+                        displayDate[0] = dayOfMonth+"/"+month+"/"+year;
                         String dateString = dateTextView.getText().toString();
                             later.set(year,month,dayOfMonth);//for testing need to select hours/min and sec
                             if(later.compareTo(now) > 0){
                                // dateTextView.setText(displayDate);
                                 int lastingDays = (int) ((later.getTimeInMillis()-now.getTimeInMillis())/1000/60/60/24);// need testing-----<<<debug
-                                itemViewModel.createShoppingDate(Integer.MAX_VALUE,lastingDays);
+                                itemViewModel.createShoppingDate(lastingDays);
 
                             }else{
                                 Toast.makeText(context, "Error,Date selected is in the past.", Toast.LENGTH_SHORT).show();
@@ -111,10 +113,16 @@ public class DateFragment extends Fragment {
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dateViewModel.setSwitch(isChecked);//TODO------------if notifications off - on start of the app
-                                                    // if they are on need to reschedule all of them.(reset all of them from start)
+                dateViewModel.setSwitch(isChecked);
             }
         });
         return view;
+    }
+    public String TestDate(Item item){ // test (deletable)-------------------------------
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_WEEK,item.getLastingDays());
+       String text = formatter.format(calendar.getTime());
+       return text;
     }
 }

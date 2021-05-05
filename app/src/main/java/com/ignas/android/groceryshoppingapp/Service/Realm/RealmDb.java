@@ -24,44 +24,6 @@ public class RealmDb{
         //removeAll();
     }
 
-//get shopping date TODO (dont know if i need it...)
-    public Date getShoppingDate(){
-        AtomicReference<Date> shoppingDate = new AtomicReference<>(null);
-        try(Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm ->{
-                Item dateItem = inRealm.where(Item.class)
-                        .equalTo("item_Id",Integer.MAX_VALUE).findFirst();
-                if(dateItem !=null){
-                    shoppingDate.set(dateItem.getRunOutDate());
-                }
-            });
-        }catch(Exception e){
-            Log.i(TAG, "getShoppingDate: fail"+e.getMessage());
-        }
-        return shoppingDate.get();
-    }
-
-//get shopping date item for scheduling TODO (dont know if i need it...)
-    public Item getSDItem(){
-        ArrayList<Item> temp = new ArrayList<Item>(1);
-        try(Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm ->{
-                Item dateItem = inRealm.where(Item.class)
-                        .equalTo("item_Id",Integer.MAX_VALUE).findFirst();
-                if(dateItem !=null){
-                    temp.add(inRealm.copyFromRealm(dateItem));
-                }
-            });
-        }catch(Exception e){
-            Log.i(TAG, "getShoppingDate: fail"+e.getMessage());
-        }
-        if(temp.size() == 1){
-            return temp.get(0);
-        }
-        return null;
-    }
-
-
 //  Get all items
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
