@@ -66,6 +66,7 @@ public class ItemFragment extends Fragment {
         // Set the adapter
         RecyclerView recyclerView = view.findViewById(R.id.list);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
         ItemRecyclerViewAdapter adapter = new ItemRecyclerViewAdapter(new ItemRecyclerViewAdapter.ItemClickListener() {
                 @Override
                 public void onItemClick(int position, String newName, String newDays, String newPrice) {
@@ -75,6 +76,7 @@ public class ItemFragment extends Fragment {
                     curPosition[0] = position;
                 }
             });
+
         saveBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

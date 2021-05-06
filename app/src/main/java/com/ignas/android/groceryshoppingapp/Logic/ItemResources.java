@@ -7,6 +7,7 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ItemResources{
@@ -127,18 +128,21 @@ public class ItemResources{
        if(app_items.size()>1){
            Item itemToBeScheduled = getScheduledItem(app_items);
            if(itemToBeScheduled != null){
+
                db.addItems(toSave);
-               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
-                       " lasting days of "+itemToBeScheduled.getLastingDays());
+               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+ " lasting days of "+itemToBeScheduled.getLastingDays());
 
                return itemToBeScheduled;
            }
        }else if(app_items.size() == 1){
            Item itemToBeScheduled = app_items.get(0);
-           itemToBeScheduled.setRunOutDate(itemToBeScheduled.getLastingDays());
-           db.addItems(toSave);
-           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+
-                   " lasting days of "+itemToBeScheduled.getLastingDays());
+           if(!itemToBeScheduled.isNotified()){
+               itemToBeScheduled.setNotified(true);
+               db.addItem(itemToBeScheduled);
+           }else{
+               itemToBeScheduled=null;
+           }
+           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+ " lasting days of "+itemToBeScheduled.getLastingDays());
 
            return itemToBeScheduled;
        }
@@ -149,33 +153,41 @@ public class ItemResources{
         if(appItems.size()==0){
             return null;
         }else if(appItems.size()==1){
-            return appItems.get(0);
+            Item item = appItems.get(0);
+            item.setNotified(true);
+            db.addItem(item);
+            return item;
         }
-        final Date now = new Item(1).getRunOutDate();// set to now
-        Item lowestDateItem = appItems.get(0);
+        //final Date now = Calendar.getInstance().getTime();// set to now
+        Item lowestDateItem = null;
         Item currentItem;
 
         for(int i=0;i<appItems.size();i++){
             currentItem = appItems.get(i);
+            if(lowestDateItem==null && !currentItem.isNotified()){
 
-            if(currentItem.isRunning()){
-                currentItem=extendTime(currentItem); // extend items time
-                currentItem.setRunning(false);
-                toSave.add(currentItem);
-
-            }
-            if(lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0 ){
                 lowestDateItem = currentItem;
+
+            }else if (!currentItem.isNotified() &&
+                    lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0) {
+                    lowestDateItem = currentItem;
             }
-        }
-        lowestDateItem.setRunning(true);
 
-        if( !Check.itemEquals(toSave,lowestDateItem)){
-            toSave.add(lowestDateItem);
         }
-        return lowestDateItem;
+        if(lowestDateItem !=null){
+
+            lowestDateItem.setNotified(true);
+
+            if( !Check.itemEquals(toSave,lowestDateItem)){
+                toSave.add(lowestDateItem);
+            }
+            return lowestDateItem;
+        }
+         return null;
+
     }
-
+//TODO --- if person goes off and pick it put in shop(without shopping day)
+/*
 //check if running is inValid(in the past/ not up to date)
     public Item extendTime(Item item){
         Item now = new Item(1);
@@ -184,16 +196,18 @@ public class ItemResources{
         }
         return item;
     }
+ */
 // gets all current data and updates its Running out Date (after NTF switch is on )
-    public void reSyncItems(ArrayList<Item> value) {
+    public void reSyncItems(ArrayList<Item> values) {
         Log.i(TAG, "items are reSynced");
-        for(Item current : value){
+        for(Item current : values){
             current.setRunOutDate(current.getLastingDays());
+            current.setNotified(false);
         }
-        if(value.size()>1){
-            db.addItems(value);
-        }else if(value.size()==1){
-            db.addItem(value.get(0));
+        if(values.size()>1){
+            db.addItems(values);
+        }else if(values.size()==1){
+            db.addItem(values.get(0));
         }
     }
 

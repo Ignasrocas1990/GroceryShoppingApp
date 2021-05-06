@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-
+cancelAlarms();
     }
 //all the data observers----------------------
     private void Observers(){
@@ -211,15 +211,17 @@ public class MainActivity extends AppCompatActivity {
                 if(scheduledItem.getItem_id()==Integer.MAX_VALUE){ ntfType=1; }//sets, if notification is for shopping
                 intent.putExtra("type",ntfType);
 
-
                 startService(intent);
             }
-        }else{  //cancel alarms
-            Intent intent = new Intent(this, AlarmService.class);
-            intent.putExtra("name","");
-            intent.putExtra("flag",-1);
-            startService(intent);
-        }
+        }/*else{  //cancel alarms
+            cancelAlarms();
+        }*/
 
+    }
+    private void cancelAlarms(){
+        Intent intent = new Intent(this, AlarmService.class);
+        intent.putExtra("name","");
+        intent.putExtra("flag",-1);
+        startService(intent);
     }
 }

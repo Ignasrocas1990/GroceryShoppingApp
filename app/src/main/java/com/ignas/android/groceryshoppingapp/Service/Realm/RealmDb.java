@@ -9,10 +9,6 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -247,19 +243,21 @@ public class RealmDb{
     }
 //get Alarm Switch
     public boolean getSwitch() {
-        AtomicBoolean result= new AtomicBoolean(true);
+        Boolean[] result = new Boolean[1];
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm->{
 
                 AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
                 if(tempSwitch!=null){
-                    result.set(tempSwitch.isSwitched());
+                    result[0] = tempSwitch.isSwitched();
+                }else{
+                    result[0] = false;
                 }
             });
         }catch(Exception e){
             Log.i(TAG, "getSwitch: get, not successfully");
         }
-        return result.get();
+        return result[0];
     }
 
 //modify alarm switch

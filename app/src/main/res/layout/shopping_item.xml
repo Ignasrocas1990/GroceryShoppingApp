@@ -10,6 +10,7 @@
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:rowCount="3"
         android:columnCount="4">
     <TextView
         android:id="@+id/shoppingName"
@@ -27,6 +28,8 @@
         android:layout_columnWeight="1"
         android:text="amount" />
 
+
+
     <TextView
         android:id="@+id/shopLeftover"
         android:gravity="center"
@@ -42,13 +45,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="price" />
+
+        <LinearLayout
+            android:layout_columnWeight="3"
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="4"
+            android:layout_height="15dp"
+            android:layout_width="0dp"/>
+
         <TextView
-            android:id="@+id/label"
             android:layout_columnWeight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/part_of" />
+            android:text="Part of list : " />
 
         <TextView
             android:id="@+id/shoppingList"

@@ -24,7 +24,7 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
         String dateTag="",name="";
         long runoutDate=1;
         int flag=-1,type=0;
@@ -36,12 +36,12 @@ public class AlarmService extends Service {
 
 
 //flag=1 when service from notification (reschedule notification)
-        if(flag==1){
+        if(flag==1 || intent==null){
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-            if(intent != null){
+
                 assert manager != null;
                 manager.cancel(0);
-            }
+
             ItemResources rec = new ItemResources();
             Item item = rec.re_scheduleAlarm();
 
@@ -79,7 +79,7 @@ public class AlarmService extends Service {
             }
 
             Log.i("log", "alarm :"+dateTag);
-            return START_REDELIVER_INTENT;
+            return START_STICKY;
         }else{
             Log.i("log", "onStartCommand: canceled");
             stopAlarm(this);

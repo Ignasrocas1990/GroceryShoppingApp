@@ -17,6 +17,8 @@ public class ItemViewModel extends AndroidViewModel {
     private final ItemResources itemResources;
     private final MutableLiveData<ArrayList<Item>> items = new MutableLiveData<>();
     private final MutableLiveData<Item> app_SDate = new MutableLiveData<>();
+    ShoppingDay shoppingDay;
+
 
 
 
@@ -25,6 +27,7 @@ public class ItemViewModel extends AndroidViewModel {
         itemResources = new ItemResources(application);
         items.setValue(itemResources.getItems());
         app_SDate.setValue(itemResources.getShoppingDateItem());
+        shoppingDay = new ShoppingDay();
     }
     public void createItem(String newName, String newDays, String newPrice){
         items.setValue(itemResources.createItem( newName, newDays, newPrice,items.getValue()));
@@ -54,7 +57,7 @@ public class ItemViewModel extends AndroidViewModel {
             appItems.add(shoppingItem);
             shoppingItem = itemResources.getScheduledItem(appItems);//remove Shopping date item in case item is not closed after STOP.
             appItems.remove(shoppingItem);
-
+            updateDbItems();
             return shoppingItem;
         }
         return itemResources.getScheduledItem(appItems);
@@ -80,8 +83,10 @@ public class ItemViewModel extends AndroidViewModel {
 
 //create list of lowest items
     public void createShoppingItems(){
-        ShoppingDay shoppingDay = new ShoppingDay();//mite need to change----
         items.setValue(shoppingDay.createShoppingItems(items.getValue()));
+    }
+    public int getLeftOver(Item item){
+        return shoppingDay.getLeftOver(item);
     }
 
 

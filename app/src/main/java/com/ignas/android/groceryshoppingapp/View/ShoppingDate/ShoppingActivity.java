@@ -6,15 +6,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
@@ -29,7 +26,7 @@ public class ShoppingActivity extends AppCompatActivity {
         ListsViewModel listViewModel;
         AssoViewModel assoViewModel;
         RecyclerView recyclerView;
-        ShoppingRecyclerAdapter shoppingRecyclerAdapter;
+        ShoppingRecyclerAdapter adapter;
         EditText newName,newAmount,newPrice;
         TextView total;
     @Override
@@ -38,6 +35,8 @@ public class ShoppingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping);
 
         recyclerView = findViewById(R.id.shopping_Recycler_View);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         newName = findViewById(R.id.newName);
         newAmount = findViewById(R.id.newAmount);
         newPrice = findViewById(R.id.newPrice);
@@ -48,33 +47,43 @@ public class ShoppingActivity extends AppCompatActivity {
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
         cancelAlarm();
         itemViewModel.delShoppingDate();
+        itemViewModel.createShoppingItems();
 
 
-
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        shoppingRecyclerAdapter = new ShoppingRecyclerAdapter(/*list here or create method inside*/);//todo interface inside for handle items
-        recyclerView.setAdapter(shoppingRecyclerAdapter);
+        adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.textChangeListener() {
+            @Override
+            public int getLeftOver(Item item) {
+                return itemViewModel.getLeftOver(item);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        observers();
     }
+
     public void observers(){
         itemViewModel.getLiveItems().observe(this, new Observer<ArrayList<Item>>() {
             @Override
             public void onChanged(ArrayList<Item> items) {
-                shoppingRecyclerAdapter.setItems(items);
+                adapter.setItems(items);
+                adapter.notifyDataSetChanged();
             }
         });
     }
+
+
 
 
     public void save(View view) {
     }
 
     public void addNew(View view) {
+        itemViewModel.createShoppingItems();
+
     }
     @Override
     protected void onStop() {
         super.onStop();
-        itemViewModel.updateDbItems();
+        itemViewModel.reSyncItems();
         Intent intent = new Intent(this, AlarmService.class);
         intent.putExtra("name","restart");
         intent.putExtra("flag",1);

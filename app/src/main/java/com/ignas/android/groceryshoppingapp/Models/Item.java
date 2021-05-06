@@ -1,21 +1,14 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class Item extends RealmObject {
 
-    //ObjectId item_id = new ObjectId(Integer.toString(new Random().nextInt()));
 
     @PrimaryKey
     private int item_Id;
@@ -28,7 +21,7 @@ public class Item extends RealmObject {
     private float price=0.f;
     private Date runOutDate;
     private int lastingDays=0;
-    private boolean running = false;
+    private boolean notified = false;
 
 //constructors
     public Item(){}
@@ -51,12 +44,12 @@ public class Item extends RealmObject {
     }
 //getters & setters
 
-    public boolean isRunning() {
-        return running;
+    public boolean isNotified() {
+        return notified;
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void setNotified(boolean notified) {
+        this.notified = notified;
     }
 
     public int getItem_id() {
@@ -99,15 +92,5 @@ public class Item extends RealmObject {
     public void setLastingDays(int lastingDays) {
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
-    }
-    //for comparing objects
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj)return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
-        Item i = (Item) obj;
-        return(itemName.equals(i.getItemName()) && Float.compare(price,i.getPrice())==0
-                 && (runOutDate.compareTo(i.getRunOutDate())==0)
-                && lastingDays == i.getLastingDays() && running == i.isRunning()) ;
     }
 }
