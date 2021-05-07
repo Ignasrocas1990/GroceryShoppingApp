@@ -118,36 +118,19 @@ public class ItemResources{
             oldItem.setPrice(Float.parseFloat(newPrice));
         }
     }
-    //re-schedule service
+    //re-schedule service TODO -----maybe delete
+    /*
     public Item re_scheduleAlarm(){
+
         db = new RealmDb();
         if(!db.getSwitch()){
             return null;
+        }else{
+            return db.getSmallestDateItem();
         }
-        ArrayList<Item>app_items = db.getItems();
-       if(app_items.size()>1){
-           Item itemToBeScheduled = getScheduledItem(app_items);
-           if(itemToBeScheduled != null){
-
-               db.addItems(toSave);
-               Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+ " lasting days of "+itemToBeScheduled.getLastingDays());
-
-               return itemToBeScheduled;
-           }
-       }else if(app_items.size() == 1){
-           Item itemToBeScheduled = app_items.get(0);
-           if(!itemToBeScheduled.isNotified()){
-               itemToBeScheduled.setNotified(true);
-               db.addItem(itemToBeScheduled);
-           }else{
-               itemToBeScheduled=null;
-           }
-           Log.i("log", "re_scheduleAlarm: "+itemToBeScheduled.getItemName()+ " lasting days of "+itemToBeScheduled.getLastingDays());
-
-           return itemToBeScheduled;
-       }
-        return null;
     }
+*/
+/*
     //finds current running item/update's it and return next item to be scheduled.
     public Item getScheduledItem(ArrayList<Item> appItems){
         if(appItems.size()==0){
@@ -186,7 +169,8 @@ public class ItemResources{
          return null;
 
     }
-//TODO --- if person goes off and pick it put in shop(without shopping day)
+
+*/
 /*
 //check if running is inValid(in the past/ not up to date)
     public Item extendTime(Item item){
@@ -201,13 +185,11 @@ public class ItemResources{
     public void reSyncItems(ArrayList<Item> values) {
         Log.i(TAG, "items are reSynced");
         for(Item current : values){
-            current.setRunOutDate(current.getLastingDays());
-            current.setNotified(false);
-        }
-        if(values.size()>1){
-            db.addItems(values);
-        }else if(values.size()==1){
-            db.addItem(values.get(0));
+            if(current.isNotified()){
+                current.setRunOutDate(current.getLastingDays());
+                current.setNotified(false);
+            }
+            toSave.add(current);
         }
     }
 
@@ -223,5 +205,9 @@ public class ItemResources{
         }
 
        return app_DateItem;
+    }
+
+    public void deleteShoppingDate(Item shoppingDateItem) {
+        db.removeItem(shoppingDateItem);
     }
 }

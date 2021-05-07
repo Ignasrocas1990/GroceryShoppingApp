@@ -27,10 +27,10 @@ public class Notification extends BroadcastReceiver {
 
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
+        int type = intent.getIntExtra("type",0);
+        if( type == 1 ){ //create shopping date notification
 
-        if(intent.getIntExtra("type",0) == 1 ){ //create shopping date notification
-
-            Log.i("log", "creating notification for  ---> "+name);
+            Log.i("log", "shopping date ntf creation---> "+name);
 
 
             //create Brought action Button
@@ -56,9 +56,11 @@ public class Notification extends BroadcastReceiver {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.notify(0,notification.build());
 
+
+
         }else{//create normal notification
 
-            Log.i("log", "creating notification for  ---> "+name);
+            Log.wtf("log", "creating notification for  ---> "+name);
 
 
             //create Brought action Button
@@ -81,26 +83,25 @@ public class Notification extends BroadcastReceiver {
                     .addAction(R.drawable.ic_baseline_stop_circle_24,"Brought",pendingIntent)
                     .setSound(uri);
 
-
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.notify(0,notification.build());
         }
 
 
     }
-
     private void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "0";
-            // String description = "0";
+             String description = "0";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
-            //channel.setDescription(description);
+            channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(channel);
         }
     }

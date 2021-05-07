@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
 
+
 //initialize view Models
         listsViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
@@ -118,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
 cancelAlarms();
     }
 //all the data observers----------------------(for drawer)
@@ -200,19 +200,19 @@ cancelAlarms();
         assoViewModel.updateAssociations();
 
         if(dateViewModel.getSwitch()){  //if notification are on
-            Item scheduledItem = itemViewModel.getScheduledItem();
+            //Item scheduledItem = itemViewModel.getScheduledItem();
 
-            if( scheduledItem != null){
-                int ntfType = 0;
+           // if( scheduledItem != null){
+                //int ntfType = 0;
                 Intent intent = new Intent(this, AlarmService.class);
-                intent.putExtra("name",scheduledItem.getItemName());
-                intent.putExtra("time",scheduledItem.getRunOutDate().getTime());
-                intent.putExtra("flag",0);
-                if(scheduledItem.getItem_id()==Integer.MAX_VALUE){ ntfType=1; }//sets, if notification is for shopping
-                intent.putExtra("type",ntfType);
+                //intent.putExtra("name",scheduledItem.getItemName());
+                //intent.putExtra("time",scheduledItem.getRunOutDate().getTime());
+                intent.putExtra("flag",1);
+                //if(scheduledItem.getItem_id()==Integer.MAX_VALUE){ ntfType=1; }//sets, if notification is for shopping
+                //intent.putExtra("type",ntfType);
 
                 startService(intent);
-                }
+               // }
         }/*else{  //cancel alarms
             cancelAlarms();
         }*/
@@ -220,8 +220,8 @@ cancelAlarms();
     }
     private void cancelAlarms(){
         Intent intent = new Intent(this, AlarmService.class);
-        intent.putExtra("name","");
         intent.putExtra("flag",-1);
+        intent.putExtra("name","");
         startService(intent);
     }
 }

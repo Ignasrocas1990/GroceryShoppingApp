@@ -61,13 +61,14 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         Item item = mValues.get(position);
+
+        holder.product_name.setText(item.getItemName());
         if(aValues.size() !=0) {
             Association assoItem = aValues.stream()
                     .filter(value -> item.getItem_id() == value.getItem_Id())
                     .findFirst().orElse(null);
-            if(assoItem != null){
 
-                holder.product_name.setText(item.getItemName());
+            if(assoItem != null){
                 holder.quantity.setText(String.valueOf(assoItem.getQuantity()));
                 holder.quantity.setClickable(false);
                 toggleBtn(holder,true);
@@ -75,13 +76,12 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
 
             }else{
-                holder.product_name.setText(item.getItemName());
                 toggleBtn(holder,false);
                 holder.quantity.setText("");
                 holder.quantity.setEnabled(true);
-
             }
         }else{
+
             holder.quantity.setText("");
             holder.quantity.setEnabled(true);
             toggleBtn(holder,false);

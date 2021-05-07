@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -20,8 +19,6 @@ import android.widget.Toast;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
-
-import org.jetbrains.annotations.NonNls;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -90,7 +87,7 @@ public class DateFragment extends Fragment {
                     dpDialog.setCancelable(false);
                     dpDialog.setOnCancelListener(dialog -> {
                         dialog.dismiss();
-                        itemViewModel.delShoppingDate();
+                        itemViewModel.setShoppingDate();
                     });
                     dpDialog.show();
                 }else{
@@ -103,7 +100,7 @@ public class DateFragment extends Fragment {
         dateViewModel.getLiveSwitch().observe(requireActivity(),state->{
             notificationSwitch.setChecked(state);
             if(!state){
-                itemViewModel.delShoppingDate();
+                itemViewModel.setShoppingDate();
             }
         });
 

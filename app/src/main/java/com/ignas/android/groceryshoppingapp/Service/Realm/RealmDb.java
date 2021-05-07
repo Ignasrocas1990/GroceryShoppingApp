@@ -9,6 +9,7 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -20,6 +21,40 @@ public class RealmDb{
 
     public RealmDb() {
         //removeAll();
+    }
+//get smallest date to schedule (is the switch is on)
+    public Item getSmallestDateItem(){
+        ArrayList<Item> list = new ArrayList<>();
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm->{
+
+                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
+                if(tempSwitch!=null) {
+                    if (tempSwitch.isSwitched()) {
+
+                        Date dateResults = inRealm.where(Item.class)
+                            .equalTo("notified", false).minimumDate("runOutDate");
+
+                        if(dateResults !=null){
+                            Item itemResult = inRealm.where(Item.class)
+                                .equalTo("runOutDate",dateResults).findFirst();
+                            if(itemResult!=null){
+                                    itemResult.setNotified(true);
+                                    list.add(inRealm.copyFromRealm(itemResult));
+                            }
+                        }
+
+                    }
+                }
+            });
+
+        }catch(Exception e){
+            Log.i("log", "getSmallestDateItem: "+e);
+        }
+        if(list.size()!=0){
+            return list.get(0);
+        }
+        return null;
     }
 
 //  Get all items
@@ -43,6 +78,7 @@ public class RealmDb{
 
 // add/copy list of items
     public void addItems(ArrayList<Item>items){
+
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
 

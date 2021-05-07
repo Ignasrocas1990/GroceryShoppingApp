@@ -32,8 +32,8 @@ import java.util.ArrayList;
 
 public class ItemFragment extends Fragment {
     public final String TAG = "log";
-    private static final int MAX_PRICE  = 9999999;
-    private static final int MAX_CHARS = 20,MAX_TIME=5000;
+    private static final int MAX_PRICE_LENGTH  = 7;
+    private static final int MAX_CHARS = 20,MAX_TIME_LENGTH=4;
     private Context context;
 
     public ItemFragment() {}
@@ -188,12 +188,12 @@ public class ItemFragment extends Fragment {
     private boolean ApproveData(String stringName, String stringDays, String stringPrice) {
         if(stringName.equals("")){
             Toast.makeText(context, "Name field is empty", Toast.LENGTH_SHORT).show();
-        }else if(stringName.length()>MAX_CHARS){
+        }else if(stringName.length() > MAX_CHARS){
             Toast.makeText(context,"Name is above 20 Character's",Toast.LENGTH_SHORT).show();
-        }else if(Integer.parseInt(stringDays)>MAX_TIME){
-            Toast.makeText(context, "Item can't last that long", Toast.LENGTH_SHORT).show();
-        }else if(Float.parseFloat(stringPrice) > MAX_PRICE){
-            Toast.makeText(context, "Price cant be above 9999999", Toast.LENGTH_SHORT).show();
+        }else if(stringDays.length() > MAX_TIME_LENGTH){
+            Toast.makeText(context, "Item can't last that long (max 5 digits)", Toast.LENGTH_SHORT).show();
+        }else if(stringPrice.length() > MAX_PRICE_LENGTH){
+            Toast.makeText(context, "Price cant be above 7 digits", Toast.LENGTH_SHORT).show();
         }else{
             return true;
         }

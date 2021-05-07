@@ -1,6 +1,7 @@
 package com.ignas.android.groceryshoppingapp.View.Item;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,8 +19,7 @@ public class ItemViewModel extends AndroidViewModel {
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
     ShoppingDay shoppingDay;
-
-
+    final private String TAG="log";
 
 
     public ItemViewModel(@NonNull Application application) {
@@ -48,19 +48,22 @@ public class ItemViewModel extends AndroidViewModel {
        itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);
         mLiveItems.setValue(tempArray);
     }
+    /*
     public Item getScheduledItem() {
         Item shoppingItem = mLiveSDate.getValue();//get current shopping date item & adds to all items
 
         ArrayList<Item> appItems = mLiveItems.getValue();
         if(shoppingItem != null){
             appItems.add(shoppingItem);
-            shoppingItem = itemResources.getScheduledItem(appItems);//remove Shopping date item in case item is not closed after STOP.
+            //shoppingItem = itemResources.getScheduledItem(appItems);//remove Shopping date item in case item is not closed after STOP.
             appItems.remove(shoppingItem);
             updateDbItems();
             return shoppingItem;
         }
         return itemResources.getScheduledItem(appItems);
     }
+
+     */
 
     public void reSyncItems(){
         itemResources.reSyncItems(mLiveItems.getValue());
@@ -70,15 +73,14 @@ public class ItemViewModel extends AndroidViewModel {
          itemResources.update(mLiveItems.getValue(), mLiveSDate.getValue());
     }
 
-
-
 //shopping date methods
     public void createShoppingDate(int lastingDays){
         mLiveSDate.setValue(itemResources.createDateItem(lastingDays, mLiveSDate.getValue()));
     }
-    public void delShoppingDate(){
+    public void setShoppingDate(){
         mLiveSDate.setValue(null);
     }
+
 
 //create list of lowest items
     public void createShoppingItems(){
@@ -87,7 +89,13 @@ public class ItemViewModel extends AndroidViewModel {
     public int getLeftOver(Item item){
         return shoppingDay.getLeftOver(item);
     }
-
+    //TODO----------------remove TEST
+    public void testShopping(){
+        ArrayList<Item> list = mLiveItems.getValue();
+        for(Item i : list){
+            Log.i(TAG, ""+i.getItemName()+" is notified : "+i.isNotified());
+        }
+    }
 
 
 //live methods

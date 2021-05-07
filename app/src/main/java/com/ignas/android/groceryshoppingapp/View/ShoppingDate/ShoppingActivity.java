@@ -46,9 +46,9 @@ public class ShoppingActivity extends AppCompatActivity {
         listViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
         cancelAlarm();
-        itemViewModel.delShoppingDate();
+        itemViewModel.setShoppingDate();
         itemViewModel.createShoppingItems();
-
+        itemViewModel.testShopping();
 
         adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.textChangeListener() {
             @Override
@@ -84,10 +84,29 @@ public class ShoppingActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         itemViewModel.reSyncItems();
+        itemViewModel.updateDbItems();
+        //Item scheduledItem = itemViewModel.getScheduledItem();
+        Intent intent = new Intent(this, AlarmService.class);
+        intent.putExtra("flag",1);
+        startService(intent);
+
+/*
+        if( scheduledItem != null){
+            int ntfType = 0;
+            Intent intent = new Intent(this, AlarmService.class);
+            intent.putExtra("name",scheduledItem.getItemName());
+            intent.putExtra("time",scheduledItem.getRunOutDate().getTime());
+            intent.putExtra("flag",0);
+            intent.putExtra("type",ntfType);
+            startService(intent);
+        }
+ */
+        /*
         Intent intent = new Intent(this, AlarmService.class);
         intent.putExtra("name","restart");
         intent.putExtra("flag",1);
         startService(intent);
+         */
     }
     public void cancelAlarm(){
         Intent intent = new Intent(this, AlarmService.class);

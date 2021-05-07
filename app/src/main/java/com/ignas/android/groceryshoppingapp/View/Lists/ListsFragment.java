@@ -157,6 +157,8 @@ public class ListsFragment extends Fragment {
         }else if(!shopName.equals("")){
             if(shopName.length()>MAX_CHARS){
                 Toast.makeText(context, "Shop cant be above 10 Chars", Toast.LENGTH_SHORT).show();
+            }else{
+                return true;
             }
         }else{
             return true;
