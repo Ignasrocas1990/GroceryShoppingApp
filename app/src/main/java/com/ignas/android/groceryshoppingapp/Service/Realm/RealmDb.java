@@ -9,6 +9,8 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -23,12 +25,14 @@ public class RealmDb{
 //  Get all items
     public ArrayList<Item> getItems() {
         ArrayList<Item> list = new ArrayList<>();
+        Log.i("log", "getItems: getting items");
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
 
                 RealmResults<Item> results = inRealm.where(Item.class).findAll();
                 if (results.size() != 0) {
-                    list.addAll(inRealm.copyFromRealm(results));
+                    List<Item> temp = inRealm.copyFromRealm(results);
+                    list.addAll(temp);
                 }
             });
         }catch (Exception e){
@@ -61,6 +65,7 @@ public class RealmDb{
                 if(tempItem!=null){
                     tempItem.deleteFromRealm();
                 }
+                Log.i("log", "removeItem: ");
             });
         } catch (Exception e) {
             Log.d("log", "delete item. not found ");
@@ -79,6 +84,7 @@ public class RealmDb{
                         tempItem.deleteFromRealm();
                         }
                 }
+                Log.i("log", "deleteItems: log ");
             });
         } catch (Exception e) {
             Log.d("log", "delete items. not found ");
@@ -90,7 +96,7 @@ public class RealmDb{
 
             realm.executeTransaction(inRealm -> {
                 inRealm.copyToRealmOrUpdate(item);
-                Log.d(TAG, "execute: added item...");
+                Log.d("log", "execute: added item...");
             });
         }catch (Exception e){
             Log.d(TAG, "addItem: error adding items");

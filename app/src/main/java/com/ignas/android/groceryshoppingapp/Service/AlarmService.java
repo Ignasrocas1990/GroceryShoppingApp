@@ -34,9 +34,9 @@ public class AlarmService extends Service {
         type = intent.getIntExtra("type",0);
 
 
-
 //flag=1 when service from notification (reschedule notification)
-        if(flag==1 || intent==null){
+        if(flag==1){
+
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 assert manager != null;
@@ -81,7 +81,6 @@ public class AlarmService extends Service {
             Log.i("log", "alarm :"+dateTag);
             return START_STICKY;
         }else{
-            Log.i("log", "onStartCommand: canceled");
             stopAlarm(this);
 
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -104,7 +103,7 @@ public class AlarmService extends Service {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
-        if(pendingIntent != null) {
+        if(pendingIntent != null && alarmManager!=null) {
             alarmManager.cancel(pendingIntent);
         }
         if(pendingIntent==null){ Log.i("log", "stopAlarm: success with pendingIntent"); }

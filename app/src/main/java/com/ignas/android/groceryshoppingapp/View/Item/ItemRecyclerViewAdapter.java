@@ -55,6 +55,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
                  newDays = holder.lasting_days.getText().toString();
                  newPrice = holder.price.getText().toString();
                 mItemClickListener.onItemClick(position,newName,newDays,newPrice);
+
             }else if(prevSelected.equals(holder.itemView)){
 
                 prevSelected=null;

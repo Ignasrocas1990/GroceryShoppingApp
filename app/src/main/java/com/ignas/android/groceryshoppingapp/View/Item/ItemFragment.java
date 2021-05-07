@@ -32,6 +32,9 @@ import java.util.ArrayList;
 
 public class ItemFragment extends Fragment {
     public final String TAG = "log";
+    private static final int MAX_PRICE  = 9999999;
+    private static final int MAX_CHARS = 20,MAX_TIME=5000;
+    private Context context;
 
     public ItemFragment() {}
 
@@ -49,7 +52,7 @@ public class ItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.item_recycler, container, false);
-        Context context = view.getContext();
+        context = view.getContext();
         AssoViewModel assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
         ListsViewModel listsViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
@@ -83,20 +86,28 @@ public class ItemFragment extends Fragment {
                 String stringName = product_name.getText().toString();
                 String stringDays = lasting_days.getText().toString();
                 String stringPrice = price.getText().toString();
-                if(stringName.equals("")){
-                    Toast.makeText(context, "List needs a name", Toast.LENGTH_SHORT).show();
-                }else if (curPosition[0] == -1){
-                    itemViewModel.createItem(stringName,stringDays,stringPrice);
-                    curPosition[0] = -1;
-                    product_name.setText("");
-                    lasting_days.setText("");
-                    price.setText("");
-                    Toast.makeText(context, "Item is created", Toast.LENGTH_SHORT).show();
-                    adapter.notifyItemInserted(adapter.getItemCount()-1);
-                }else{
-                    itemViewModel.changeItem(curPosition[0],stringName,stringDays,stringPrice);
-                    Toast.makeText(context, "Item is changed", Toast.LENGTH_SHORT).show();
+
+                if(ApproveData(stringName,stringDays,stringPrice)) {
+                    if (curPosition[0] == -1){
+                        //add item(clear item view)
+                        itemViewModel.createItem(stringName,stringDays,stringPrice);
+                        curPosition[0] = -1;
+                        product_name.setText("");
+                        lasting_days.setText("");
+                        price.setText("");
+                        Toast.makeText(context, "Item is created", Toast.LENGTH_SHORT).show();
+                        adapter.notifyItemInserted(adapter.getItemCount()-1);
+                    }else{
+                        //change item info (clear item view)
+                        itemViewModel.changeItem(curPosition[0],stringName,stringDays,stringPrice);
+                        curPosition[0] = -1;
+                        product_name.setText("");
+                        lasting_days.setText("");
+                        price.setText("");
+                        Toast.makeText(context, "Item is changed", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
         });
 
@@ -172,5 +183,20 @@ public class ItemFragment extends Fragment {
             });
 
         return view;
+    }
+
+    private boolean ApproveData(String stringName, String stringDays, String stringPrice) {
+        if(stringName.equals("")){
+            Toast.makeText(context, "Name field is empty", Toast.LENGTH_SHORT).show();
+        }else if(stringName.length()>MAX_CHARS){
+            Toast.makeText(context,"Name is above 20 Character's",Toast.LENGTH_SHORT).show();
+        }else if(Integer.parseInt(stringDays)>MAX_TIME){
+            Toast.makeText(context, "Item can't last that long", Toast.LENGTH_SHORT).show();
+        }else if(Float.parseFloat(stringPrice) > MAX_PRICE){
+            Toast.makeText(context, "Price cant be above 9999999", Toast.LENGTH_SHORT).show();
+        }else{
+            return true;
+        }
+        return false;
     }
 }

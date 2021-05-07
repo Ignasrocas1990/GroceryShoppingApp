@@ -23,6 +23,9 @@ import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 
 public class ListsFragment extends Fragment {
     private static final String TAG = "log";
+    private static final int MAX_CHARS  = 10;
+    private static final int MAX_QUANTITY = 9999999;
+    private Context context;
     public ListsFragment() {
     }
 
@@ -44,7 +47,7 @@ public class ListsFragment extends Fragment {
 
 
         RecyclerView rec = view.findViewById(R.id.test_list);
-        Context context = view.getContext();
+         context = view.getContext();
         Button createBtn = view.findViewById(R.id.createList);
         Button deleteBtn = view.findViewById(R.id.delList);
         EditText listName_Box = view.findViewById(R.id.listName);
@@ -80,7 +83,8 @@ public class ListsFragment extends Fragment {
         createBtn.setOnClickListener(v -> {
             String listName = listName_Box.getText().toString();
             String shopName = shopName_Box.getText().toString();
-            if(!listName.equals("")){
+            if(ApproveData(listName,shopName)){
+
                 if(listsViewModel.getConvertedList() == null){
                     listsViewModel.createList(listName,shopName);
                     rec.setVisibility(View.VISIBLE);
@@ -89,10 +93,6 @@ public class ListsFragment extends Fragment {
                     listsViewModel.modifyList(listName,shopName);
                     Toast.makeText(context, "List details has been modified", Toast.LENGTH_SHORT).show();
                 }
-
-
-            }else{
-                Toast.makeText(context, "Please specify list name", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -102,19 +102,19 @@ public class ListsFragment extends Fragment {
 
             @Override
             public void onItemSaveClick(int list_Id,int item_Id, int quantity) {
-                if(list_Id != -1){
-                    assoViewModel.addAsso(list_Id,item_Id,quantity);
+                if(list_Id == -1) {
+                    Toast.makeText(context, "No list selected", Toast.LENGTH_SHORT).show();
+                }if(item_Id==-1){
+                    Toast.makeText(context, "Quantity is too large", Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(context, "no list selected", Toast.LENGTH_SHORT).show();
+                    assoViewModel.addAsso(list_Id,item_Id,quantity);
                 }
 
             }
             @Override
             public void onItemRemoveClick(int item_Id) {
-                if(item_Id!=-1){
+                if(item_Id != -1){
                     assoViewModel.deleteAsso(item_Id);
-                }else{
-                    Toast.makeText(context, "Please specify quantity", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -147,5 +147,20 @@ public class ListsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private boolean ApproveData(String listName, String shopName) {
+        if(listName.equals("")){
+            Toast.makeText(context, "List needs a name", Toast.LENGTH_SHORT).show();
+        }else if(listName.length()>MAX_CHARS){
+            Toast.makeText(context, "List cant be above 10 Chars", Toast.LENGTH_SHORT).show();
+        }else if(!shopName.equals("")){
+            if(shopName.length()>MAX_CHARS){
+                Toast.makeText(context, "Shop cant be above 10 Chars", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            return true;
+        }
+        return false;
     }
 }

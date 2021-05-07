@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
 cancelAlarms();
     }
-//all the data observers----------------------
+//all the data observers----------------------(for drawer)
     private void Observers(){
         listsViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
 
@@ -212,7 +212,7 @@ cancelAlarms();
                 intent.putExtra("type",ntfType);
 
                 startService(intent);
-            }
+                }
         }/*else{  //cancel alarms
             cancelAlarms();
         }*/

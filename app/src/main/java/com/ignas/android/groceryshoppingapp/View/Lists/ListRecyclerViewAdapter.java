@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder> {
-
+   private final int MAX_QUANTITY = 9999999;
    private List<Item> mValues = new ArrayList<>();
    private List<Association> aValues = new ArrayList<>();
    private int list_Id=-1;
@@ -66,6 +66,8 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
                     .filter(value -> item.getItem_id() == value.getItem_Id())
                     .findFirst().orElse(null);
             if(assoItem != null){
+
+                holder.product_name.setText(item.getItemName());
                 holder.quantity.setText(String.valueOf(assoItem.getQuantity()));
                 holder.quantity.setClickable(false);
                 toggleBtn(holder,true);
@@ -83,7 +85,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             holder.quantity.setText("");
             holder.quantity.setEnabled(true);
             toggleBtn(holder,false);
-            holder.product_name.setText(item.getItemName());
+            //holder.product_name.setText(item.getItemName());
         }
 
 //add item
@@ -92,13 +94,17 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             int quantity=0;
 
             if(list_Id!=-1){
-                toggleBtn(holder,true);
-                holder.quantity.setEnabled(false);
-
                 String qString = holder.quantity.getText().toString();
                 if(!qString.equals("")){
                     quantity = Integer.parseInt(qString);
                 }
+                if(quantity < MAX_QUANTITY){
+                    toggleBtn(holder,true);
+                    holder.quantity.setEnabled(false);
+                }else{
+                    item_Id=-1;
+                }
+
             }
             mItemClickListener.onItemSaveClick(list_Id,item_Id,quantity);
 

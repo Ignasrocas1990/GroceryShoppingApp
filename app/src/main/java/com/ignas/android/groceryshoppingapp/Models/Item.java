@@ -77,6 +77,7 @@ public class Item extends RealmObject {
     }
 
     public void setRunOutDate(int lastingDays) {
+        lastingDays-=2;
         Calendar calendar = Calendar.getInstance();
         if(lastingDays != 0){
             calendar.add(Calendar.MILLISECOND,lastingDays*1000);//TODO ------testing (need to be changed)
