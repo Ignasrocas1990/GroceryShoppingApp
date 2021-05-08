@@ -27,8 +27,12 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent==null){
+            return START_STICKY;
+        }
+
         NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Item item;
+        Item item = null;
         String dateTag="",name="";
         long runoutDate=1;
         int flag=1,type=0;
@@ -39,18 +43,17 @@ public class AlarmService extends Service {
                // name = intent.getStringExtra("name");
                // runoutDate = intent.getLongExtra("time", 1);
                 //type = intent.getIntExtra("type", 0);
-            }else{
-                return START_REDELIVER_INTENT;
             }
 
+
 //flag=1 when service from notification (reschedule notification)
-            if(flag !=-1 ) {
+            if(flag !=-1) {
                 if (intent != null && manager!= null) {
                     manager.cancel(0);
                 }
 
 
-                SystemClock.sleep(2000);
+                SystemClock.sleep(3000);
                 //connect to db and smallest item
                 item =  new RealmDb().getSmallestDateItem();
 

@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
@@ -47,19 +49,23 @@ public class ShoppingActivity extends AppCompatActivity {
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
         cancelAlarm();
         itemViewModel.setShoppingDate();
-        itemViewModel.createShoppingItems();
-        itemViewModel.testShopping();
+        ArrayList<Item> items = itemViewModel.createShoppingItems();
+        ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
+        ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
-        adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.textChangeListener() {
+
+
+        adapter = new ShoppingRecyclerAdapter(items,displayAssos,lists,new ShoppingRecyclerAdapter.onItemClickListner() {
             @Override
-            public int getLeftOver(Item item) {
-                return itemViewModel.getLeftOver(item);
+            public void onItemClick(Item item) {
+
             }
         });
         recyclerView.setAdapter(adapter);
-        observers();
+        //observers();
     }
-
+//TODO observe associations, and create association
+/*
     public void observers(){
         itemViewModel.getLiveItems().observe(this, new Observer<ArrayList<Item>>() {
             @Override
@@ -70,6 +76,8 @@ public class ShoppingActivity extends AppCompatActivity {
         });
     }
 
+ */
+
 
 
 
@@ -77,7 +85,6 @@ public class ShoppingActivity extends AppCompatActivity {
     }
 
     public void addNew(View view) {
-        itemViewModel.createShoppingItems();
 
     }
     @Override

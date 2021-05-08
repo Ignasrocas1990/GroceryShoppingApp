@@ -1,16 +1,15 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ShoppingDay {
 //for each item check if it runs out before two days.
-    /*
+    /*//TODO DELETE
     public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
         //final long twoDays = 48*60*60*1000;
-        long twoDays = 20*1000;//TODO---testing with seconds (need to change to above)
+        long twoDays = 20*1000;
         final long now = Calendar.getInstance().getTimeInMillis();
         long runOutDate=0,leftOverTime =0;
         for(int i=0;i<items.size();i++){
@@ -24,7 +23,7 @@ public class ShoppingDay {
         }
         return items;
     }
-     */
+
     //just removes items that not been notified(any item that is going to running out)
     public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
         ArrayList<Item> copy = new ArrayList<Item>();
@@ -38,7 +37,9 @@ public class ShoppingDay {
         }
         return copy;
     }
-
+    */
+    // TODO Delete(maybe)
+/*
         public int getLeftOver(Item item){
         float itemPercent=0.f;
         final long now = Calendar.getInstance().getTimeInMillis();
@@ -53,6 +54,5 @@ public class ShoppingDay {
 
         return Math.round(itemPercent/1000);
     }
-
-
+*/
 }

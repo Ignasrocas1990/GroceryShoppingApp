@@ -175,4 +175,12 @@ public class AssoResources {
                 db.removeAsso(toDelete.get(0));
             }
     }
+//find item associations to list for each item
+    public ArrayList<Association> findAssociations(ArrayList<Item> items) {
+        ArrayList<Association> associations = new ArrayList<>();
+        for(Item item : items){
+            associations.addAll(findItemAssos(item.getItem_id()));
+        }
+        return associations;
+    }
 }

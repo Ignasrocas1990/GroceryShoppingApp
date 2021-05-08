@@ -1,7 +1,6 @@
 package com.ignas.android.groceryshoppingapp.View.Item;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
-import com.ignas.android.groceryshoppingapp.Logic.ShoppingDay;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ public class ItemViewModel extends AndroidViewModel {
     private final ItemResources itemResources;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
-    ShoppingDay shoppingDay;
     final private String TAG="log";
 
 
@@ -27,7 +24,6 @@ public class ItemViewModel extends AndroidViewModel {
         itemResources = new ItemResources(application);
         mLiveItems.setValue(itemResources.getItems());
         mLiveSDate.setValue(itemResources.getShoppingDateItem());
-        shoppingDay = new ShoppingDay();
     }
     public void createItem(String newName, String newDays, String newPrice){
         mLiveItems.setValue(itemResources.createItem( newName, newDays, newPrice, mLiveItems.getValue()));
@@ -48,7 +44,7 @@ public class ItemViewModel extends AndroidViewModel {
        itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);
         mLiveItems.setValue(tempArray);
     }
-    /*
+    /*TODO DELETE
     public Item getScheduledItem() {
         Item shoppingItem = mLiveSDate.getValue();//get current shopping date item & adds to all items
 
@@ -82,20 +78,13 @@ public class ItemViewModel extends AndroidViewModel {
     }
 
 
-//create list of lowest items
-    public void createShoppingItems(){
-        mLiveItems.setValue(shoppingDay.createShoppingItems(mLiveItems.getValue()));
+//create list of items that are been notified.
+    public ArrayList<Item> createShoppingItems(){
+        //mLiveItems.setValue(itemResources.createShoppingItems(mLiveItems.getValue()));
+        return itemResources.createShoppingItems(mLiveItems.getValue());
     }
-    public int getLeftOver(Item item){
-        return shoppingDay.getLeftOver(item);
-    }
-    //TODO----------------remove TEST
-    public void testShopping(){
-        ArrayList<Item> list = mLiveItems.getValue();
-        for(Item i : list){
-            Log.i(TAG, ""+i.getItemName()+" is notified : "+i.isNotified());
-        }
-    }
+
+
 
 
 //live methods

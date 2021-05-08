@@ -210,4 +210,18 @@ public class ItemResources{
     public void deleteShoppingDate(Item shoppingDateItem) {
         db.removeItem(shoppingDateItem);
     }
+
+    //just removes items that not been notified(any item that is going to running out)
+    public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
+        ArrayList<Item> copy = new ArrayList<Item>();
+        for(int i=0;i<items.size();i++){
+
+            Item current = items.get(i);
+
+            if(current.isNotified()){
+                copy.add(current);
+            }
+        }
+        return copy;
+    }
 }

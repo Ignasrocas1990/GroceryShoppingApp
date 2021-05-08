@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class AssoViewModel extends ViewModel {
     private final AssoResources assoResources;
 
-
     private final MutableLiveData<ArrayList <Association>> currentLive = new MutableLiveData<>();
 
     public AssoViewModel(){
@@ -55,5 +54,8 @@ public class AssoViewModel extends ViewModel {
     }
     public void removeItemsAssos(ArrayList<ItemList> removed, Item deleteItem){
         assoResources.severItem(removed,deleteItem);
+    }
+    public ArrayList<Association> findAssociations(ArrayList<Item> items){
+        return assoResources.findAssociations(items);
     }
 }

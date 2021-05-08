@@ -6,10 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,21 +21,24 @@ import java.util.List;
 public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "log";
-    private List<Item> mItems = new ArrayList<>();
-    private final textChangeListener mTextChangeListener;
+    private List<Item> mItems ;//= new ArrayList<>();
+    private List<Association> mAssos ;//= new ArrayList<>();
+    private List<ItemList> mLists;
+    private final onItemClickListner mOnItemClickListener;
 
-    public ShoppingRecyclerAdapter(textChangeListener mTextChangeListener) {
-
-        this.mTextChangeListener = mTextChangeListener;
+    public ShoppingRecyclerAdapter(ArrayList<Item> items, ArrayList<Association> assos, ArrayList<ItemList> lists, onItemClickListner mOnItemClickListener) {
+        mAssos = assos;
+        mLists = lists;
+        mItems = items;
+        this.mOnItemClickListener = mOnItemClickListener;
     }
-
+//set basic item info
     public void setItems(ArrayList<Item> items) {
-        Log.i(TAG, "setItems: "+items.size());
         mItems = items;
     }
 
-    public interface textChangeListener {
-        int getLeftOver(Item item);
+    public interface onItemClickListner {
+        void onItemClick(Item item);
     }
 
     @NotNull
@@ -47,39 +51,44 @@ public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecycl
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Item currentItem = mItems.get(position);
+        Association currAsso = mAssos.get(position);
+        Item currItem = mItems.stream().filter(item->item.getItem_id()==currAsso.getItem_Id())
+                .findFirst().orElse(null);
+        ItemList currList = mLists.stream().filter(list->list.getList_Id()==currAsso.getList_Id())
+                .findFirst().orElse(null);
 
-        holder.name.setText(currentItem.getItemName());
-        if(Float.compare(currentItem.getPrice(),0.f)==0){
-           holder.price.setText(R.string.no_price_found);
-        }else{
-           holder.price.setText(String.valueOf(currentItem.getPrice()));
+        if(currItem !=null && currList !=null){
+            holder.name.setText(currItem.getItemName());
+            if(Float.compare(currItem.getPrice(),0.f)!=0){
+                holder.price.setText(String.valueOf(currItem.getPrice()));
+            }
+            if(currAsso.getQuantity()!=0){
+                holder.price.setText(String.valueOf(currAsso.getQuantity()));
+            }
+            holder.list.setText(currList.getListName());
+            if(currList.getShopName().equals("")){
+                holder.shop.setText(currList.getShopName());
+            }
         }
 
-        int itemLeftOver = mTextChangeListener.getLeftOver(currentItem);
 
-        if(itemLeftOver<0){
-            holder.leftOver.setText("0%");
-        }else{
-            holder.leftOver.setText(itemLeftOver+" % ");
-        }
+        //mOnItemClickListener.onItemClick(currentItem);
 
         //TODO -- need to get price form Asso's------Amount & list ID-----------next
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mAssos.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name,price,leftOver, amount,list,shop;
+        TextView name,price, amount,list,shop;
 
         public ViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.shoppingName);
             amount = view.findViewById(R.id.shoppingAmount);
-            leftOver = view.findViewById(R.id.shopLeftover);
             price = view.findViewById(R.id.shoppingPrice);
             list = view.findViewById(R.id.shoppingList);
             shop = view.findViewById(R.id.shoppingShop);

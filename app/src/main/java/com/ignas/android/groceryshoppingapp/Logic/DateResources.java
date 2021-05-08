@@ -1,6 +1,5 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import com.ignas.android.groceryshoppingapp.Models.AlarmSwitch;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.Date;
