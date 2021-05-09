@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
 
@@ -44,22 +45,6 @@ public class ItemViewModel extends ViewModel {
        itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);
         mLiveItems.setValue(tempArray);
     }
-    /*TODO DELETE
-    public Item getScheduledItem() {
-        Item shoppingItem = mLiveSDate.getValue();//get current shopping date item & adds to all items
-
-        ArrayList<Item> appItems = mLiveItems.getValue();
-        if(shoppingItem != null){
-            appItems.add(shoppingItem);
-            //shoppingItem = itemResources.getScheduledItem(appItems);//remove Shopping date item in case item is not closed after STOP.
-            appItems.remove(shoppingItem);
-            updateDbItems();
-            return shoppingItem;
-        }
-        return itemResources.getScheduledItem(appItems);
-    }
-
-     */
 
     public void reSyncItems(){
         itemResources.reSyncItems(mLiveItems.getValue());
@@ -78,13 +63,13 @@ public class ItemViewModel extends ViewModel {
     }
 
 
-//create list of items that are been notified.
+//create list of items that are been notified.(Shopping Day Items)
     public ArrayList<Item> createShoppingItems(){
-        //mLiveItems.setValue(itemResources.createShoppingItems(mLiveItems.getValue()));
         return itemResources.createShoppingItems(mLiveItems.getValue());
     }
-
-
+    public void syncAfterShopping(ArrayList<ShoppingItem> spItems){
+        //TODO -----loop through app items and check if they are in spItems
+    }
 
 
 //live methods

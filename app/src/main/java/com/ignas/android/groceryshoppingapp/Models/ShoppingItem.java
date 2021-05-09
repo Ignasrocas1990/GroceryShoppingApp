@@ -11,13 +11,16 @@ public class ShoppingItem{
      String listName="";
      boolean selected = false;
 
-    public ShoppingItem(int item_Id, String name) {
-        this.item_Id = item_Id;
-        this.name = name;
-    }
+
     public ShoppingItem(int item_Id, String name, float price) {
         this.item_Id = item_Id;
         this.name = name;
+        this.price = price;
+    }
+    public ShoppingItem(int item_Id, String name,int quantity, float price) {
+        this.item_Id = item_Id;
+        this.name = name;
+        this.quantity = quantity;
         this.price = price;
     }
 

@@ -11,6 +11,7 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ShoppingDay {
 
@@ -18,7 +19,7 @@ public class ShoppingDay {
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
 
 
-    //creates shopping day items to be displayed
+//creates shopping day items to be displayed
     public void createItems(ArrayList<Item> items,ArrayList<Association> displayAssos,ArrayList<ItemList> lists ){
         ArrayList<ShoppingItem> spItems = new ArrayList<>();
         ShoppingItem newItem;
@@ -55,8 +56,21 @@ public class ShoppingDay {
         liveSpList.setValue(spItems);
     }
 
+    public void addSPItem(String name,int amount,float price){
 
-//total methods
+        Random r = new Random();
+        ArrayList<ShoppingItem> tempItems = liveSpList.getValue();
+        if(tempItems ==null){
+            tempItems = new ArrayList<>();
+        }
+        ShoppingItem newItem = new ShoppingItem(r.nextInt(),name, amount, price);
+        tempItems.add(newItem);
+        liveSpList.setValue(tempItems);
+    }
+
+
+
+//total methods (simple add/subtract/set)
     public void setTotal(float price) {
         liveTotal.setValue(price);
     }
