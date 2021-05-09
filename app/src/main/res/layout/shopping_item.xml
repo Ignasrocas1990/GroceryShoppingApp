@@ -14,6 +14,7 @@
         android:columnCount="4">
     <TextView
         android:id="@+id/shoppingName"
+        android:textColor="@color/blue"
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -26,16 +27,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
-        android:text="amount" />
+        android:text="no quantity set" />
 
 
         <TextView
         android:id="@+id/shoppingPrice"
+            android:textColor="@color/blue"
         android:gravity="center"
         android:layout_columnWeight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="price" />
+        android:text="no price set" />
 
         <LinearLayout
             android:layout_columnWeight="3"
@@ -57,13 +59,13 @@
             android:layout_columnWeight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/list_name" />
+            android:text="not list" />
         <TextView
             android:id="@+id/shoppingShop"
             android:gravity="center"
             android:layout_columnWeight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/shop_name" />
+            android:text="no shop set" />
     </GridLayout>
 </LinearLayout>

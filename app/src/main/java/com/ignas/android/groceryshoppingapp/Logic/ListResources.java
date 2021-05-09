@@ -14,12 +14,10 @@ public class ListResources {
     private ArrayList<ItemList> toSave = new ArrayList<>();// merge
     private ArrayList<ItemList> toDelete = new ArrayList<>();
     private ItemList list_to_del;
-    Context mContext = null;
     RealmDb db;
 
-    public ListResources(Context context) {
+    public ListResources() {
         db = new RealmDb();
-        mContext = context;
         db_lists =  db.getLists();
 
     }
@@ -31,9 +29,6 @@ public class ListResources {
         return app_lists;
     }
 
-    public void setContext(Context context){
-        mContext = context;
-    }
 //lists methods
 public ItemList createList(String listName,String shopName){
     ItemList newItemList = new ItemList(listName,shopName);

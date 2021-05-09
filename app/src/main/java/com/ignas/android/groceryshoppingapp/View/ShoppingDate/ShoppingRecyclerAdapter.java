@@ -1,6 +1,5 @@
 package com.ignas.android.groceryshoppingapp.View.ShoppingDate;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +7,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ignas.android.groceryshoppingapp.Models.Association;
-import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,24 +18,20 @@ import java.util.List;
 public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "log";
-    private List<Item> mItems ;//= new ArrayList<>();
-    private List<Association> mAssos ;//= new ArrayList<>();
-    private List<ItemList> mLists;
-    private final onItemClickListner mOnItemClickListener;
+    private List<ShoppingItem> mItems ;
+    private final onItemClickListener mOnItemClickListener;
 
-    public ShoppingRecyclerAdapter(ArrayList<Item> items, ArrayList<Association> assos, ArrayList<ItemList> lists, onItemClickListner mOnItemClickListener) {
-        mAssos = assos;
-        mLists = lists;
-        mItems = items;
+    public ShoppingRecyclerAdapter(onItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 //set basic item info
-    public void setItems(ArrayList<Item> items) {
+    public void setItems(ArrayList<ShoppingItem> items) {
         mItems = items;
     }
 
-    public interface onItemClickListner {
-        void onItemClick(Item item);
+    public interface onItemClickListener {
+        void onItemBuy(ShoppingItem item);
+        void onCancel(ShoppingItem item);
     }
 
     @NotNull
@@ -51,35 +44,47 @@ public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecycl
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Association currAsso = mAssos.get(position);
-        Item currItem = mItems.stream().filter(item->item.getItem_id()==currAsso.getItem_Id())
-                .findFirst().orElse(null);
-        ItemList currList = mLists.stream().filter(list->list.getList_Id()==currAsso.getList_Id())
-                .findFirst().orElse(null);
 
-        if(currItem !=null && currList !=null){
-            holder.name.setText(currItem.getItemName());
-            if(Float.compare(currItem.getPrice(),0.f)!=0){
-                holder.price.setText(String.valueOf(currItem.getPrice()));
-            }
-            if(currAsso.getQuantity()!=0){
-                holder.price.setText(String.valueOf(currAsso.getQuantity()));
-            }
-            holder.list.setText(currList.getListName());
-            if(currList.getShopName().equals("")){
-                holder.shop.setText(currList.getShopName());
-            }
+        ShoppingItem currentItem = mItems.get(position);
+
+        if(currentItem.isSelected()){
+            holder.itemView.setBackgroundResource(R.color.red);
+        }else{
+            holder.itemView.setBackgroundResource(R.color.blue);
         }
 
-
-        //mOnItemClickListener.onItemClick(currentItem);
+            holder.name.setText(currentItem.getName());
+            if(Float.compare(currentItem.getPrice(),0.f)!=0){
+                holder.price.setText(String.valueOf(currentItem.getPrice()));
+            }
+            if(currentItem.getQuantity()!=0){
+                holder.amount.setText(String.valueOf(currentItem.getQuantity()));
+            }
+            if(!currentItem.getListName().equals("")){
+                holder.list.setText(currentItem.getListName());
+            }
+            if(!currentItem.getShopName().equals("")){
+                holder.list.setText(currentItem.getShopName());
+            }
+//item been selected
+        holder.itemView.setOnClickListener(v -> {
+            if(!currentItem.isSelected()){
+                currentItem.setSelected(true);
+                holder.itemView.setBackgroundResource(R.color.red);
+                mOnItemClickListener.onItemBuy(currentItem);
+            }else{
+                currentItem.setSelected(false);
+                holder.itemView.setBackgroundResource(R.color.blue);
+                mOnItemClickListener.onCancel(currentItem);
+            }
+        });
 
         //TODO -- need to get price form Asso's------Amount & list ID-----------next
     }
 
     @Override
     public int getItemCount() {
-        return mAssos.size();
+        return mItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

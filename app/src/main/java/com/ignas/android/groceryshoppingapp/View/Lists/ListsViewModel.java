@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.ListResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
@@ -13,16 +14,15 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
 
-public class ListsViewModel extends AndroidViewModel {
+public class ListsViewModel extends ViewModel {
 
     private final MutableLiveData<ArrayList<ItemList>> lists = new MutableLiveData<>();
     private final ListResources listResources;
 
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
 
-    public ListsViewModel(@NonNull Application application) {
-        super(application);
-        listResources = new ListResources(application);
+    public ListsViewModel() {
+        listResources = new ListResources();
         lists.setValue(listResources.getLists());
 
     }

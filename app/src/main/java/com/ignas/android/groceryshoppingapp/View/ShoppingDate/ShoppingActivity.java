@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.ignas.android.groceryshoppingapp.Logic.ShoppingDay;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
@@ -27,6 +29,7 @@ public class ShoppingActivity extends AppCompatActivity {
         ItemViewModel itemViewModel;
         ListsViewModel listViewModel;
         AssoViewModel assoViewModel;
+        ShoppingDay shoppingDay;
         RecyclerView recyclerView;
         ShoppingRecyclerAdapter adapter;
         EditText newName,newAmount,newPrice;
@@ -44,47 +47,66 @@ public class ShoppingActivity extends AppCompatActivity {
         newPrice = findViewById(R.id.newPrice);
         total = findViewById(R.id.total);
 
-        itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
-        listViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
-        assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
+        itemViewModel = new ItemViewModel();
+        listViewModel = new ListsViewModel();
+        assoViewModel = new AssoViewModel();
+
+
         cancelAlarm();
         itemViewModel.setShoppingDate();
         ArrayList<Item> items = itemViewModel.createShoppingItems();
         ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
         ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
+        shoppingDay = new ShoppingDay();
+        shoppingDay.createItems(items, displayAssos, lists);
 
 
-        adapter = new ShoppingRecyclerAdapter(items,displayAssos,lists,new ShoppingRecyclerAdapter.onItemClickListner() {
+        adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(Item item) {
-
+            public void onItemBuy(ShoppingItem item) {
+                if(total.getText().toString().equals("total")){
+                    shoppingDay.setTotal(item.getPrice());
+                }else{
+                    shoppingDay.addToTotal(item.getPrice());
+                }
+            }
+            @Override
+            public void onCancel(ShoppingItem item) {
+                if(total.getText().toString().equals("0.0")){
+                    total.setText(R.string.total);
+                }else{
+                    shoppingDay.subtractTotal(item.getPrice());
+                }
             }
         });
         recyclerView.setAdapter(adapter);
-        //observers();
+        observers();
     }
-//TODO observe associations, and create association
-/*
+
+//all the observers
     public void observers(){
-        itemViewModel.getLiveItems().observe(this, new Observer<ArrayList<Item>>() {
+        shoppingDay.getLiveSpList().observe(this, new Observer<ArrayList<ShoppingItem>>() {
             @Override
-            public void onChanged(ArrayList<Item> items) {
-                adapter.setItems(items);
+            public void onChanged(ArrayList<ShoppingItem> shoppingItems) {
+                adapter.setItems(shoppingItems);
                 adapter.notifyDataSetChanged();
             }
         });
+        shoppingDay.getLiveTotal().observe(this, new Observer<Float>() {
+            @Override
+            public void onChanged(Float aFloat) {
+                total.setText(String.valueOf(aFloat));
+            }
+        });
+
     }
-
- */
-
-
-
 
     public void save(View view) {
     }
 
     public void addNew(View view) {
+
 
     }
     @Override

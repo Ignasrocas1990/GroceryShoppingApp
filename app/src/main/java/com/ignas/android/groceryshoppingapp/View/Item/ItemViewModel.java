@@ -6,22 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.util.ArrayList;
 
-public class ItemViewModel extends AndroidViewModel {
+public class ItemViewModel extends ViewModel {
     private final ItemResources itemResources;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
     final private String TAG="log";
 
 
-    public ItemViewModel(@NonNull Application application) {
-        super(application);
-        itemResources = new ItemResources(application);
+    public ItemViewModel() {
+        itemResources = new ItemResources();
         mLiveItems.setValue(itemResources.getItems());
         mLiveSDate.setValue(itemResources.getShoppingDateItem());
     }

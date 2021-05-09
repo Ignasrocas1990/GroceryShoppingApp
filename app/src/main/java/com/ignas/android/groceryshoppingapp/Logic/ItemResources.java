@@ -3,37 +3,36 @@ package com.ignas.android.groceryshoppingapp.Logic;
 import android.content.Context;
 import android.util.Log;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemResources{
     private static final String TAG ="log";
-    private final ArrayList<Item> toSave = new ArrayList<>();
+    private final HashMap<Integer,Item> toSave = new HashMap<>();
+
     private final ArrayList<Item> toDelete = new ArrayList<>();
     private ArrayList<Item> db_items = new ArrayList<>();
     private Item db_SDate = null;
 
-    Context mContext = null;
+    //Context mContext = null;
     RealmDb db;
 
-    public ItemResources(){}
-
-    public ItemResources(Context context) {
+    public ItemResources() {
         db = new RealmDb();
-        mContext = context;
         db_items = db.getItems();
         db_SDate = db_items.stream()
                 .filter(i-> i.getItem_id() == Integer.MAX_VALUE)
                 .findFirst().orElse(null);
     }
 
-    public void setContext(Context context){
-        mContext = context;
-    }
 //copy db items to app.
     public ArrayList<Item> getItems(){
         ArrayList<Item> app_items=new ArrayList<>();
@@ -53,16 +52,16 @@ public class ItemResources{
 
         //check and add date item to be deleted.
         if(app_SDate != null){
-            toSave.add(app_SDate);
-        } else if(db_SDate!=null){
+            if(!toSave.containsKey(app_SDate.getItem_id())) {
+                toSave.put(app_SDate.getItem_id(), app_SDate);
+            }
+        }else if(db_SDate!=null){
             toDelete.add(db_SDate);
         }
 
         //updates data
-        if(toSave.size()>1){
-            db.addItems(toSave);
-        }else if(toSave.size()!=0){
-            db.addItem(toSave.get(0));
+        if(toSave.size()!=0){
+            db.addItems(new ArrayList<>(toSave.values()));
         }
         if(toDelete.size()>1){
             db.deleteItems(toDelete);
@@ -86,24 +85,24 @@ public class ItemResources{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
         current.add(newItem);
-        toSave.add(newItem);
+        toSave.put(newItem.getItem_id(),newItem);
         return current;
     }
     public void removeItem(Item itemToRemove){
-        if(Check.itemEquals(db_items,itemToRemove) && Check.itemEquals(toSave,itemToRemove)){ //check if old item(modified) removing
-            toSave.remove(itemToRemove);
+        if(Check.itemEquals(db_items,itemToRemove) && toSave.containsKey(itemToRemove.getItem_id())){ //check if old item(modified) removing
+            toSave.remove(itemToRemove.getItem_id());
             toDelete.add(itemToRemove);
         }else if (Check.itemEquals(db_items,itemToRemove)){ //item is old not modified
             toDelete.add(itemToRemove);
         }else{
-            toSave.remove(itemToRemove); //item is just created
+            toSave.remove(itemToRemove.getItem_id()); //item is just created
         }
 
     }
     public void modifyItem(Item oldItem,String newName, String newDays, String newPrice){
 
-        if(!Check.itemEquals(toSave,oldItem)){
-            toSave.add(oldItem);
+        if(!toSave.containsKey(oldItem.getItem_id())){
+            toSave.put(oldItem.getItem_id(),oldItem);
         }
         oldItem.setItemName(newName);
         if(newDays.equals("")) {
@@ -183,13 +182,21 @@ public class ItemResources{
  */
 // gets all current data and updates its Running out Date (after NTF switch is on )
     public void reSyncItems(ArrayList<Item> values) {
+        Item toSaveCurr = null;
         Log.i(TAG, "items are reSynced");
         for(Item current : values){
             if(current.isNotified()){
-                current.setRunOutDate(current.getLastingDays());
-                current.setNotified(false);
+                if(toSave.containsKey(current.getItem_id())){
+                    toSaveCurr = toSave.get(current.getItem_id());
+                    toSaveCurr.setRunOutDate(current.getLastingDays());
+                    toSaveCurr.setNotified(false);
+                }else{
+                    current.setRunOutDate(current.getLastingDays());
+                    current.setNotified(false);
+                    toSave.put(current.getItem_id(),current);
+                }
+
             }
-            toSave.add(current);
         }
     }
 

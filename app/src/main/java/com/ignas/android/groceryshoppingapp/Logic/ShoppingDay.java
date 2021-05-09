@@ -1,10 +1,92 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class ShoppingDay {
+
+    private final MutableLiveData<ArrayList<ShoppingItem>> liveSpList = new MutableLiveData<>();
+    private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
+
+
+    //creates shopping day items to be displayed
+    public void createItems(ArrayList<Item> items,ArrayList<Association> displayAssos,ArrayList<ItemList> lists ){
+        ArrayList<ShoppingItem> spItems = new ArrayList<>();
+        ShoppingItem newItem;
+        for(Association asso : displayAssos){
+
+            Item currItem = items.stream().filter(item->item.getItem_id() == asso.getItem_Id())
+                    .findFirst().orElse(null);
+
+            ItemList currList = lists.stream().filter(list->list.getList_Id()==asso.getList_Id())
+                    .findFirst().orElse(null);
+            if(currItem!=null && currList!=null){
+
+                newItem = new ShoppingItem(currItem.getItem_id(),asso.getAsso_Id(),currList.getList_Id()
+                        ,currItem.getItemName(),currItem.getPrice(),asso.getQuantity(),currList.getShopName(),currList.getListName());
+                spItems.add(newItem);
+            }
+        }
+        if(spItems.size() == 0){
+            for(Item i : items){
+                    newItem = new ShoppingItem(i.getItem_id(),i.getItemName(),i.getPrice());
+                spItems.add(newItem);
+            }
+        }else{
+            for(Item i : items){
+                ShoppingItem found = spItems.stream()
+                        .filter(spItem->spItem.getItem_Id()==i.getItem_id())
+                        .findFirst().orElse(null);
+                if(found==null){
+                    newItem = new ShoppingItem(i.getItem_id(),i.getItemName(),i.getPrice());
+                    spItems.add(newItem);
+                }
+            }
+        }
+        liveSpList.setValue(spItems);
+    }
+
+
+//total methods
+    public void setTotal(float price) {
+        liveTotal.setValue(price);
+    }
+    public void addToTotal(float price){
+        try{
+            liveTotal.setValue(liveTotal.getValue()+price);
+        }catch(NullPointerException e){
+            Log.i("log", "addToTotal: "+e.getMessage());
+        }
+    }
+    public void subtractTotal(float price){
+        try{
+            liveTotal.setValue(liveTotal.getValue()-price);
+        }catch(NullPointerException e){
+            Log.i("log", "addToTotal: "+e.getMessage());
+        }
+    }
+
+
+//live methods
+    public LiveData<Float> getLiveTotal() {
+        return liveTotal;
+    }
+    public LiveData<ArrayList<ShoppingItem>> getLiveSpList() {
+        return liveSpList;
+    }
+
+
+
+
 //for each item check if it runs out before two days.
     /*//TODO DELETE
     public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
