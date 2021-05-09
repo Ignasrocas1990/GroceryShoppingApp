@@ -23,7 +23,7 @@ public class RealmDb{
         //removeAll();
     }
 //get smallest date to schedule (is the switch is on)
-    public Item getSmallestDateItem(){
+    public Item getSmallestDateItem(int item_Id){
         ArrayList<Item> list = new ArrayList<>();
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm->{
@@ -31,19 +31,23 @@ public class RealmDb{
                 AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
                 if(tempSwitch!=null) {
                     if (tempSwitch.isSwitched()) {
+                        if(item_Id != 0) {
+                            Item running = inRealm.where(Item.class)
+                                    .equalTo("item_Id", item_Id).findFirst();
 
-                        Date dateResults = inRealm.where(Item.class)
-                            .equalTo("notified", false).minimumDate("runOutDate");
-
-                        if(dateResults !=null){
-                            Item itemResult = inRealm.where(Item.class)
-                                .equalTo("runOutDate",dateResults).findFirst();
-                            if(itemResult!=null){
-                                    itemResult.setNotified(true);
-                                    list.add(inRealm.copyFromRealm(itemResult));
-                            }
+                            if(running != null) running.setNotified(true);
                         }
 
+                            Date dateResults = inRealm.where(Item.class)
+                                    .equalTo("notified", false).minimumDate("runOutDate");
+
+                            if(dateResults !=null){
+                                Item itemResult = inRealm.where(Item.class)
+                                        .equalTo("runOutDate",dateResults).findFirst();
+                                if(itemResult!=null)
+                                    list.add(inRealm.copyFromRealm(itemResult));
+
+                            }
                     }
                 }
             });

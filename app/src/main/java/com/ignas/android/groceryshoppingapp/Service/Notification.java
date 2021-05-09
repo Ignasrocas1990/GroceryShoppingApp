@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -28,6 +29,7 @@ public class Notification extends BroadcastReceiver {
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
         int type = intent.getIntExtra("type",0);
+        int item_Id = intent.getIntExtra("item_Id",0);
         if( type == 1 ){ //create shopping date notification
 
             Log.i("log", "shopping date ntf creation---> "+name);
@@ -65,10 +67,12 @@ public class Notification extends BroadcastReceiver {
 
             //create Brought action Button
             Intent brought = new Intent(context, AlarmService.class);
-            //brought.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Bundle bundle = new Bundle();
+            bundle.putInt("item_Id",item_Id);
+            brought.putExtra("item_Id",bundle);
 
             PendingIntent pendingIntent = PendingIntent.getService(
-                    context, 0, brought, 0);
+                    context, 0, brought, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
 //create body of notification
@@ -80,7 +84,7 @@ public class Notification extends BroadcastReceiver {
                     .setContentTitle(name+" is running out at "+time)
                     .setContentText(" ")
                     .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .addAction(R.drawable.ic_baseline_stop_circle_24,"Brought",pendingIntent)
+                    .addAction(R.drawable.ic_baseline_stop_circle_24,"OK",pendingIntent)
                     .setSound(uri);
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

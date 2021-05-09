@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -36,32 +37,34 @@ public class AlarmService extends Service {
         String dateTag="",name="";
         long runoutDate=1;
         int flag=1,type=0;
+        int item_Id=0;
 
-            if(intent != null){
+        flag = intent.getIntExtra("flag", 1);
+        Bundle bundle = intent.getBundleExtra("item_Id");
+        if (bundle!=null){
+            item_Id = bundle.getInt("item_Id");
 
-                flag = intent.getIntExtra("flag", 1);
-               // name = intent.getStringExtra("name");
-               // runoutDate = intent.getLongExtra("time", 1);
-                //type = intent.getIntExtra("type", 0);
-            }
+        }
+        // name = intent.getStringExtra("name");
+        // runoutDate = intent.getLongExtra("time", 1);
+        //type = intent.getIntExtra("type", 0);
 
 
 //flag=1 when service from notification (reschedule notification)
             if(flag !=-1) {
-                if (intent != null && manager!= null) {
+                if (manager != null) {
                     manager.cancel(0);
                 }
 
-
-                SystemClock.sleep(3000);
                 //connect to db and smallest item
-                item =  new RealmDb().getSmallestDateItem();
+                item =  new RealmDb().getSmallestDateItem(item_Id);
 
 
                 //ItemResources rec = new ItemResources();
                 //Item item = rec.re_scheduleAlarm();
 
                 if (item != null) {
+                    item_Id=item.getItem_id();
                     if (item.getItem_id() == Integer.MAX_VALUE) {//check if its a shopping item
                         type = 1;
                     }
@@ -84,6 +87,7 @@ public class AlarmService extends Service {
             newIntent.putExtra("name",name);
             newIntent.putExtra("time",dateTag);
             newIntent.putExtra("type",type);
+            newIntent.putExtra("item_Id",item_Id);
 
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -96,7 +100,7 @@ public class AlarmService extends Service {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, runoutDate, pendingIntent);
             }
 
-            Log.i("log", "alarm :"+dateTag+" for "+name);
+            Log.i("log", "alarm :"+dateTag+" for item ::: "+name);
 
             return START_STICKY;
 
