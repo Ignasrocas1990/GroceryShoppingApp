@@ -68,7 +68,7 @@ public class ItemViewModel extends ViewModel {
         return itemResources.createShoppingItems(mLiveItems.getValue());
     }
     public void syncAfterShopping(ArrayList<ShoppingItem> spItems){
-        //TODO -----loop through app items and check if they are in spItems
+        itemResources.syncAfterShopping(spItems);
     }
 
 

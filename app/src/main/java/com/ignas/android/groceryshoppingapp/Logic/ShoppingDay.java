@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class ShoppingDay {
 
-    private final MutableLiveData<ArrayList<ShoppingItem>> liveSpList = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<ShoppingItem>> liveSpItems = new MutableLiveData<>();
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
 
 
@@ -53,19 +53,20 @@ public class ShoppingDay {
                 }
             }
         }
-        liveSpList.setValue(spItems);
+        liveSpItems.setValue(spItems);
     }
 
     public void addSPItem(String name,int amount,float price){
 
         Random r = new Random();
-        ArrayList<ShoppingItem> tempItems = liveSpList.getValue();
+        ArrayList<ShoppingItem> tempItems = liveSpItems.getValue();
         if(tempItems ==null){
             tempItems = new ArrayList<>();
         }
         ShoppingItem newItem = new ShoppingItem(r.nextInt(),name, amount, price);
+
         tempItems.add(newItem);
-        liveSpList.setValue(tempItems);
+        liveSpItems.setValue(tempItems);
     }
 
 
@@ -88,14 +89,17 @@ public class ShoppingDay {
             Log.i("log", "addToTotal: "+e.getMessage());
         }
     }
+    public ArrayList<ShoppingItem> getShoppingItems(){
+        return liveSpItems.getValue();
+    }
 
 
 //live methods
     public LiveData<Float> getLiveTotal() {
         return liveTotal;
     }
-    public LiveData<ArrayList<ShoppingItem>> getLiveSpList() {
-        return liveSpList;
+    public LiveData<ArrayList<ShoppingItem>> getLiveSpItems() {
+        return liveSpItems;
     }
 
 

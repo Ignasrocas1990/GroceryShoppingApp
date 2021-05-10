@@ -1,9 +1,5 @@
 package com.ignas.android.groceryshoppingapp.View.Lists;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,35 +12,35 @@ import java.util.ArrayList;
 
 public class ListsViewModel extends ViewModel {
 
-    private final MutableLiveData<ArrayList<ItemList>> lists = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
     private final ListResources listResources;
 
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
 
     public ListsViewModel() {
         listResources = new ListResources();
-        lists.setValue(listResources.getLists());
+        mLiveLists.setValue(listResources.getLists());
 
     }
     //lists methods
 
     public void createList(String listName,String shopName){
-        ArrayList<ItemList> oldList = lists.getValue();
+        ArrayList<ItemList> oldList = mLiveLists.getValue();
         ItemList newItemList =  listResources.createList(listName,shopName);
         oldList.add(newItemList);
-        lists.setValue(oldList);
+        mLiveLists.setValue(oldList);
         setCurrentList(newItemList);
     }
 
 
     public void removeList(ItemList list) {
-        ArrayList<ItemList> allList = lists.getValue();
+        ArrayList<ItemList> allList = mLiveLists.getValue();
         allList.remove(listResources.removeList(list));
-        lists.setValue(allList);
+        mLiveLists.setValue(allList);
     }
 //find list by list_Id
     public ItemList findList(int list_Id) {
-        ArrayList<ItemList> allList = lists.getValue();
+        ArrayList<ItemList> allList = mLiveLists.getValue();
         ItemList curList = allList.stream()
                 .filter(list -> list_Id == list.getList_Id())
                 .findAny().orElse(null);
@@ -97,7 +93,7 @@ public class ListsViewModel extends ViewModel {
         return currentList;
     }
     public LiveData<ArrayList<ItemList>> getLiveLists() {
-        return lists;
+        return mLiveLists;
     }
 
 

@@ -75,6 +75,7 @@ public class ShoppingActivity extends AppCompatActivity {
                     shoppingDay.setTotal(item.getPrice());
                 }else{
                     shoppingDay.addToTotal(item.getPrice());
+
                 }
             }
             @Override
@@ -92,7 +93,7 @@ public class ShoppingActivity extends AppCompatActivity {
 
 //all the observers
     public void observers(){
-        shoppingDay.getLiveSpList().observe(this, new Observer<ArrayList<ShoppingItem>>() {
+        shoppingDay.getLiveSpItems().observe(this, new Observer<ArrayList<ShoppingItem>>() {
             @Override
             public void onChanged(ArrayList<ShoppingItem> shoppingItems) {
                 adapter.setItems(shoppingItems);
@@ -118,8 +119,8 @@ public class ShoppingActivity extends AppCompatActivity {
             if(newPrice.equals("")){
                 newPrice = "0.f";
             }
-            shoppingDay.addSPItem(newAmount, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
-            itemViewModel.createItem(newAmount, "0",newPrice);
+            shoppingDay.addSPItem(newName, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
+            itemViewModel.createItem(newName, "0",newPrice);
         }
 
     }
@@ -129,7 +130,7 @@ public class ShoppingActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        itemViewModel.reSyncItems();
+        itemViewModel.syncAfterShopping(shoppingDay.getShoppingItems());
         itemViewModel.updateDbItems();
         //Item scheduledItem = itemViewModel.getScheduledItem();
         Intent intent = new Intent(this, AlarmService.class);

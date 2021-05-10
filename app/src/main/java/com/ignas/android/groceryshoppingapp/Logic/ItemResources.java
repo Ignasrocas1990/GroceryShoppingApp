@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
@@ -199,6 +200,28 @@ public class ItemResources{
             }
         }
     }
+//extend items after shopping day
+    public void syncAfterShopping(ArrayList<ShoppingItem> spItems) {
+        Item toSaveCurr;
+        for(Item item : db_items){
+            ShoppingItem itemFound = spItems.stream().filter(ShoppingItem::isSelected)
+                    .filter(spItem->spItem.getItem_Id()==item.getItem_id()).findFirst().orElse(null);
+            if(itemFound!=null){
+                if(toSave.containsKey(item.getItem_id())){
+                    toSaveCurr = toSave.get(item.getItem_id());
+                    toSaveCurr.setRunOutDate(item.getLastingDays());
+                    toSaveCurr.setNotified(false);
+                }else{
+                    item.setRunOutDate(item.getLastingDays());
+                    item.setNotified(false);
+                    toSave.put(item.getItem_id(),item);
+                }
+            }
+        }
+
+        //TODO -----loop through app items and check if they are in spItems
+
+    }
 
     public Item getShoppingDateItem() { return db_SDate; }
 
@@ -231,4 +254,5 @@ public class ItemResources{
         }
         return copy;
     }
+
 }

@@ -1,3 +1,4 @@
+
 package com.ignas.android.groceryshoppingapp.Models;
 
 public class ShoppingItem{

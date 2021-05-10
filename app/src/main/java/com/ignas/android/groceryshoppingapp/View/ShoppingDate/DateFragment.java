@@ -50,8 +50,8 @@ public class DateFragment extends Fragment {
         DateViewModel dateViewModel = ViewModelProviders.of(requireActivity()).get(DateViewModel.class);
         ItemViewModel itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
 
-        Calendar now = Calendar.getInstance(Locale.getDefault());
-        Calendar later = Calendar.getInstance(Locale.getDefault());
+        Calendar now = Calendar.getInstance();
+        Calendar later = Calendar.getInstance();
 
 
         itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {

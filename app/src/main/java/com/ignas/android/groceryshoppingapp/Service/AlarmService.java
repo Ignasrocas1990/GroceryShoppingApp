@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.Service;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,7 +34,7 @@ public class AlarmService extends Service {
         }
 
         NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Item item = null;
+        Item item;
         String dateTag="",name="";
         long runoutDate=1;
         int flag=1,type=0;
@@ -78,7 +79,7 @@ public class AlarmService extends Service {
 
 // if has a name create alarm -else- cancel alarm (from activity)
         if(!name.equals("")){
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+            @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
             dateTag = formatter.format(runoutDate);
 
 

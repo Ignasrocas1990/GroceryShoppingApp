@@ -25,9 +25,10 @@
         <activity
             android:name=".View.ShoppingDate.ShoppingActivity"
             android:label="@string/title_activity_main"
+            android:theme="@style/Theme.GroceryShoppingApp.NoActionBar"
             android:launchMode="singleTask"
             android:taskAffinity=""
-            android:excludeFromRecents="false">
+            android:excludeFromRecents="true">
 
         </activity>
         <receiver

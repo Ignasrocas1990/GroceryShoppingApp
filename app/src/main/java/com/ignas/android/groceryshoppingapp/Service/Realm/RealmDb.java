@@ -37,9 +37,10 @@ public class RealmDb{
 
                             if(running != null) running.setNotified(true);
                         }
-
                             Date dateResults = inRealm.where(Item.class)
-                                    .equalTo("notified", false).minimumDate("runOutDate");
+                                    .equalTo("notified", false)
+                                    .greaterThan("lastingDays", 0)
+                                    .minimumDate("runOutDate");
 
                             if(dateResults !=null){
                                 Item itemResult = inRealm.where(Item.class)
