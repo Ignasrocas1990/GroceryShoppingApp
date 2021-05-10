@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:padding="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/startLayout"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/reportDateView"
+                    android:textSize="20sp"
+                    android:text="@string/_00_00_0000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_width="0dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Total : "/>
+
+            <TextView
+                android:id="@+id/reportTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@string/_000"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+
+                <ImageButton
+                    android:id="@+id/reportImageItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:foreground="@drawable/ic_report_item" />
+            </LinearLayout>
+      </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

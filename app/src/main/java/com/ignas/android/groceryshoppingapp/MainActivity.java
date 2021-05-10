@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         private DateViewModel dateViewModel;
         NavigationView mNavigationView;
         DrawerLayout drawerLayout;
+        @NonNls
         Menu menu;
         final MenuItem[] previousMenuItem = {null};
 
@@ -134,7 +138,7 @@ cancelAlarms();
 // select current list after creation
         listsViewModel.getCurrLiveList().observe(this, curList->{
             //synchronizes current list <=> its associations to items
-            MenuItem menuItem;
+            @NonNls MenuItem menuItem;
             if(curList==null){
                 assoViewModel.setAsso(DESELECT);
             }else{
@@ -175,7 +179,7 @@ cancelAlarms();
         }
         refreshDrawer();
     }
-    //not my code -----------------
+    //not my code -----------------(run through children and get adapter)
     public void refreshDrawer(){
         for (int i = 0, count = mNavigationView.getChildCount(); i < count; i++) {
             final View child = mNavigationView.getChildAt(i);
@@ -199,24 +203,11 @@ cancelAlarms();
         itemViewModel.updateDbItems();
         assoViewModel.updateAssociations();
 
-        if(dateViewModel.getSwitch()){  //if notification are on
-            //Item scheduledItem = itemViewModel.getScheduledItem();
-
-           // if( scheduledItem != null){
-                //int ntfType = 0;
+        if(dateViewModel.getSwitch()){
                 Intent intent = new Intent(this, AlarmService.class);
-                //intent.putExtra("name",scheduledItem.getItemName());
-                //intent.putExtra("time",scheduledItem.getRunOutDate().getTime());
                 intent.putExtra("flag",1);
-                //if(scheduledItem.getItem_id()==Integer.MAX_VALUE){ ntfType=1; }//sets, if notification is for shopping
-                //intent.putExtra("type",ntfType);
-
                 startService(intent);
-               // }
-        }/*else{  //cancel alarms
-            cancelAlarms();
-        }*/
-
+        }
     }
     private void cancelAlarms(){
         Intent intent = new Intent(this, AlarmService.class);

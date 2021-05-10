@@ -35,7 +35,7 @@ public class TabAdapter extends FragmentPagerAdapter {
                 fragment = DateFragment.newInstance();
                 break;
             case 3:
-                fragment = ReportFragment.newInstance("","");
+                fragment = ReportFragment.newInstance();
 
         }
         return fragment;

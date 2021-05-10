@@ -20,8 +20,8 @@ public class ItemResources{
     private final HashMap<Integer,Item> toSave = new HashMap<>();
 
     private final ArrayList<Item> toDelete = new ArrayList<>();
-    private ArrayList<Item> db_items = new ArrayList<>();
-    private Item db_SDate = null;
+    private final ArrayList<Item> db_items;
+    private final Item db_SDate;
 
     //Context mContext = null;
     RealmDb db;
@@ -62,7 +62,8 @@ public class ItemResources{
 
         //updates data
         if(toSave.size()!=0){
-            db.addItems(new ArrayList<>(toSave.values()));
+            ArrayList<Item> temp = new ArrayList<>(toSave.values());
+            db.addItems(temp);
         }
         if(toDelete.size()>1){
             db.deleteItems(toDelete);
@@ -118,69 +119,7 @@ public class ItemResources{
             oldItem.setPrice(Float.parseFloat(newPrice));
         }
     }
-    //re-schedule service TODO -----maybe delete
-    /*
-    public Item re_scheduleAlarm(){
 
-        db = new RealmDb();
-        if(!db.getSwitch()){
-            return null;
-        }else{
-            return db.getSmallestDateItem();
-        }
-    }
-*/
-/*
-    //finds current running item/update's it and return next item to be scheduled.
-    public Item getScheduledItem(ArrayList<Item> appItems){
-        if(appItems.size()==0){
-            return null;
-        }else if(appItems.size()==1){
-            Item item = appItems.get(0);
-            item.setNotified(true);
-            db.addItem(item);
-            return item;
-        }
-        //final Date now = Calendar.getInstance().getTime();// set to now
-        Item lowestDateItem = null;
-        Item currentItem;
-
-        for(int i=0;i<appItems.size();i++){
-            currentItem = appItems.get(i);
-            if(lowestDateItem==null && !currentItem.isNotified()){
-
-                lowestDateItem = currentItem;
-
-            }else if (!currentItem.isNotified() &&
-                    lowestDateItem.getRunOutDate().compareTo(currentItem.getRunOutDate()) >= 0) {
-                    lowestDateItem = currentItem;
-            }
-
-        }
-        if(lowestDateItem !=null){
-
-            lowestDateItem.setNotified(true);
-
-            if( !Check.itemEquals(toSave,lowestDateItem)){
-                toSave.add(lowestDateItem);
-            }
-            return lowestDateItem;
-        }
-         return null;
-
-    }
-
-*/
-/*
-//check if running is inValid(in the past/ not up to date)
-    public Item extendTime(Item item){
-        Item now = new Item(1);
-        if(now.getRunOutDate().compareTo(item.getRunOutDate()) > 0){
-            item.setRunOutDate(item.getLastingDays());
-        }
-        return item;
-    }
- */
 // gets all current data and updates its Running out Date (after NTF switch is on )
     public void reSyncItems(ArrayList<Item> values) {
         Item toSaveCurr = null;
@@ -255,4 +194,16 @@ public class ItemResources{
         return copy;
     }
 
+    public void reSyncCurrent(Item item) {
+            if(toSave.containsKey(item.getItem_id())){
+                item = toSave.get(item.getItem_id());
+                item.setRunOutDate(item.getLastingDays());
+                item.setNotified(false);
+            }else{
+                item.setRunOutDate(item.getLastingDays());
+                item.setNotified(false);
+                toSave.put(item.getItem_id(),item);
+            }
+
+    }
 }

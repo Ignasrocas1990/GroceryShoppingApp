@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ignas.android.groceryshoppingapp.Logic.ShoppingResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;

@@ -47,7 +47,7 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
     EditText product_name,lasting_days,price;
-    FloatingActionButton saveBtn,deleteBtn;
+    FloatingActionButton saveBtn,deleteBtn,syncBtn;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -61,6 +61,8 @@ public class ItemFragment extends Fragment {
 
         saveBtn=view.findViewById(R.id.saveFab);
         deleteBtn=view.findViewById(R.id.delFab);
+        syncBtn = view.findViewById(R.id.reSync);
+
         product_name = view.findViewById(R.id.cur_productName);
         lasting_days = view.findViewById(R.id.cur_lastingDays);
         price = view.findViewById(R.id.cur_price);
@@ -170,6 +172,20 @@ public class ItemFragment extends Fragment {
                 }else{
                     Toast.makeText(context, "No item selected", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        syncBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if(curPosition[0] != -1){
+                    itemViewModel.reSyncCurrent(curPosition[0]);
+                    Toast.makeText(context, "Item has been updated", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "No item selected", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

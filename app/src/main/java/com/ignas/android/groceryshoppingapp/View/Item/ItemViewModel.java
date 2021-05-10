@@ -77,4 +77,10 @@ public class ItemViewModel extends ViewModel {
         return mLiveItems;
     }
     public LiveData<Item> getLiveShoppingDate() { return mLiveSDate;}
+
+    public void reSyncCurrent(int position) {
+        Item currentItem = findItem(position);
+        itemResources.reSyncCurrent(currentItem);
+
     }
+}
