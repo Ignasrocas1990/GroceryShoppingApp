@@ -72,6 +72,9 @@ public class DateViewModel extends ViewModel {
             Log.i("log", "addToTotal: "+e.getMessage());
         }
     }
+    public void createReport(float total,ArrayList<Item> items){
+        dateResources.createReport(total,items);
+    }
 
 //live observational methods
     public LiveData<Boolean> getLiveSwitch(){return app_switch;}

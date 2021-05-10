@@ -1,10 +1,10 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.Report;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
@@ -31,10 +31,7 @@ public class DateResources {
         if(appSwitch != dbSwitch){
             db.setSwitch(appSwitch);
         }
-        if(appSwitch && !dbSwitch){
-            return true;
-        }
-        return false;
+        return appSwitch && !dbSwitch;
     }
     //creates shopping day items to be displayed
     public ArrayList<ShoppingItem> createItems(ArrayList<Item> items, ArrayList<Association> displayAssos, ArrayList<ItemList> lists ){
@@ -72,10 +69,15 @@ public class DateResources {
         }
         return spItems;
     }
-
     public ShoppingItem addSPItem(String name,int amount,float price){
 
         Random r = new Random();
         return new ShoppingItem(r.nextInt(),name, amount, price);
+    }
+    public void createReport(float total,ArrayList<Item>boughtItems){
+        Report report = new Report();
+        report.setTotal(total);
+        report.setItems(boughtItems);
+        db.addReport(report);
     }
 }

@@ -37,7 +37,7 @@ public class ShoppingActivity extends AppCompatActivity {
         RecyclerView recyclerView;
         ShoppingRecyclerAdapter adapter;
         EditText nameEditText,amountEditText,priceEditText;
-        TextView total;
+        TextView totalView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,7 @@ public class ShoppingActivity extends AppCompatActivity {
         nameEditText = findViewById(R.id.newName);
         amountEditText = findViewById(R.id.newAmount);
         priceEditText = findViewById(R.id.newPrice);
-        total = findViewById(R.id.total);
+        totalView = findViewById(R.id.total);
         context = getApplicationContext();
 
         itemViewModel = new ItemViewModel();
@@ -71,7 +71,7 @@ public class ShoppingActivity extends AppCompatActivity {
         adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.onItemClickListener() {
             @Override
             public void onItemBuy(ShoppingItem item) {
-                if(total.getText().toString().equals("total")){
+                if(totalView.getText().toString().equals("total")){
                     dateViewModel.setTotal(item.getPrice());
                 }else{
                     dateViewModel.addToTotal(item.getPrice());
@@ -80,8 +80,8 @@ public class ShoppingActivity extends AppCompatActivity {
             }
             @Override
             public void onCancel(ShoppingItem item) {
-                if(total.getText().toString().equals("0.0")){
-                    total.setText(R.string.total);
+                if(totalView.getText().toString().equals("0.0")){
+                    totalView.setText(R.string.total);
                 }else{
                     dateViewModel.subtractTotal(item.getPrice());
                 }
@@ -103,7 +103,7 @@ public class ShoppingActivity extends AppCompatActivity {
         dateViewModel.getLiveTotal().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float aFloat) {
-                total.setText(String.valueOf(aFloat));
+                totalView.setText(String.valueOf(aFloat));
             }
         });
 
@@ -130,6 +130,7 @@ public class ShoppingActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        //dateViewModel.createReport(Float.parseFloat(totalView.getText().toString()),)<- TODO restart here------------
         itemViewModel.syncAfterShopping(dateViewModel.getShoppingItems());
         itemViewModel.updateDbItems();
         //Item scheduledItem = itemViewModel.getScheduledItem();

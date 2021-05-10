@@ -62,8 +62,8 @@
 
                 <ImageButton
                     android:id="@+id/reportImageItem"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="40dp"
+                    android:layout_height="50dp"
                     android:clickable="true"
                     android:foreground="@drawable/ic_report_item" />
             </LinearLayout>

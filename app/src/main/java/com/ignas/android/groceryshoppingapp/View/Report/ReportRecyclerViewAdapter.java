@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.View.Report;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,13 +23,15 @@ import java.util.List;
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
    private List<String> dValues;
+   private Context context;
    //private List<Item> iValues = new ArrayList<>();
    private final DateClickListener dateClickListener;
    View prevSelected = null;
    private String TAG = "log";
 
-    public ReportRecyclerViewAdapter(ArrayList<String> dummyList, DateClickListener dateClickListener) {
+    public ReportRecyclerViewAdapter(ArrayList<String> dummyList, Context context, DateClickListener dateClickListener) {
         dValues = dummyList;
+        this.context = context;
         this.dateClickListener = dateClickListener;
     }
     public interface DateClickListener{
@@ -47,6 +50,14 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
     @Override
     public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.dateTextView.setText(dValues.get(position));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

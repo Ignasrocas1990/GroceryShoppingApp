@@ -7,12 +7,15 @@ import com.ignas.android.groceryshoppingapp.Models.AlarmSwitch;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.Report;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
@@ -326,5 +329,36 @@ public class RealmDb{
             Log.i(TAG, "setSwitch: did not set switch");
         }
     }
+//add report to Realm
+    public void addReport(Report report) {
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm->{
+                inRealm.insert(report);
+            });
 
+        }catch(Exception e){
+            Log.i("log", "addReport:fail "+e.getMessage());
+        }
+    }
+//get reports from Realm
+    public HashMap<Float,RealmList<Item>> getReports(){
+        HashMap<Float,RealmList<Item>> reportsMap = new HashMap<>();
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm ->{
+                RealmResults<Report> results = inRealm.where(Report.class).findAll();
+                if(results.size() >0){
+                    for(Report curr :results){
+                        Report temp = inRealm.copyFromRealm(curr);
+
+                        reportsMap.put(temp.getTotal(),curr.getBoughtItems());
+                        Log.i(TAG, "getReports: "+reportsMap.size());
+                    }
+                }
+            });
+
+        }catch(Exception e){
+            Log.i("log", "getReports: failed "+e.getMessage());
+        }
+        return reportsMap;
+    }
 }

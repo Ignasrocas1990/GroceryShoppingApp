@@ -58,7 +58,7 @@ public class ReportFragment extends Fragment {
         }
 //-------------------
 
-        ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter(dummyList,new ReportRecyclerViewAdapter.DateClickListener() {
+        ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter(dummyList,context,new ReportRecyclerViewAdapter.DateClickListener() {
             @Override
             public ArrayList<String> getItems(String s) {
                 if(dummyMap.containsKey(s)){
