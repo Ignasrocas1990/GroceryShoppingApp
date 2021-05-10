@@ -9,8 +9,22 @@
     android:gravity="top"
     tools:context=".View.ShoppingDate.ShoppingActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:keyboardNavigationCluster="true"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Grocery Shopping App"
+        app:titleMarginStart="100dp"
+        app:titleTextColor="@color/white" />
+
     <LinearLayout
+        android:layout_below="@id/toolbar"
         android:gravity="center"
+        android:paddingTop="10dp"
         android:id="@+id/top"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -51,6 +65,7 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/totalLayout"
+        android:padding="10dp"
         android:layout_below="@+id/top"
         android:gravity="center"
         android:layout_width="match_parent"
@@ -79,7 +94,6 @@
         android:id="@+id/topPanel"
         android:gravity="top"
         android:layout_below="@+id/totalLayout"
-
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_width="match_parent"

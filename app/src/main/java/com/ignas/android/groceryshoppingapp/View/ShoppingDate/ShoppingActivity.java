@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ignas.android.groceryshoppingapp.Logic.ShoppingDay;
+import com.ignas.android.groceryshoppingapp.Logic.ShoppingResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -34,7 +34,7 @@ public class ShoppingActivity extends AppCompatActivity {
         ItemViewModel itemViewModel;
         ListsViewModel listViewModel;
         AssoViewModel assoViewModel;
-        ShoppingDay shoppingDay;
+        DateViewModel dateViewModel;
         RecyclerView recyclerView;
         ShoppingRecyclerAdapter adapter;
         EditText nameEditText,amountEditText,priceEditText;
@@ -56,6 +56,8 @@ public class ShoppingActivity extends AppCompatActivity {
         itemViewModel = new ItemViewModel();
         listViewModel = new ListsViewModel();
         assoViewModel = new AssoViewModel();
+        dateViewModel = new DateViewModel();
+
 
 
         cancelAlarm();
@@ -64,17 +66,16 @@ public class ShoppingActivity extends AppCompatActivity {
         ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
         ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
-        shoppingDay = new ShoppingDay();
-        shoppingDay.createItems(items, displayAssos, lists);
+        dateViewModel.createItems(items, displayAssos, lists);
 
 
         adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.onItemClickListener() {
             @Override
             public void onItemBuy(ShoppingItem item) {
                 if(total.getText().toString().equals("total")){
-                    shoppingDay.setTotal(item.getPrice());
+                    dateViewModel.setTotal(item.getPrice());
                 }else{
-                    shoppingDay.addToTotal(item.getPrice());
+                    dateViewModel.addToTotal(item.getPrice());
 
                 }
             }
@@ -83,7 +84,7 @@ public class ShoppingActivity extends AppCompatActivity {
                 if(total.getText().toString().equals("0.0")){
                     total.setText(R.string.total);
                 }else{
-                    shoppingDay.subtractTotal(item.getPrice());
+                    dateViewModel.subtractTotal(item.getPrice());
                 }
             }
         });
@@ -93,14 +94,14 @@ public class ShoppingActivity extends AppCompatActivity {
 
 //all the observers
     public void observers(){
-        shoppingDay.getLiveSpItems().observe(this, new Observer<ArrayList<ShoppingItem>>() {
+        dateViewModel.getLiveSpItems().observe(this, new Observer<ArrayList<ShoppingItem>>() {
             @Override
             public void onChanged(ArrayList<ShoppingItem> shoppingItems) {
                 adapter.setItems(shoppingItems);
                 adapter.notifyDataSetChanged();
             }
         });
-        shoppingDay.getLiveTotal().observe(this, new Observer<Float>() {
+        dateViewModel.getLiveTotal().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float aFloat) {
                 total.setText(String.valueOf(aFloat));
@@ -119,7 +120,7 @@ public class ShoppingActivity extends AppCompatActivity {
             if(newPrice.equals("")){
                 newPrice = "0.f";
             }
-            shoppingDay.addSPItem(newName, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
+            dateViewModel.addSPItem(newName, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
             itemViewModel.createItem(newName, "0",newPrice);
         }
 
@@ -130,7 +131,7 @@ public class ShoppingActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        itemViewModel.syncAfterShopping(shoppingDay.getShoppingItems());
+        itemViewModel.syncAfterShopping(dateViewModel.getShoppingItems());
         itemViewModel.updateDbItems();
         //Item scheduledItem = itemViewModel.getScheduledItem();
         Intent intent = new Intent(this, AlarmService.class);

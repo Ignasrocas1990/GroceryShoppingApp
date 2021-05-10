@@ -13,7 +13,7 @@ import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ShoppingDay {
+public class ShoppingResources {
 
     private final MutableLiveData<ArrayList<ShoppingItem>> liveSpItems = new MutableLiveData<>();
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
@@ -93,66 +93,4 @@ public class ShoppingDay {
         return liveSpItems.getValue();
     }
 
-
-//live methods
-    public LiveData<Float> getLiveTotal() {
-        return liveTotal;
-    }
-    public LiveData<ArrayList<ShoppingItem>> getLiveSpItems() {
-        return liveSpItems;
-    }
-
-
-
-
-//for each item check if it runs out before two days.
-    /*//TODO DELETE
-    public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
-        //final long twoDays = 48*60*60*1000;
-        long twoDays = 20*1000;
-        final long now = Calendar.getInstance().getTimeInMillis();
-        long runOutDate=0,leftOverTime =0;
-        for(int i=0;i<items.size();i++){
-
-            runOutDate = items.get(i).getRunOutDate().getTime();
-            leftOverTime = runOutDate-now;
-
-            if(twoDays <= leftOverTime){
-                items.remove(items.get(i));
-            }
-        }
-        return items;
-    }
-
-    //just removes items that not been notified(any item that is going to running out)
-    public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
-        ArrayList<Item> copy = new ArrayList<Item>();
-        for(int i=0;i<items.size();i++){
-
-            Item current = items.get(i);
-
-            if(current.isNotified()){
-                copy.add(current);
-            }
-        }
-        return copy;
-    }
-    */
-    // TODO Delete(maybe)
-/*
-        public int getLeftOver(Item item){
-        float itemPercent=0.f;
-        final long now = Calendar.getInstance().getTimeInMillis();
-        final long runOutDate = item.getRunOutDate().getTime();
-        //final long itemTimeLength = item.getLastingDays()*24*60*60*1000;//len
-        final long itemTimeLength = item.getLastingDays()*1000;//TODO -- swap for whats above
-
-        final long onePercent = itemTimeLength/100;//1%
-        final long startDate = runOutDate-itemTimeLength;
-        final long currentValueTime = now-startDate; // current value
-        itemPercent =(float) currentValueTime/onePercent;
-
-        return Math.round(itemPercent/1000);
-    }
-*/
 }
