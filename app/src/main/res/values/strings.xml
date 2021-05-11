@@ -49,4 +49,5 @@
     <string name="no_price_found">No price set</string>
     <string name="_00_00_0000">00/00/0000</string>
     <string name="_000">000</string>
+    <string name="view">view</string>
 </resources>

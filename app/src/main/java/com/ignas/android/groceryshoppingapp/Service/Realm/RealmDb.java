@@ -341,24 +341,20 @@ public class RealmDb{
         }
     }
 //get reports from Realm
-    public HashMap<Float,RealmList<Item>> getReports(){
-        HashMap<Float,RealmList<Item>> reportsMap = new HashMap<>();
+    public ArrayList<Report> getReports(){
+        ArrayList<Report> reports = new ArrayList<>();
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm ->{
                 RealmResults<Report> results = inRealm.where(Report.class).findAll();
-                if(results.size() >0){
-                    for(Report curr :results){
-                        Report temp = inRealm.copyFromRealm(curr);
-
-                        reportsMap.put(temp.getTotal(),curr.getBoughtItems());
-                        Log.i(TAG, "getReports: "+reportsMap.size());
-                    }
+                if(results.size() !=0 ){
+                    reports.addAll(inRealm.copyFromRealm(results));
+                    Log.i(TAG, "getReports: inside the results");
                 }
             });
 
         }catch(Exception e){
             Log.i("log", "getReports: failed "+e.getMessage());
         }
-        return reportsMap;
+        return reports;
     }
 }

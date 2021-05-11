@@ -13,7 +13,6 @@ import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;
-    ItemViewModel itemViewModel;
     private int numberOfTabs;
     public TabAdapter(@NonNull FragmentManager fm, int tabCount) {
         super(fm, tabCount);

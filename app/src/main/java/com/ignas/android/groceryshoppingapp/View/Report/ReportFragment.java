@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.Report;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemRecyclerViewAdapter;
+import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,12 +40,29 @@ public class ReportFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.report_recycler, container, false);
+        Button viewBtn = view.findViewById(R.id.viewBtn);
         context = view.getContext();
+        DateViewModel dateViewModel = ViewModelProviders.of(this).get(DateViewModel.class);
         RecyclerView recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        viewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Report> reports = dateViewModel.getReports();
+                for(Report r:reports){
+                    Log.i("log", "onCreateView: "+r.getTotal());//<----- working
+                }
+                if(reports.size()==0){
+                    Log.i("log", "onClick: empty");
+                }
+            }
+        });
+
+
+
 //TODO to be deleted vvv   -------------
 
         HashMap<String,ArrayList<String>> dummyMap = new HashMap<>();

@@ -33,11 +33,14 @@ import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
     private static final int MANAGE_LISTS_TAB = 1;
     private static final int DESELECT = -1;
+    private final int[] icos = {R.drawable.ic_list_ico1,R.drawable.ic_list_ico2
+            ,R.drawable.ic_list_ico3,R.drawable.ic_list_ico4,R.drawable.ic_list_ico5};
 
         TabLayout tabLayout;
         TabAdapter tabAdapter;
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         @NonNls
         Menu menu;
         final MenuItem[] previousMenuItem = {null};
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,13 +174,20 @@ cancelAlarms();
     }
     public void addtoDrawer(ArrayList<ItemList>lists){
         menu = mNavigationView.getMenu();
+        Random r = new Random();
+        int randomIndex;
         if(!menu.hasVisibleItems()){
             for(ItemList list:lists){
-                menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,list.getListName()+" "+list.getShopName());
+                randomIndex =  r.nextInt(5-1+1);
+
+                menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,
+                        list.getListName()+" "+list.getShopName()).setIcon(icos[randomIndex]);
+
             }
         }else{
+            randomIndex =  r.nextInt(5-1+1);
             ItemList list = lists.get(lists.size()-1);
-            menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,list.getListName()+" "+list.getShopName());
+            menu.add(Menu.NONE,list.getList_Id(),Menu.FLAG_PERFORM_NO_CLOSE,list.getListName()+" "+list.getShopName()).setIcon(icos[randomIndex]);
         }
         refreshDrawer();
     }

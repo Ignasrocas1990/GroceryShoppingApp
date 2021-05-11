@@ -1,5 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
+import android.util.Log;
+
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -70,8 +72,15 @@ public class AssoResources {
             templates.add(newAsso);
             toSave.put(list_Id,templates);
         }else{
-            templates = toSave.get(list_Id);
+            if(list_Id==0){
+                templates = new ArrayList<>();
+            }else{
+                templates = toSave.get(list_Id);
+            }
             templates.add(newAsso);
+        }
+        if(current==null){
+            current = new ArrayList<>();
         }
         current.add(newAsso);
         return current;
@@ -163,7 +172,6 @@ public class AssoResources {
             for(ArrayList<Association> a: toSave.values()){
                 fullSave.addAll(a);
             }
-
             if(fullSave.size()>1){
                 db.addMultipleAsso(fullSave);
             }else if (fullSave.size() != 0){

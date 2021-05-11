@@ -51,11 +51,14 @@ public class ListsViewModel extends ViewModel {
     public ArrayList<ItemList> findLists_forItem(ArrayList<Association> assos){
         ArrayList<ItemList> found = new ArrayList<>();
         for(Association asso : assos){
+            if(asso.getList_Id() !=0){
 
-            ItemList curList = findList(asso.getList_Id());
-            if(curList !=null){
-                found.add(curList);
+                ItemList curList = findList(asso.getList_Id());
+                if(curList != null){
+                    found.add(curList);
+                }
             }
+
         }
         return found;
     }

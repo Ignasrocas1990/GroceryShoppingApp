@@ -13,12 +13,12 @@ public class Report extends RealmObject {
     @PrimaryKey
     private int report_Id;
     private Date reportDate;
-    RealmList<Item> bought;
+    RealmList<Integer> item_Ids;
     private float total = 0.f;
 
 
     public Report() {
-        bought = new RealmList<>();
+        item_Ids = new RealmList<>();
         setReport_Id();
         setReportDate();
     }
@@ -42,14 +42,14 @@ public class Report extends RealmObject {
         this.reportDate = cal.getTime();
     }
 
-    public RealmList<Item> getBoughtItems() {
-        return bought;
+    public RealmList<Integer> getBoughtItems() {
+        return item_Ids;
     }
-    public void addItem(Item item){
-        bought.add(item);
+    public void addItemId(int item_Id){
+        this.item_Ids.add(item_Id);
     }
-    public void setItems(ArrayList<Item>items){
-        bought.addAll(items);
+    public void setItems(ArrayList<Integer>item_Ids){
+        this.item_Ids.addAll(item_Ids);
     }
 
     public float getTotal() {

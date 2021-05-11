@@ -53,8 +53,8 @@ public ItemList createList(String listName,String shopName){
         return list_to_del;
     }
 
-    public void setItemtoDel(ItemList toDel){
-        list_to_del = toDel;
+    public void setItemtoDel(ItemList item){
+        list_to_del = item;
     }
     public void deletedCurrent() {
         list_to_del = null;

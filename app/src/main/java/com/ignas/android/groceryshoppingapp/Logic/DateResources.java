@@ -20,6 +20,9 @@ public class DateResources {
         db = new RealmDb();
         dbSwitch = db.getSwitch();
     }
+    public ArrayList<Report> getReports(){
+        return db.getReports();
+    }
 
 //notification switch methods
     public boolean getDBSwitch(){
@@ -33,51 +36,19 @@ public class DateResources {
         }
         return appSwitch && !dbSwitch;
     }
-    //creates shopping day items to be displayed
-    public ArrayList<ShoppingItem> createItems(ArrayList<Item> items, ArrayList<Association> displayAssos, ArrayList<ItemList> lists ){
-        ArrayList<ShoppingItem> spItems = new ArrayList<>();
-        ShoppingItem newItem;
-        for(Association asso : displayAssos){
-
-            Item currItem = items.stream().filter(item->item.getItem_id() == asso.getItem_Id())
-                    .findFirst().orElse(null);
-
-            ItemList currList = lists.stream().filter(list->list.getList_Id()==asso.getList_Id())
-                    .findFirst().orElse(null);
-            if(currItem!=null && currList!=null){
-
-                newItem = new ShoppingItem(currItem.getItem_id(),asso.getAsso_Id(),currList.getList_Id()
-                        ,currItem.getItemName(),currItem.getPrice(),asso.getQuantity(),currList.getShopName(),currList.getListName());
-                spItems.add(newItem);
-            }
-        }
-        if(spItems.size() == 0){
-            for(Item i : items){
-                newItem = new ShoppingItem(i.getItem_id(),i.getItemName(),i.getPrice());
-                spItems.add(newItem);
-            }
-        }else{
-            for(Item i : items){
-                ShoppingItem found = spItems.stream()
-                        .filter(spItem->spItem.getItem_Id()==i.getItem_id())
-                        .findFirst().orElse(null);
-                if(found==null){
-                    newItem = new ShoppingItem(i.getItem_id(),i.getItemName(),i.getPrice());
-                    spItems.add(newItem);
-                }
-            }
-        }
-        return spItems;
-    }
     public ShoppingItem addSPItem(String name,int amount,float price){
 
         Random r = new Random();
         return new ShoppingItem(r.nextInt(),name, amount, price);
     }
-    public void createReport(float total,ArrayList<Item>boughtItems){
+    public void createReport(float total, ArrayList<ShoppingItem> items){
         Report report = new Report();
+        ArrayList<Integer> item_Ids = new ArrayList<Integer>();
+        for(ShoppingItem i : items){
+            item_Ids.add(i.getItem_Id());
+        }
         report.setTotal(total);
-        report.setItems(boughtItems);
+        report.setItems(item_Ids);
         db.addReport(report);
     }
 }

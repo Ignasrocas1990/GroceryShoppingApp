@@ -29,7 +29,7 @@ public class ShoppingActivity extends AppCompatActivity {
     private static final int MAX_LENGTH  = 7;
     private static final int MAX_CHARS = 20;
 
-    Context context=null;
+        Context context=null;
         ItemViewModel itemViewModel;
         ListsViewModel listViewModel;
         AssoViewModel assoViewModel;
@@ -65,7 +65,8 @@ public class ShoppingActivity extends AppCompatActivity {
         ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
         ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
-        dateViewModel.createItems(items, displayAssos, lists);
+        ArrayList<Item> itemWithoutList = dateViewModel.createItems(items, displayAssos, lists);
+        assoViewModel.createAssos(itemWithoutList);
 
 
         adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.onItemClickListener() {
@@ -119,20 +120,18 @@ public class ShoppingActivity extends AppCompatActivity {
             if(newPrice.equals("")){
                 newPrice = "0.f";
             }
-            dateViewModel.addSPItem(newName, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
+            int item_Id = dateViewModel.addSPItem(newName, Integer.parseInt(newAmount), Float.parseFloat(newPrice));
+            assoViewModel.addAsso(0,item_Id,Integer.parseInt(newAmount));
             itemViewModel.createItem(newName, "0",newPrice);
         }
-
     }
-
-
-
     @Override
     protected void onStop() {
         super.onStop();
-        //dateViewModel.createReport(Float.parseFloat(totalView.getText().toString()),)<- TODO restart here------------
+        dateViewModel.createReport(Float.parseFloat(totalView.getText().toString()),dateViewModel.getShoppingItems());
         itemViewModel.syncAfterShopping(dateViewModel.getShoppingItems());
         itemViewModel.updateDbItems();
+        assoViewModel.updateAssociations();
         //Item scheduledItem = itemViewModel.getScheduledItem();
         Intent intent = new Intent(this, AlarmService.class);
         intent.putExtra("flag",1);

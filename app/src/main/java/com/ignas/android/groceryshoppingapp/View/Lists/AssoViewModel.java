@@ -1,5 +1,4 @@
 package com.ignas.android.groceryshoppingapp.View.Lists;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,6 +11,7 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import java.util.ArrayList;
 
 public class AssoViewModel extends ViewModel {
+    private final int NONE = 0;
     private final AssoResources assoResources;
 
     private final MutableLiveData<ArrayList <Association>> currentLive = new MutableLiveData<>();
@@ -33,6 +33,11 @@ public class AssoViewModel extends ViewModel {
 //add association
     public void addAsso(int list_Id,int item_Id,int quantity){
         currentLive.setValue(assoResources.addAsso(list_Id,item_Id,quantity,currentLive.getValue()));
+    }
+    public void createAssos(ArrayList<Item>items){
+        for(Item i : items){
+            addAsso(NONE,i.getItem_id(),NONE);
+        }
     }
 //del association
     public void deleteAsso(int item_Id){
