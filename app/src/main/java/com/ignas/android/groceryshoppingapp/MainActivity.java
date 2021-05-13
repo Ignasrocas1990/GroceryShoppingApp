@@ -15,14 +15,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.Report;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
 import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
@@ -33,7 +37,11 @@ import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
@@ -63,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         tabLayout = findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
@@ -129,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 cancelAlarms();
+createReports();
     }
 //all the data observers----------------------(for drawer)
     private void Observers(){
@@ -203,6 +214,26 @@ cancelAlarms();
             }
         }
     }
+    public void createReports(){
+        HashMap<Integer, ArrayList<ShoppingItem>> reports = new HashMap<>();
+        ArrayList<Report> db_reports = dateViewModel.getReports();
+        for(Report rp:db_reports){
+            ArrayList<Integer> assos_Ids = rp.getBoughtAssos();
+            ArrayList<Association> reportAssos = new ArrayList<>();
+
+            for(Integer id  : assos_Ids){
+                Association current = assoViewModel.findAssociation(id);
+                if (current!=null){
+                    reportAssos.add(current);
+                }
+            }
+            ArrayList<ItemList> reportList = listsViewModel.findLists_forItem(reportAssos);
+            ArrayList<Item> reportItems = itemViewModel.findItemByIds(reportAssos);
+            dateViewModel.createItems(reportItems, reportAssos, reportList);
+            reports.put(rp.getReport_Id(),dateViewModel.getShoppingItems());
+        }
+        dateViewModel.setQueryReports(reports);
+    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -215,6 +246,7 @@ cancelAlarms();
         itemViewModel.updateDbItems();
         assoViewModel.updateAssociations();
 
+//start alarm service if switch is on.
         if(dateViewModel.getSwitch()){
                 Intent intent = new Intent(this, AlarmService.class);
                 intent.putExtra("flag",1);
@@ -226,5 +258,10 @@ cancelAlarms();
         intent.putExtra("flag",-1);
         intent.putExtra("name","");
         startService(intent);
+    }
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        cancelAlarms();
     }
 }

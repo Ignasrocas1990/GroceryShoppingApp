@@ -15,12 +15,15 @@ import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class DateViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> app_switch = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<ShoppingItem>> liveSpItems = new MutableLiveData<>();
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
+    private final MutableLiveData<Report> liveReport = new MutableLiveData<>();
+    HashMap<Integer, ArrayList<ShoppingItem>> queryReports = new HashMap<>();
     private ArrayList<Report> reports;
     private final DateResources dateResources;
 
@@ -29,14 +32,25 @@ public class DateViewModel extends ViewModel {
         dateResources = new DateResources();
         app_switch.setValue(dateResources.getDBSwitch());
         this.reports  = dateResources.getReports();
+        setDefaultReportView();
     }
+//getters & setters
     public ArrayList<Report> getReports(){
         return reports;
     }
-
-//notification switch methods
+    public ArrayList<ShoppingItem> getShoppingItems(){
+        return liveSpItems.getValue();
+    }
     public boolean getSwitch() {
         return app_switch.getValue();
+    }
+    public Report getReport() {return liveReport.getValue();}
+
+    public void setReport(Report report){
+        liveReport.setValue(report);
+    }
+    public void setTotal(float price) {
+        liveTotal.setValue(price);
     }
     public void setSwitch(boolean state) {
         app_switch.setValue(state);
@@ -44,15 +58,32 @@ public class DateViewModel extends ViewModel {
     public boolean updateSwitch(){
         return dateResources.updateSwitch(app_switch.getValue());
     }
-    public ArrayList<ShoppingItem> getShoppingItems(){
-        return liveSpItems.getValue();
+
+    public void setQueryReports(HashMap<Integer, ArrayList<ShoppingItem>> queryReports) {
+        this.queryReports = queryReports;
     }
 
-    //creates shopping day items to be displayed
+    //create first empty value
+    public void setDefaultReportView(){
+        Report emptyReport = new Report();
+        emptyReport.setEmptyDateString("Please Select the date");
+        reports.add(0,emptyReport);
+    }
+//find displayItems by report id ---------------------
+    public ArrayList<ShoppingItem> findShoppingContent(int reportId){
+        if(queryReports.containsKey(reportId)){
+            return queryReports.get(reportId);
+        }
+        return null;
+    }
+//creates shopping day items to be displayed
     public ArrayList<Item> createItems(ArrayList<Item> items, ArrayList<Association> displayAssos, ArrayList<ItemList> lists ){
         ArrayList<ShoppingItem> spItems = new ArrayList<>();
         ArrayList<Item> itemWithoutList = new ArrayList<>();
         ShoppingItem newItem;
+        if(items==null){
+            return null;
+        }
         for(Association asso : displayAssos){
 
             Item currItem = items.stream().filter(item->item.getItem_id() == asso.getItem_Id())
@@ -99,10 +130,7 @@ public class DateViewModel extends ViewModel {
 
         return addSPItem.getItem_Id();
     }
-    //total methods (simple add/subtract/set)
-    public void setTotal(float price) {
-        liveTotal.setValue(price);
-    }
+//total methods for shopping day (simple add/subtract/set)
     public void addToTotal(float price){
         try{
             liveTotal.setValue(liveTotal.getValue()+price);
@@ -123,11 +151,16 @@ public class DateViewModel extends ViewModel {
 
 //live observational methods
     public LiveData<Boolean> getLiveSwitch(){return app_switch;}
-    //live methods
     public LiveData<Float> getLiveTotal() {
         return liveTotal;
     }
     public LiveData<ArrayList<ShoppingItem>> getLiveSpItems() {
         return liveSpItems;
+    }
+    public LiveData<Report> getLiveReport(){return liveReport;}
+
+
+    public void findReportItems() {
+        dateResources.findReportItems(liveReport.getValue());
     }
 }

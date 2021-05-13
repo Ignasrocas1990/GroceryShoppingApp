@@ -9,7 +9,7 @@ public class Shop extends RealmObject {
 
     @PrimaryKey
     private int shop_Id;
-    private String shopName;
+    private String shopName="all";
     {
         Random random = new Random();
         shop_Id = random.nextInt();

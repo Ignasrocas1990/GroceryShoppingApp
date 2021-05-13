@@ -13,17 +13,15 @@ import java.util.HashMap;
 public class AssoResources {
 
     private final RealmDb db;
-    private final HashMap<Integer,ArrayList<Association>> app_assos = new HashMap<>();
+    private final HashMap<Integer,ArrayList<Association>> app_assos = new HashMap<>();//contains list_Id as key
+    private final HashMap<Integer,Association> db_assos = new HashMap<>();//contains asso_Id as key
+    private final HashMap<Integer,ArrayList<Association>>  toSave = new HashMap<>();//list id as key
 
-    private final ArrayList<Association> db_assos;
-
-    private final HashMap<Integer,ArrayList<Association>>  toSave = new HashMap<>();
-    private final ArrayList<Association> toDelete = new ArrayList<>();
+    //private final ArrayList<Association> toDelete = new ArrayList<>();
 
     public AssoResources() {
         db = new RealmDb();
-        db_assos = db.getAllAssos();
-        list_to_map();
+        list_to_map(db.getAllAssos());
 
     }
     public HashMap<Integer, ArrayList<Association>> getApp_assos() {
@@ -31,21 +29,21 @@ public class AssoResources {
     }
 
 //converts db association to a map.
-    public void list_to_map(){
-
+    public void list_to_map(ArrayList<Association> dbAssos){
         ArrayList<Association> temp;
-        int key_Id;
-        for(Association asso : db_assos){
-            key_Id = asso.getList_Id();
-            if(app_assos.containsKey(key_Id)){
+        int list_Id;
+        for(Association asso : dbAssos){
+            db_assos.put(asso.getAsso_Id(),asso);
 
-               temp =  app_assos.get(key_Id);
+            list_Id = asso.getList_Id();
+            if(app_assos.containsKey(list_Id)){
+               temp =  app_assos.get(list_Id);
                 temp.add(asso);
 
             }else{
                 temp = new ArrayList<>();
                 temp.add(asso);
-                app_assos.put(key_Id, temp);
+                app_assos.put(list_Id, temp);
             }
         }
     }
@@ -87,39 +85,33 @@ public class AssoResources {
     }
 
 //delete single association method from current live list of associations
-    public ArrayList<Association> deleteAsso(int item_Id, ArrayList<Association> curr){
-
+    public ArrayList<Association> deleteAsso(int item_Id, ArrayList<Association> curr) {
+        ArrayList<Association> currentSaved=null;
 //find selected association
         Association asso = curr.stream()
-                .filter(a-> a.getItem_Id() == item_Id)
+                .filter(a -> a.getItem_Id() == item_Id)
                 .findFirst().orElse(null);
 
-        if(asso!=null) { curr.remove(asso);
-            ArrayList<Association> currentSaved = toSave.get(asso.getList_Id());
 
-            if(currentSaved == null){
-                toDelete.add(asso);
-                return curr;
+        if (asso != null) {
+            curr.remove(asso);
+            currentSaved = toSave.get(asso.getList_Id());
+
+            if (db_assos.containsKey(asso.getAsso_Id())) {//old item
+                if (currentSaved != null) {
+                    asso.setDeleteFlag(true);
+                    return curr;
+                }
+            } else {
+                if(currentSaved !=null){
+                    currentSaved.remove(asso);
+                }
+
             }
-
-//its an old object(been modified) -deleting-
-            if(Check.assoEquals(db_assos,asso) && Check.assoEquals(currentSaved,asso)){
-                currentSaved.remove(asso);
-                toDelete.add(asso);
-
-                db_assos.remove(asso);
-//old object not modified -deleting-
-            }else if(Check.assoEquals(db_assos,asso)){
-
-                toDelete.add(asso);
-                db_assos.remove(asso);
-
-//new object just created -deleting-
-            }else { currentSaved.remove(asso); }
         }
         return curr;
-    }
 
+    }
 //set multiple items to be deleted from one list
     public void severList(ArrayList<Association> listToDelete){
         if(listToDelete.size() !=0){
@@ -177,11 +169,6 @@ public class AssoResources {
             }else if (fullSave.size() != 0){
                 db.addSingeAsso(fullSave.get(0));
             }
-            if(toDelete.size()>1){
-                db.removeAssos(toDelete);
-            }else if(toDelete.size()==1){
-                db.removeAsso(toDelete.get(0));
-            }
     }
 //find item associations to list for each item
     public ArrayList<Association> findAssociations(ArrayList<Item> items) {
@@ -190,5 +177,12 @@ public class AssoResources {
             associations.addAll(findItemAssos(item.getItem_id()));
         }
         return associations;
+    }
+//find association by id
+    public Association findAssoById(int asso_Id){
+        if(db_assos.containsKey(asso_Id)){
+            return db_assos.get(asso_Id);
+        }
+        return null;
     }
 }

@@ -21,6 +21,7 @@ public class Item extends RealmObject {
     private float price=0.f;
     private Date runOutDate;
     private int lastingDays=0;
+    private boolean deleteFlag = false;
     private boolean notified = false;
 
 //constructors
@@ -43,6 +44,14 @@ public class Item extends RealmObject {
         
     }
 //getters & setters
+
+    public boolean isDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
 
     public boolean isNotified() {
         return notified;

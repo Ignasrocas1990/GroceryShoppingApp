@@ -17,10 +17,10 @@ import java.util.List;
 
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
 
-   private List<Item> mValues = new ArrayList<>();
-   private final ItemClickListener mItemClickListener;
-   View prevSelected = null;
-   private String TAG = "log";
+    private List<Item> mValues = new ArrayList<>();
+    private final ItemClickListener mItemClickListener;
+    View prevSelected = null;
+    private String TAG = "log";
 
     public ItemRecyclerViewAdapter(ItemClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
@@ -51,9 +51,9 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
             if(prevSelected==null){
                 prevSelected=holder.itemView;
                 holder.itemView.setBackgroundResource(R.color.red);
-                 newName = holder.product_name.getText().toString();
-                 newDays = holder.lasting_days.getText().toString();
-                 newPrice = holder.price.getText().toString();
+                newName = holder.product_name.getText().toString();
+                newDays = holder.lasting_days.getText().toString();
+                newPrice = holder.price.getText().toString();
                 mItemClickListener.onItemClick(position,newName,newDays,newPrice);
 
             }else if(prevSelected.equals(holder.itemView)){
@@ -72,8 +72,8 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
                 newPrice = holder.price.getText().toString();
                 mItemClickListener.onItemClick(position,newName,newDays,newPrice);
             }
-            });
-        }
+        });
+    }
     public interface ItemClickListener{
         void onItemClick(int position,String newName,String newDays,String newPrice);
     }

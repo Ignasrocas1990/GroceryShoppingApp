@@ -34,6 +34,7 @@ public class ShoppingActivity extends AppCompatActivity {
         ListsViewModel listViewModel;
         AssoViewModel assoViewModel;
         DateViewModel dateViewModel;
+
         RecyclerView recyclerView;
         ShoppingRecyclerAdapter adapter;
         EditText nameEditText,amountEditText,priceEditText;
@@ -59,7 +60,7 @@ public class ShoppingActivity extends AppCompatActivity {
 
 
 
-        cancelAlarm();
+    //    cancelAlarm();
         itemViewModel.setShoppingDate();
         ArrayList<Item> items = itemViewModel.createShoppingItems();
         ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
@@ -109,7 +110,7 @@ public class ShoppingActivity extends AppCompatActivity {
         });
 
     }
-    public void addNew(View view) {
+    public void addNew(View view) {//<--------need this
        String newName = nameEditText.getText().toString();
        String newAmount = amountEditText.getText().toString();
        String newPrice = priceEditText.getText().toString();
@@ -125,25 +126,16 @@ public class ShoppingActivity extends AppCompatActivity {
             itemViewModel.createItem(newName, "0",newPrice);
         }
     }
+//create report and start alarms
     @Override
-    protected void onStop() {
+    protected void onStop() {//<-----------need this
         super.onStop();
         dateViewModel.createReport(Float.parseFloat(totalView.getText().toString()),dateViewModel.getShoppingItems());
         itemViewModel.syncAfterShopping(dateViewModel.getShoppingItems());
         itemViewModel.updateDbItems();
         assoViewModel.updateAssociations();
-        //Item scheduledItem = itemViewModel.getScheduledItem();
-        Intent intent = new Intent(this, AlarmService.class);
-        intent.putExtra("flag",1);
-        startService(intent);
+    }
 
-    }
-    public void cancelAlarm(){
-        Intent intent = new Intent(this, AlarmService.class);
-        intent.putExtra("name","");
-        intent.putExtra("flag",-1);
-        startService(intent);
-    }
 //check if data entered is not above limits
     private boolean ApproveNewData(String newName, String newAmount, String newPrice) {
         if(newName.equals("")){

@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="top"
-    tools:context=".View.ShoppingDate.ShoppingActivity">
+    tools:context=".View.ShoppingDate.DateFragment">
+
 
     <LinearLayout
         android:layout_below="@id/toolbar"
@@ -47,7 +48,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/holo_green_dark"
             android:text="@string/add"
-            android:onClick="addNew"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -66,7 +66,6 @@
             android:textSize="18sp"
             android:text="Total : "/>
 
-
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
@@ -74,6 +73,14 @@
             android:textColor="@color/red"
             android:text="@string/total"
             android:textSize="18sp" />
+
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/listSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tooltipText="These are you lists with a shop"/>
+
 
 
     </LinearLayout>
@@ -99,5 +106,9 @@
             tools:listitem="@layout/shopping_item" />
 
     </LinearLayout>
+
+
+
+
 
 </RelativeLayout>

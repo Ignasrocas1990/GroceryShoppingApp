@@ -30,6 +30,8 @@ import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 
 import java.util.ArrayList;
 
+import io.realm.RealmResults;
+
 public class ItemFragment extends Fragment {
     public final String TAG = "log";
     private static final int MAX_PRICE_LENGTH  = 7;
@@ -68,20 +70,21 @@ public class ItemFragment extends Fragment {
         price = view.findViewById(R.id.cur_price);
 
 
-        // Set the adapter
+// Set the RecyclerView adapter
         RecyclerView recyclerView = view.findViewById(R.id.list);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         ItemRecyclerViewAdapter adapter = new ItemRecyclerViewAdapter(new ItemRecyclerViewAdapter.ItemClickListener() {
-                @Override
-                public void onItemClick(int position, String newName, String newDays, String newPrice) {
-                    product_name.setText(newName);
-                    price.setText(newPrice);
-                    lasting_days.setText(newDays);
-                    curPosition[0] = position;
-                }
-            });
-
+            @Override
+            public void onItemClick(int position, String newName, String newDays, String newPrice) {
+                product_name.setText(newName);
+                price.setText(newPrice);
+                lasting_days.setText(newDays);
+                curPosition[0] = position;
+            }
+        });
+        recyclerView.setAdapter(adapter);
+// add item
         saveBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -174,7 +177,7 @@ public class ItemFragment extends Fragment {
                 }
             }
         });
-
+//sync button
         syncBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -188,8 +191,7 @@ public class ItemFragment extends Fragment {
 
             }
         });
-
-            recyclerView.setAdapter(adapter);
+//updates live items
             itemViewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
                 @Override
                 public void onChanged(ArrayList<Item> items) {

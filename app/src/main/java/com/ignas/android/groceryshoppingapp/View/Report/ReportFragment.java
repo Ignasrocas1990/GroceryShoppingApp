@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.Report;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemRecyclerViewAdapter;
@@ -26,6 +32,7 @@ import java.util.HashMap;
 
 public class ReportFragment extends Fragment {
     Context context;
+    private final String TAG  = "log";
 
 
     public ReportFragment() { }
@@ -42,54 +49,58 @@ public class ReportFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.report_recycler, container, false);
-        Button viewBtn = view.findViewById(R.id.viewBtn);
-        context = view.getContext();
         DateViewModel dateViewModel = ViewModelProviders.of(this).get(DateViewModel.class);
+        Button viewBtn = view.findViewById(R.id.viewBtn);
+        Spinner dateSpinner = view.findViewById(R.id.dateSpinner);
+        context = view.getContext();
         RecyclerView recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        viewBtn.setOnClickListener(new View.OnClickListener() {
+
+// Creating adapter for spinner
+        ArrayAdapter<Report> dataAdapter = new ArrayAdapter<Report>(context
+                , android.R.layout.simple_spinner_item, dateViewModel.getReports());
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+// attaching data adapter to spinner and setItemSelected
+        dateSpinner.setAdapter(dataAdapter);
+        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position!=0){
+                    Report selected = new Report();
+                    selected = (Report) parent.getItemAtPosition(position);//<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    Log.i(TAG, "onItemSelected: "+selected.getTotal());
+                    dateViewModel.setReport(selected);
+                }else{
+                    dateViewModel.setReport(null);
+                }
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter();
+        recyclerView.setAdapter(adapter);
+
+        dateViewModel.getLiveReport().observe(requireActivity(), report -> {
+            //get report here
+            if(report!=null){
+                adapter.setDisplayItems(dateViewModel.findShoppingContent(report.getReport_Id()));
+            }
+        });
+
+        viewBtn.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
-                ArrayList<Report> reports = dateViewModel.getReports();
-                for(Report r:reports){
-                    Log.i("log", "onCreateView: "+r.getTotal());//<----- working
-                }
-                if(reports.size()==0){
-                    Log.i("log", "onClick: empty");
-                }
+                dateViewModel.findReportItems();
             }
         });
 
 
 
-//TODO to be deleted vvv   -------------
 
-        HashMap<String,ArrayList<String>> dummyMap = new HashMap<>();
-        ArrayList<String> dummyList = new ArrayList<>();
-        ArrayList<String> temp=null;
-        for(int i = 0;i<5;i++){
-            String date = i+""+i+"/"+i+""+i+"/"+"iiii";
-            temp = new ArrayList<String>();
-            for(int x=i;x<i+3;x++){
-                temp.add(String.valueOf(x));
-            }
-            dummyList.add(date);
-            dummyMap.put(date,temp);
-        }
-//-------------------
-
-        ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter(dummyList,context,new ReportRecyclerViewAdapter.DateClickListener() {
-            @Override
-            public ArrayList<String> getItems(String s) {
-                if(dummyMap.containsKey(s)){
-                    return dummyMap.get(s);
-                }
-                return null;
-            }
-
-        });
-        recyclerView.setAdapter(adapter);
         return view;
     }
+
 }

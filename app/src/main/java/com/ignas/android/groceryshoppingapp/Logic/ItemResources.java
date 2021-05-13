@@ -1,34 +1,34 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class ItemResources{
     private static final String TAG ="log";
     private final HashMap<Integer,Item> toSave = new HashMap<>();
-
-    private final ArrayList<Item> toDelete = new ArrayList<>();
     private final ArrayList<Item> db_items;
     private final Item db_SDate;
 
     //Context mContext = null;
     RealmDb db;
-
     public ItemResources() {
+       // data = new RealmDb1();
         db = new RealmDb();
         db_items = db.getItems();
+        Log.i(TAG, "ItemResources: "+db_items.size());
         db_SDate = db_items.stream()
                 .filter(i-> i.getItem_id() == Integer.MAX_VALUE)
                 .findFirst().orElse(null);
@@ -47,7 +47,6 @@ public class ItemResources{
         return app_items;
 
     }
-
 //access db to save/del data
     public void update(ArrayList<Item> app_items, Item app_SDate){
 
@@ -57,18 +56,14 @@ public class ItemResources{
                 toSave.put(app_SDate.getItem_id(), app_SDate);
             }
         }else if(db_SDate!=null){
-            toDelete.add(db_SDate);
+            db_SDate.setDeleteFlag(true);
+            toSave.put(db_SDate.getItem_id(),db_SDate);
         }
 
         //updates data
         if(toSave.size()!=0){
             ArrayList<Item> temp = new ArrayList<>(toSave.values());
             db.addItems(temp);
-        }
-        if(toDelete.size()>1){
-            db.deleteItems(toDelete);
-        }else if(toDelete.size()!=0){
-            db.removeItem(toDelete.get(0));
         }
     }
 
@@ -92,10 +87,12 @@ public class ItemResources{
     }
     public void removeItem(Item itemToRemove){
         if(Check.itemEquals(db_items,itemToRemove) && toSave.containsKey(itemToRemove.getItem_id())){ //check if old item(modified) removing
-            toSave.remove(itemToRemove.getItem_id());
-            toDelete.add(itemToRemove);
+            toSave.get(itemToRemove.getItem_id()).setDeleteFlag(true);
+
         }else if (Check.itemEquals(db_items,itemToRemove)){ //item is old not modified
-            toDelete.add(itemToRemove);
+
+            itemToRemove.setDeleteFlag(true);
+            toSave.put(itemToRemove.getItem_id(),itemToRemove);
         }else{
             toSave.remove(itemToRemove.getItem_id()); //item is just created
         }
@@ -157,9 +154,6 @@ public class ItemResources{
                 }
             }
         }
-
-        //TODO -----loop through app items and check if they are in spItems
-
     }
 
     public Item getShoppingDateItem() { return db_SDate; }
@@ -177,10 +171,11 @@ public class ItemResources{
     }
 
     public void deleteShoppingDate(Item shoppingDateItem) {
-        db.removeItem(shoppingDateItem);
+        shoppingDateItem.setDeleteFlag(true);
+        toSave.put(shoppingDateItem.getItem_id(),shoppingDateItem);
     }
 
-    //just removes items that not been notified(any item that is going to running out)
+//just removes items that not been notified(any item that is going to running out)
     public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
         ArrayList<Item> copy = new ArrayList<Item>();
         for(int i=0;i<items.size();i++){
@@ -205,5 +200,20 @@ public class ItemResources{
                 toSave.put(item.getItem_id(),item);
             }
 
+    }
+
+    public ArrayList<Item> findItemById(ArrayList<Association> item_ids) {
+        if(db_items.size() > 0){
+            ArrayList<Item> results = new ArrayList<>();
+            for(Association asso:item_ids) {
+                Item current = db_items.stream().filter(i -> i.getItem_id() == asso.getItem_Id())
+                        .findFirst().orElse(null);
+                if(current != null){
+                    results.add(current);
+                }
+            }
+            return results;
+        }
+        return null;
     }
 }

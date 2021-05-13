@@ -59,13 +59,6 @@
                 android:layout_weight="1"
                 android:gravity="center">
 
-
-                <ImageButton
-                    android:id="@+id/reportImageItem"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:clickable="true"
-                    android:foreground="@drawable/ic_report_item" />
             </LinearLayout>
       </LinearLayout>
     </androidx.cardview.widget.CardView>

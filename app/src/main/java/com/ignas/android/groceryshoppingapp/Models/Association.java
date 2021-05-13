@@ -19,6 +19,7 @@ public class Association extends RealmObject {
     private int list_Id;
     private int item_Id;
     private int quantity=0;
+    private boolean deleteFlag = false;
 
     //constructor
     public Association(){}
@@ -29,6 +30,15 @@ public class Association extends RealmObject {
     }
 
     //getters & setters
+
+    public boolean isDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
     public int getAsso_Id() {
         return asso_Id;
     }

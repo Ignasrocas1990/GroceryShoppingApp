@@ -39,6 +39,9 @@ public class AssoViewModel extends ViewModel {
             addAsso(NONE,i.getItem_id(),NONE);
         }
     }
+    public Association findAssociation(int asso_Id){
+       return assoResources.findAssoById(asso_Id);
+    }
 //del association
     public void deleteAsso(int item_Id){
         currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));

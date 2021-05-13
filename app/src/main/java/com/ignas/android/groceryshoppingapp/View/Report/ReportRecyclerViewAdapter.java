@@ -1,18 +1,17 @@
 package com.ignas.android.groceryshoppingapp.View.Report;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,20 +21,13 @@ import java.util.List;
 
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
-   private List<String> dValues;
-   private Context context;
-   //private List<Item> iValues = new ArrayList<>();
-   private final DateClickListener dateClickListener;
-   View prevSelected = null;
+   private List<ShoppingItem> iValues = new ArrayList<>();
    private String TAG = "log";
 
-    public ReportRecyclerViewAdapter(ArrayList<String> dummyList, Context context, DateClickListener dateClickListener) {
-        dValues = dummyList;
-        this.context = context;
-        this.dateClickListener = dateClickListener;
-    }
-    public interface DateClickListener{
-        public ArrayList<String> getItems(String s);
+    public ReportRecyclerViewAdapter() {}
+
+    public void setItems(ArrayList<ShoppingItem> items){
+        iValues = items;
     }
 
 
@@ -49,43 +41,26 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     @Override
     public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.dateTextView.setText(dValues.get(position));
-
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        //holder.dateTextView.setText(iValues.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return dValues.size();
+        return iValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setDisplayItems(ArrayList<ShoppingItem> shoppingContent) {
+        iValues = shoppingContent;
+        Log.wtf(TAG, "setDisplayItems: "+shoppingContent.size());
+
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
         TextView dateTextView;
-        ImageButton reportImageItem;
 
         public ViewHolder(@NonNull @NotNull View view) {
             super(view);
             dateTextView = view.findViewById(R.id.reportDateView);
-            reportImageItem = view.findViewById(R.id.reportImageItem);
-            reportImageItem.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            Log.i(TAG, "onClick: click");
-            ArrayList<String> list = dateClickListener.getItems(dateTextView.getText().toString());
-            PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
-            for(String i : list){
-                popupMenu.getMenu().add(Menu.NONE,0,Menu.FLAG_PERFORM_NO_CLOSE,i);
-            }
-            popupMenu.show();
-
         }
     }
 }

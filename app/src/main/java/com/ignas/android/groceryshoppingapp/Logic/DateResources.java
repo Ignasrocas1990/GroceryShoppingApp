@@ -1,9 +1,6 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
 
-import com.ignas.android.groceryshoppingapp.Models.Association;
-import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.Report;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
@@ -41,14 +38,18 @@ public class DateResources {
         Random r = new Random();
         return new ShoppingItem(r.nextInt(),name, amount, price);
     }
-    public void createReport(float total, ArrayList<ShoppingItem> items){
+    public void createReport(float total, ArrayList<ShoppingItem> viewItems){
         Report report = new Report();
         ArrayList<Integer> item_Ids = new ArrayList<Integer>();
-        for(ShoppingItem i : items){
-            item_Ids.add(i.getItem_Id());
+        for(ShoppingItem i : viewItems){
+            item_Ids.add(i.getAsso_Id());
         }
         report.setTotal(total);
-        report.setItems(item_Ids);
+        report.setAssos(item_Ids);
         db.addReport(report);
+    }
+
+    public void findReportItems(Report value) {
+        //db.findReportItems(value);
     }
 }

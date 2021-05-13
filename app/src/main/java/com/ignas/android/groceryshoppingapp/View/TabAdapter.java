@@ -10,6 +10,7 @@ import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsFragment;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateFragment;
 import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;
+import com.ignas.android.groceryshoppingapp.View.ShoppingDate.ShoppingFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;
@@ -35,7 +36,10 @@ public class TabAdapter extends FragmentPagerAdapter {
                 break;
             case 3:
                 fragment = ReportFragment.newInstance();
-
+                break;
+            case 4:
+                fragment = ShoppingFragment.newInstance();
+                break;
         }
         return fragment;
     }

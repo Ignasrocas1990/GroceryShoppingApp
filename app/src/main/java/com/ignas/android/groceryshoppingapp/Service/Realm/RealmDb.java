@@ -11,21 +11,23 @@ import com.ignas.android.groceryshoppingapp.Models.Report;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
 public class RealmDb{
     final String TAG = "log";
 
-    public RealmDb() {
-        //removeAll();
+
+    public RealmDb(){
+        //clear();
     }
-//get smallest date to schedule (is the switch is on)
+
+
+
+    //get smallest date to schedule (is the switch is on)
     public Item getSmallestDateItem(int item_Id){
         ArrayList<Item> list = new ArrayList<>();
         try(Realm realm = Realm.getDefaultInstance()){
@@ -42,6 +44,7 @@ public class RealmDb{
                         }
                             Date dateResults = inRealm.where(Item.class)
                                     .equalTo("notified", false)
+                                    .equalTo("deleteFlag",false)
                                     .greaterThan("lastingDays", 0)
                                     .minimumDate("runOutDate");
 
@@ -72,7 +75,9 @@ public class RealmDb{
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
 
-                RealmResults<Item> results = inRealm.where(Item.class).findAll();
+                RealmResults<Item> results = inRealm.where(Item.class)
+                        .equalTo("deleteFlag",false)
+                        .findAll();
                 if (results.size() != 0) {
                     List<Item> temp = inRealm.copyFromRealm(results);
                     list.addAll(temp);
@@ -84,7 +89,7 @@ public class RealmDb{
         return list;
     }
 
-// add/copy list of items
+    // add/copy list of items
     public void addItems(ArrayList<Item>items){
 
         try (Realm realm = Realm.getDefaultInstance()){
@@ -98,10 +103,12 @@ public class RealmDb{
             Log.i("log", "addItems: did not save");
         }
     }
-    //remove single item
+/*
+//remove single item (updating delete flag)
     public void removeItem(Item item) {
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
+                inRealm.copyToRealmOrUpdate(item);
 
                Item tempItem = inRealm.where(Item.class)
                     .equalTo("item_Id", item.getItem_id())
@@ -115,6 +122,7 @@ public class RealmDb{
             Log.d("log", "delete item. not found ");
         }
     }
+
 //delete multiple items
     public void deleteItems(ArrayList<Item> toDelete) {
         try (Realm realm = Realm.getDefaultInstance()){
@@ -134,6 +142,7 @@ public class RealmDb{
             Log.d("log", "delete items. not found ");
         }
     }
+*/
 // add single item to database
     public void addItem(Item item){
         try (Realm realm = Realm.getDefaultInstance()){
@@ -154,7 +163,9 @@ public class RealmDb{
         try (Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm -> {
 
-            RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
+            RealmResults<ItemList> results = realm.where(ItemList.class)
+                    .equalTo("deleteFlag",false)
+                    .findAll();
                  if (results.size() != 0) {
                  lists.addAll(realm.copyFromRealm(results));
             }
@@ -172,6 +183,7 @@ public class RealmDb{
             Log.i("log", "lists: did not save");
         }
     }
+    /*
 //remove single list
     public void removeList(ItemList list) {
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -205,6 +217,8 @@ public class RealmDb{
             Log.i("log", "removeList's: failure ");
         }
     }
+
+     */
 // add single list
     public void addList(ItemList list){
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -223,7 +237,9 @@ public class RealmDb{
 
             realm.executeTransaction(inRealm -> {
 
-                RealmResults<Association> results = inRealm.where(Association.class).findAll();
+                RealmResults<Association> results = inRealm.where(Association.class)
+                        .equalTo("deleteFlag",false)
+                        .findAll();
                 if (results.size() != 0) {
                     list.addAll(inRealm.copyFromRealm(results));
                 }
@@ -241,6 +257,7 @@ public class RealmDb{
         }
 
     }
+    /*
     public void removeAsso(Association asso) {
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
@@ -273,6 +290,8 @@ public class RealmDb{
             Log.i("log", "remove associations: failure ");
         }
     }
+
+     */
     public void addSingeAsso(Association asso){
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(asso));
@@ -281,23 +300,16 @@ public class RealmDb{
             Log.i("log", "asso add single : not successful");
         }
     }
-    //--- for reset----
-    public void removeAll(){
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> inRealm.deleteAll());
 
-        }catch(Exception e){
-            Log.d("log", "removeAll: error");
-        }
-
-    }
 //get Alarm Switch
     public boolean getSwitch() {
         Boolean[] result = new Boolean[1];
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm->{
 
-                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
+                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class)
+                        .equalTo("deleteFlag",false)
+                        .findFirst();
                 if(tempSwitch!=null){
                     result[0] = tempSwitch.isSwitched();
                 }else{
@@ -314,9 +326,10 @@ public class RealmDb{
     public void setSwitch(Boolean state){
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm ->{
-                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class).findFirst();
+                AlarmSwitch tempSwitch = inRealm.where(AlarmSwitch.class)
+                        .equalTo("deleteFlag",false)
+                        .findFirst();
                 if(tempSwitch == null){
-
                     AlarmSwitch alarmSwitch = new AlarmSwitch();
                     alarmSwitch.setSwitch(state);
                     inRealm.copyToRealmOrUpdate(alarmSwitch);
@@ -356,5 +369,15 @@ public class RealmDb{
             Log.i("log", "getReports: failed "+e.getMessage());
         }
         return reports;
+    }
+    private void clear() {
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(inRealm->{
+                inRealm.deleteAll();
+            });
+
+        }catch(Exception e){
+
+        }
     }
 }
