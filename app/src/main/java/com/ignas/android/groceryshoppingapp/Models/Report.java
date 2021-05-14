@@ -24,6 +24,7 @@ public class Report extends RealmObject {
     RealmList<Integer> asso_Ids;
     private float total = 0.f;
 
+
     public Report() {
         asso_Ids = new RealmList<>();
         setReport_Id();

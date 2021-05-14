@@ -2,14 +2,6 @@ package com.ignas.android.groceryshoppingapp.View.ShoppingDate;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +13,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
-import com.ignas.android.groceryshoppingapp.Models.Report;
-import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Objects;
 
-public class ShoppingFragment extends Fragment {
+public class ShoppingFragment extends Fragment{
     private static final int MAX_LENGTH  = 7;
     private static final int MAX_CHARS = 20;
     private static final String TAG = "log";
@@ -79,43 +76,68 @@ public class ShoppingFragment extends Fragment {
          totalView = view.findViewById(R.id.total);
          recyclerView = view.findViewById(R.id.shopping_Recycler_View);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        ArrayAdapter[] spinnerAdapter = new ArrayAdapter[1];
+        int[] currSpinnerPos = {-1};
 
-        //itemViewModel.setShoppingDate(); sets to null (need it at the shopping date run) or click on button
-        ArrayList<Item> items = itemViewModel.createShoppingItems();
-        ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
-        ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
+        //query data for spinner and recycler
+        ArrayList<Item> notifiedItems = itemViewModel.getNotifiedItems();
+        ArrayList<ItemList> lists = new ArrayList<ItemList>();
+        lists.addAll(Objects.requireNonNull(listViewModel.getLiveLists().getValue()));
 
-        ArrayList<Item> itemWithoutList = dateViewModel.createItems(items, displayAssos, lists);
-        assoViewModel.createAssos(itemWithoutList);
+        HashMap<Integer,ArrayList<Association>> shoppingAssos = assoViewModel.findShoppingAssos(lists,notifiedItems);
+
+        lists = listViewModel.createSpinText(lists);
+
+
+
+
+        //itemViewModel.setShoppingDate();// sets to null (need it at the shopping date run) or click on button
+           // ArrayList<Item> items = itemViewModel.createShoppingItems();
+            //ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
+           // ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
+
+            // ArrayList<Item> itemWithoutList = dateViewModel.createItems(items, displayAssos, lists);
+            // assoViewModel.createAssos(itemWithoutList);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        //set spinner
+
+        spinnerAdapter[0] = new ArrayAdapter<>(context
+                , android.R.layout.simple_spinner_item, lists);
+        spinnerAdapter[0].setNotifyOnChange(true);
+        spinnerAdapter[0].setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listSpinner.setAdapter(spinnerAdapter[0]);
 
 
 //setts off when
         //--------- RECYCLING View
 
-        ShoppingRecyclerAdapter adapter = new ShoppingRecyclerAdapter(new ShoppingRecyclerAdapter.onItemClickListener() {
+        ArrayList<ItemList> finalLists = lists;
+        ShoppingRecyclerAdapter recyclerAdapter = new ShoppingRecyclerAdapter(notifiedItems,new ShoppingRecyclerAdapter.onItemClickListener() {
             @Override
-            public void onItemBuy(ShoppingItem item) {
-                if(totalView.getText().toString().equals("total")){
-                    dateViewModel.setTotal(item.getPrice());
-                }else{
-                    dateViewModel.addToTotal(item.getPrice());
-                }
-            }
-            @Override
-            public void onCancel(ShoppingItem item) {
-                if(totalView.getText().toString().equals("0.0")){
-                    totalView.setText(R.string.total);
-                }else{
-                    dateViewModel.subtractTotal(item.getPrice());
+            public void onItemBuy(Item item, Association currentAsso, boolean deleteFlag) {
+
+                assoViewModel.onBuyBought(currentAsso,shoppingAssos);
+                itemViewModel.syncBoughtItem(item);
+                if(deleteFlag){
+                    finalLists.remove(currSpinnerPos[0]);
+                    listSpinner.setSelection(0, true);
+                    //spinnerAdapter[0].
                 }
             }
         });
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(recyclerAdapter);
 
 
-        final ArrayAdapter[] dataAdapter = new ArrayAdapter[1];
 
-// Creating adapter for Spinner and observe it
+
+        /*
+        //final ArrayAdapter[] dataAdapter = new ArrayAdapter[1];
         listViewModel.getLiveLists().observe(requireActivity(), new Observer<ArrayList<ItemList>>() {
             @Override
             public void onChanged(ArrayList<ItemList> itemLists) {
@@ -126,30 +148,41 @@ public class ShoppingFragment extends Fragment {
                 dataAdapter[0].setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             }
         });
-// attaching data adapter to spinner and setItemSelected
-        listSpinner.setAdapter(dataAdapter[0]);
+ //listSpinner.setAdapter(dataAdapter[0]);
+         *///TODO delete
+
+// attaching data rcyclerAdapter to spinner and setItemSelected
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
+                if(position !=0) {
+                    currSpinnerPos[0] = position;
                     ItemList selectedList = new ItemList();
                     selectedList = (ItemList) parent.getItemAtPosition(position);
-                    Log.i("log", "onItemSelected: "+selectedList.getListName());
-                    listViewModel.setCurrentList(selectedList);
-                }else{
-                    listViewModel.setCurrentList(null);
-                }
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
 
+                    recyclerAdapter.setItems(shoppingAssos.get(selectedList.getList_Id()));
+                    recyclerAdapter.notifyDataSetChanged();
+                }
+
+                    //listViewModel.setCurrentList(selectedList);
+               // }else{
+                //    listViewModel.setCurrentList(null);
+                //}
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {
+                currSpinnerPos[0]=-1;
+            }
+        });
+/*
         dateViewModel.getLiveSpItems().observe(requireActivity(), new Observer<ArrayList<ShoppingItem>>() {
             @Override
             public void onChanged(ArrayList<ShoppingItem> shoppingItems) {
-                adapter.setItems(shoppingItems);
-                adapter.notifyDataSetChanged();
+                recyclerAdapter.setItems(new ArrayList<ShoppingItem>());
+                //rcyclerAdapter.notifyDataSetChanged();
             }
         });
+
+ */
 //total field observer
         dateViewModel.getLiveTotal().observe(requireActivity(), new Observer<Float>() {
             @Override
@@ -162,7 +195,6 @@ public class ShoppingFragment extends Fragment {
 
         return view;
     }
-
 
     //check if data entered is not above limits
     private boolean ApproveNewData(String newName, String newAmount, String newPrice) {

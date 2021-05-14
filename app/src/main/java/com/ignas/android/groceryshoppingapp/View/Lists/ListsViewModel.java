@@ -14,16 +14,15 @@ public class ListsViewModel extends ViewModel {
 
     private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
     private final ListResources listResources;
-
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
+    private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
 
     public ListsViewModel() {
         listResources = new ListResources();
         mLiveLists.setValue(listResources.getLists());
 
     }
-    //lists methods
-
+ //basic lists methods
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = mLiveLists.getValue();
         ItemList newItemList =  listResources.createList(listName,shopName);
@@ -62,7 +61,6 @@ public class ListsViewModel extends ViewModel {
         }
         return found;
     }
-
     //current list methods
     public ItemList getDeleteList(){
         return listResources.getDeleteList();
@@ -86,10 +84,23 @@ public class ListsViewModel extends ViewModel {
         return currentList.getValue();
     }
 
+    public ArrayList<ItemList> createSpinText(ArrayList<ItemList> lists) {
+        ItemList spinnerText = new ItemList();
+        if(lists.size() == 0){
+            spinnerText.setToStringText("no items running out");
+        }else{
+            spinnerText.setToStringText("select a list");
+        }
+        lists.add(0,spinnerText);
+        return lists;
+    }
+
+
 //update database
     public void refresh_Db_Lists(){
         listResources.updateLists();
     }
+
 
     //live data methods
     public LiveData<ItemList> getCurrLiveList() {
@@ -99,6 +110,7 @@ public class ListsViewModel extends ViewModel {
         return mLiveLists;
     }
 
-
-
+    public LiveData<ItemList> getSpinnerList() {
+        return spinnerList;
+    }
 }

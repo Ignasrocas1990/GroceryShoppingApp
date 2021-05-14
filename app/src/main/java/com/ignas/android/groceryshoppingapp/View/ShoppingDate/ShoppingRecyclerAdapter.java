@@ -7,7 +7,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
+import com.ignas.android.groceryshoppingapp.Models.Association;
+import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,20 +19,23 @@ import java.util.List;
 public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "log";
-    private List<ShoppingItem> mItems ;
+    private List<Item> ntfItems = new ArrayList<Item>();
+    private List<Association> assos = new ArrayList<>();
     private final onItemClickListener mOnItemClickListener;
 
-    public ShoppingRecyclerAdapter(onItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
+    public ShoppingRecyclerAdapter(ArrayList<Item> notifiedItems, onItemClickListener listener) {
+        ntfItems = notifiedItems;
+        this.mOnItemClickListener = listener;
     }
-//set basic item info
-    public void setItems(ArrayList<ShoppingItem> items) {
-        mItems = items;
+
+
+    //set basic item info
+    public void setItems(ArrayList<Association> itemAssos) {
+        assos = itemAssos;
     }
 
     public interface onItemClickListener {
-        void onItemBuy(ShoppingItem item);
-        void onCancel(ShoppingItem item);
+        void onItemBuy(Item ItemAsso, Association currentAsso, boolean b);
     }
 
     @NotNull
@@ -44,9 +48,28 @@ public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecycl
 
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+        Association currentAsso = assos.get(position);
+        final boolean[] deleteFlag = {false};
+        Item foundItem = ntfItems.stream()
+                .filter(item->item.getItem_id()==currentAsso.getItem_Id()).findFirst().orElse(null);
 
-        ShoppingItem currentItem = mItems.get(position);
+        if(foundItem != null){
+            holder.name.setText(foundItem.getItemName());
+            holder.price.setText(String.valueOf(foundItem.getPrice()));
+            holder.amount.setText(String.valueOf(currentAsso.getQuantity()));
+        }
+        holder.itemView.setOnClickListener(v -> {
+            if(assos.size() == 1){
+                deleteFlag[0] = true;
+            }
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position,getItemCount()-1);
+            mOnItemClickListener.onItemBuy(foundItem,currentAsso, deleteFlag[0]);
+        });
 
+
+
+/*
         if(currentItem.isSelected()){
             holder.itemView.setBackgroundResource(R.color.red);
         }else{
@@ -79,24 +102,27 @@ public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecycl
             }
         });
 
+
+ */
         //TODO -- need to get price form Asso's------Amount & list ID-----------next
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        if(assos!=null){
+            return assos.size();
+        }
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name,price, amount,list,shop;
+        TextView name,price, amount;
 
         public ViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.shoppingName);
             amount = view.findViewById(R.id.shoppingAmount);
             price = view.findViewById(R.id.shoppingPrice);
-            list = view.findViewById(R.id.shoppingList);
-            shop = view.findViewById(R.id.shoppingShop);
         }
     }
 }

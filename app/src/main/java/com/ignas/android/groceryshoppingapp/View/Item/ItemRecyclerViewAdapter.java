@@ -1,11 +1,12 @@
 package com.ignas.android.groceryshoppingapp.View.Item;
 
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
@@ -41,6 +42,9 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mValues.get(position);
+
+        Log.i(TAG, "item notified ?"+item.getItemName()+" : "+item.isNotified());
+
         holder.itemView.setBackgroundResource(R.color.blue);
         holder.product_name.setText(item.getItemName());
         holder.lasting_days.setText(String.valueOf(item.getLastingDays()));

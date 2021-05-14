@@ -22,15 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".View.ShoppingDate.ShoppingActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/Theme.GroceryShoppingApp.NoActionBar"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:excludeFromRecents="true">
-
-        </activity>
         <receiver
             android:name=".Service.Notification"
             android:enabled="true" />

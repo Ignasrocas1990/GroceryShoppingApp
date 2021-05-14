@@ -12,7 +12,7 @@ public class ShoppingItem{
      String listName="";
      boolean selected = false;
 
-
+    public ShoppingItem(){}
     public ShoppingItem(int item_Id, String name, float price) {
         this.item_Id = item_Id;
         this.name = name;

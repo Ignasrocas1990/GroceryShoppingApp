@@ -2,11 +2,11 @@ package com.ignas.android.groceryshoppingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
@@ -15,33 +15,24 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.ignas.android.groceryshoppingapp.Models.Association;
-import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
-import com.ignas.android.groceryshoppingapp.Models.Report;
-import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
+import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 
 import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
-
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
@@ -57,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar;
 
         private ItemViewModel itemViewModel;
-        private ListsViewModel listsViewModel;
+        private ListsViewModel listViewModel;
         private AssoViewModel assoViewModel;
         private DateViewModel dateViewModel;
         NavigationView mNavigationView;
@@ -84,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
-
+        Button a = findViewById(R.id.addBtn);
 
 //initialize view Models
-        listsViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
+        listViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
         dateViewModel = ViewModelProviders.of(this).get(DateViewModel.class);
@@ -101,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
                         if(previousMenuItem[0].getItemId() == menuItem.getItemId()){
                             menuItem.setChecked(false);
-                            listsViewModel.setCurrentList(null);
+                            listViewModel.setCurrentList(null);
                             previousMenuItem[0]=null;
                         }else{
                             menuItem.setChecked(true);
                             int id = menuItem.getItemId();
-                            ItemList curList = listsViewModel.findList(id);
-                            listsViewModel.setCurrentList(curList);
+                            ItemList curList = listViewModel.findList(id);
+                            listViewModel.setCurrentList(curList);
                             viewPager.setCurrentItem(MANAGE_LISTS_TAB);
 
                             previousMenuItem[0] = menuItem;
@@ -115,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         menuItem.setChecked(true);
                         int id = menuItem.getItemId();
-                        ItemList curList = listsViewModel.findList(id);
-                        listsViewModel.setCurrentList(curList);
+                        ItemList curList = listViewModel.findList(id);
+                        listViewModel.setCurrentList(curList);
                         viewPager.setCurrentItem(MANAGE_LISTS_TAB);
                         previousMenuItem[0] = menuItem;
                     }
@@ -139,20 +130,20 @@ public class MainActivity extends AppCompatActivity {
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 cancelAlarms();
-createReports();
+//createReports();
     }
 //all the data observers----------------------(for drawer)
     private void Observers(){
-        listsViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
+        listViewModel.getLiveLists().observe(this, lists -> {//deletion of current list
 
-            if(listsViewModel.getDeleteList() !=null){
-                delDrawerList(listsViewModel.getDeleteList());
+            if(listViewModel.getDeleteList() !=null){
+                delDrawerList(listViewModel.getDeleteList());
             }else{
                 addtoDrawer(lists);
             }
         });
 // select current list after creation
-        listsViewModel.getCurrLiveList().observe(this, curList->{
+        listViewModel.getCurrLiveList().observe(this, curList->{
             //synchronizes current list <=> its associations to items
             @NonNls MenuItem menuItem;
             if(curList==null){
@@ -178,7 +169,7 @@ createReports();
         if(menu.hasVisibleItems()){
             menu.removeItem(list.getList_Id());
             previousMenuItem[0]=null;
-            listsViewModel.deletedCurrent();
+            listViewModel.deletedCurrent();
         }
         refreshDrawer();
 
@@ -214,6 +205,7 @@ createReports();
             }
         }
     }
+    /*
     public void createReports(){
         HashMap<Integer, ArrayList<ShoppingItem>> reports = new HashMap<>();
         ArrayList<Report> db_reports = dateViewModel.getReports();
@@ -227,13 +219,16 @@ createReports();
                     reportAssos.add(current);
                 }
             }
-            ArrayList<ItemList> reportList = listsViewModel.findLists_forItem(reportAssos);
+            ArrayList<ItemList> reportList = listViewModel.findLists_forItem(reportAssos);
             ArrayList<Item> reportItems = itemViewModel.findItemByIds(reportAssos);
             dateViewModel.createItems(reportItems, reportAssos, reportList);
             reports.put(rp.getReport_Id(),dateViewModel.getShoppingItems());
         }
         dateViewModel.setQueryReports(reports);
     }
+
+     */
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -242,7 +237,7 @@ createReports();
             itemViewModel.reSyncItems();
         }
 //update db data
-        listsViewModel.refresh_Db_Lists();
+        listViewModel.refresh_Db_Lists();
         itemViewModel.updateDbItems();
         assoViewModel.updateAssociations();
 

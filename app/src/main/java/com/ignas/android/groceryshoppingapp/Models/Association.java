@@ -1,7 +1,5 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
-import org.bson.types.ObjectId;
-
 import java.util.Random;
 
 import io.realm.RealmObject;
@@ -16,7 +14,7 @@ public class Association extends RealmObject {
         asso_Id = r.nextInt();
     }
 
-    private int list_Id;
+    private int list_Id=0;
     private int item_Id;
     private int quantity=0;
     private boolean deleteFlag = false;
@@ -27,6 +25,10 @@ public class Association extends RealmObject {
         this.list_Id = list_Id;
         this.item_Id = item_Id;
         this.quantity = quantity;
+    }
+
+    public Association(int item_Id) {
+        this.item_Id = item_Id;
     }
 
     //getters & setters

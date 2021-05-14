@@ -15,8 +15,8 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.ShoppingDate.ShoppingActivity;
 
 public class Notification extends BroadcastReceiver {
     private static final String CHANNEL_ID = "0";
@@ -36,7 +36,7 @@ public class Notification extends BroadcastReceiver {
 
 
             //create Brought action Button
-            Intent shoppingIntent = new Intent(context, ShoppingActivity.class);
+            Intent shoppingIntent = new Intent(context, MainActivity.class);
             shoppingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, 0, shoppingIntent, PendingIntent.FLAG_UPDATE_CURRENT);

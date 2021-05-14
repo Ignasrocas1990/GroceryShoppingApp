@@ -1,26 +1,21 @@
 package com.ignas.android.groceryshoppingapp.View.Item;
 
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
-
-import io.realm.RealmResults;
 
 public class ItemViewModel extends ViewModel {
     private final ItemResources itemResources;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
-
-    final private String TAG="log";
 
 
     public ItemViewModel() {
@@ -67,7 +62,7 @@ public class ItemViewModel extends ViewModel {
 
 //create list of items that are been notified.(Shopping Day Items)
     public ArrayList<Item> createShoppingItems(){
-        return itemResources.createShoppingItems(mLiveItems.getValue());
+        return itemResources.getNotifiedItems(mLiveItems.getValue());
     }
     public void syncAfterShopping(ArrayList<ShoppingItem> spItems){
         itemResources.syncAfterShopping(spItems);
@@ -86,7 +81,13 @@ public class ItemViewModel extends ViewModel {
     public void reSyncCurrent(int position) {
         Item currentItem = findItem(position);
         itemResources.reSyncCurrent(currentItem);
+    }
+    public void syncBoughtItem(Item item){
+        itemResources.reSyncCurrent(item);
 
+    }
+    public ArrayList<Item> getNotifiedItems() {
+        return itemResources.getNotifiedItems(mLiveItems.getValue());
     }
 
 

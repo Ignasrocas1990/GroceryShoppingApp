@@ -1,7 +1,5 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.util.Log;
-
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -83,6 +81,7 @@ public class AssoResources {
         current.add(newAsso);
         return current;
     }
+
 
 //delete single association method from current live list of associations
     public ArrayList<Association> deleteAsso(int item_Id, ArrayList<Association> curr) {
@@ -170,6 +169,7 @@ public class AssoResources {
                 db.addSingeAsso(fullSave.get(0));
             }
     }
+
 //find item associations to list for each item
     public ArrayList<Association> findAssociations(ArrayList<Item> items) {
         ArrayList<Association> associations = new ArrayList<>();
@@ -178,6 +178,19 @@ public class AssoResources {
         }
         return associations;
     }
+//create temporary association for shopping
+    public Association createTempAsso(int item_Id){
+        return new Association(item_Id);
+    }
+//get combined assos as ArrayList
+    public ArrayList<Association> getCombinedAssos(){
+        ArrayList<Association> copy = new ArrayList<>();
+        for(ArrayList<Association> i : app_assos.values()){
+            copy.addAll(i);
+        }
+        return copy;
+    }
+
 //find association by id
     public Association findAssoById(int asso_Id){
         if(db_assos.containsKey(asso_Id)){
@@ -185,4 +198,75 @@ public class AssoResources {
         }
         return null;
     }
+
+    public ArrayList<Association> findNotifiedAssos(ArrayList<Item> notifiedItems){
+        ArrayList<Association> allAssos = new ArrayList(getCombinedAssos());
+        Association curAsso;
+        ArrayList<Association> foundAssos = new ArrayList<>();
+        boolean found = false;
+
+        for(Item item : notifiedItems){
+            found = false;
+            for(Association asso : allAssos){
+                if(item.getItem_id()==asso.getItem_Id()){
+                    foundAssos.add(asso);
+                    found = true;
+                }
+            }
+            if(!found){
+                foundAssos.add(createTempAsso(item.getItem_id()));
+            }
+
+        }
+        return foundAssos;
+    }
+
+    public HashMap<Integer, ArrayList<Association>> findShoppingAssos(ArrayList<ItemList> lists, ArrayList<Item> notifiedItems) {
+        HashMap<Integer,ArrayList<Association>> listMap = new HashMap<>();
+        ArrayList<Association> newAssos = new ArrayList<>();
+        if(notifiedItems.size()==0){
+            return listMap;
+        }else if(lists.size()!= 0){
+            ArrayList <Association> notifiedAssos =  findNotifiedAssos(notifiedItems);
+
+            for(Association currAsso: notifiedAssos) {
+                for(ItemList currList:lists){
+
+                    if(currAsso.getList_Id()==0){//check if item is wild(part of all lists)
+
+                        if(listMap.containsKey(currList.getList_Id())){//check if listmap already has that list into it
+                            listMap.get(currList.getList_Id()).add(currAsso);
+                        }else{
+                            ArrayList<Association> temp = new ArrayList<>();
+                            temp.add(currAsso);
+                            listMap.put(currList.getList_Id(),temp);
+                        }
+                    }else if(currList.getList_Id() == currAsso.getList_Id()){
+
+                        if(listMap.containsKey(currList.getList_Id())){//check if listmap already has that list into it
+                            listMap.get(currList.getList_Id()).add(currAsso);
+                        }else{
+                            ArrayList<Association> temp = new ArrayList<>();
+                            temp.add(currAsso);
+                            listMap.put(currList.getList_Id(),temp);
+                        }
+                    }
+                }
+            }
+
+        }else{ // creates a list of items if there are not lists but items have run out
+            ItemList allLists = new ItemList("all","all");
+            allLists.setList_Id(0);
+            ArrayList<Association> aForAllLists = new ArrayList<>();
+            for(Item curr: notifiedItems){
+                aForAllLists.add(createTempAsso(curr.getItem_id()));
+            }
+            listMap.put(allLists.getList_Id(),aForAllLists);
+        }
+        return listMap;
+    }
+
+
+
+
 }

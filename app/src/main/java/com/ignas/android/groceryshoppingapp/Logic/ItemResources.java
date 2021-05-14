@@ -4,17 +4,11 @@ import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 public class ItemResources{
     private static final String TAG ="log";
@@ -176,7 +170,7 @@ public class ItemResources{
     }
 
 //just removes items that not been notified(any item that is going to running out)
-    public ArrayList<Item> createShoppingItems(ArrayList<Item> items){
+    public ArrayList<Item> getNotifiedItems(ArrayList<Item> items){
         ArrayList<Item> copy = new ArrayList<Item>();
         for(int i=0;i<items.size();i++){
 
@@ -188,6 +182,7 @@ public class ItemResources{
         }
         return copy;
     }
+
 
     public void reSyncCurrent(Item item) {
             if(toSave.containsKey(item.getItem_id())){

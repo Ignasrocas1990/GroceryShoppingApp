@@ -2,33 +2,19 @@ package com.ignas.android.groceryshoppingapp.View.Report;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-
-import com.ignas.android.groceryshoppingapp.Models.Association;
-import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
-import com.ignas.android.groceryshoppingapp.Models.Report;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemRecyclerViewAdapter;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 
 public class ReportFragment extends Fragment {
     Context context;
@@ -55,13 +41,16 @@ public class ReportFragment extends Fragment {
         context = view.getContext();
         RecyclerView recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-
 // Creating adapter for spinner
+/*
+
         ArrayAdapter<Report> dataAdapter = new ArrayAdapter<Report>(context
                 , android.R.layout.simple_spinner_item, dateViewModel.getReports());
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+ */
+
+/*
 // attaching data adapter to spinner and setItemSelected
         dateSpinner.setAdapter(dataAdapter);
         dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -79,15 +68,19 @@ public class ReportFragment extends Fragment {
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter();
-        recyclerView.setAdapter(adapter);
 
+ */
+        //ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter();
+        //recyclerView.setAdapter(adapter);
+/*
         dateViewModel.getLiveReport().observe(requireActivity(), report -> {
             //get report here
             if(report!=null){
-                adapter.setDisplayItems(dateViewModel.findShoppingContent(report.getReport_Id()));
+                //adapter.setDisplayItems(dateViewModel.findShoppingContent(report.getReport_Id()));
             }
         });
+
+ */
 
         viewBtn.setOnClickListener(new View.OnClickListener(){
 
