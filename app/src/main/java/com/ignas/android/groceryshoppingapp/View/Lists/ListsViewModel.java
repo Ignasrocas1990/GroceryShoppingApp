@@ -9,6 +9,7 @@ import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ListsViewModel extends ViewModel {
 
@@ -84,14 +85,35 @@ public class ListsViewModel extends ViewModel {
         return currentList.getValue();
     }
 
-    public ArrayList<ItemList> createSpinText(ArrayList<ItemList> lists) {
-        ItemList spinnerText = new ItemList();
-        if(lists.size() == 0){
-            spinnerText.setToStringText("no items running out");
-        }else{
-            spinnerText.setToStringText("select a list");
+    public ArrayList<ItemList> removeEmptyLists(ArrayList<ItemList> lists, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
+        ItemList spinnerText;
+        if(lists!=null) {
+            int i=0;
+            for (; i < lists.size(); i++) {
+                ItemList currentList = lists.get(i);
+                if (shoppingAssos.containsKey(currentList.getList_Id())) {
+                    if (shoppingAssos.get(currentList.getList_Id()).size() == 0) {
+                        lists.remove(i);
+                        i--;
+                    }
+                } else {
+                    lists.remove(i);
+                    i--;
+                }
+            }
+            if(lists.size()==0){
+                 spinnerText = new ItemList();
+                spinnerText.setToStringText("no items to buy");
+                lists.add(0, spinnerText);
+            } else if(!lists.get(0).getToStringText().equals("select a list")) {
+                spinnerText = new ItemList();
+                spinnerText.setToStringText("select a list");
+                lists.add(0, spinnerText);
+            }else{
+                lists.get(0).setToStringText("select a list");
+            }
+
         }
-        lists.add(0,spinnerText);
         return lists;
     }
 

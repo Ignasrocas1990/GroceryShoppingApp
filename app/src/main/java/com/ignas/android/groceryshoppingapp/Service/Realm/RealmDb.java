@@ -29,7 +29,7 @@ public class RealmDb{
 
     //get smallest date to schedule (is the switch is on)
     public Item getSmallestDateItem(int item_Id){
-        ArrayList<Item> list = new ArrayList<>();
+        Item[] result = {null};
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm->{
 
@@ -40,19 +40,24 @@ public class RealmDb{
                             Item running = inRealm.where(Item.class)
                                     .equalTo("item_Id", item_Id).findFirst();
 
-                            if(running != null) running.setNotified(true);
+                            if(running != null){ running.setNotified(true);}
+
                         }
                             Date dateResults = inRealm.where(Item.class)
                                     .equalTo("notified", false)
                                     .equalTo("deleteFlag",false)
                                     .greaterThan("lastingDays", 0)
+                                    .notEqualTo("item_Id", item_Id)
                                     .minimumDate("runOutDate");
 
-                            if(dateResults !=null){
+                        if(dateResults !=null){
                                 Item itemResult = inRealm.where(Item.class)
                                         .equalTo("runOutDate",dateResults).findFirst();
-                                if(itemResult!=null)
-                                    list.add(inRealm.copyFromRealm(itemResult));
+
+                            if(itemResult!=null)
+                                Log.wtf("log", "db,item: "+item_Id+" "+itemResult.getItem_id());
+
+                                result[0] = (inRealm.copyFromRealm(itemResult));
 
                             }
                     }
@@ -62,8 +67,8 @@ public class RealmDb{
         }catch(Exception e){
             Log.i("log", "getSmallestDateItem: "+e);
         }
-        if(list.size()!=0){
-            return list.get(0);
+        if(result[0] != null) {
+            return result[0];
         }
         return null;
     }

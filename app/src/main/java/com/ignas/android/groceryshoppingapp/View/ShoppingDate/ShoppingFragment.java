@@ -85,14 +85,11 @@ public class ShoppingFragment extends Fragment{
         lists.addAll(Objects.requireNonNull(listViewModel.getLiveLists().getValue()));
 
         HashMap<Integer,ArrayList<Association>> shoppingAssos = assoViewModel.findShoppingAssos(lists,notifiedItems);
-
-        lists = listViewModel.createSpinText(lists);
-
-
+        lists = listViewModel.removeEmptyLists(lists,shoppingAssos);
 
 
         //itemViewModel.setShoppingDate();// sets to null (need it at the shopping date run) or click on button
-           // ArrayList<Item> items = itemViewModel.createShoppingItems();
+        // ArrayList<Item> items = itemViewModel.createShoppingItems();
             //ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
            // ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
@@ -121,20 +118,21 @@ public class ShoppingFragment extends Fragment{
         ShoppingRecyclerAdapter recyclerAdapter = new ShoppingRecyclerAdapter(notifiedItems,new ShoppingRecyclerAdapter.onItemClickListener() {
             @Override
             public void onItemBuy(Item item, Association currentAsso, boolean deleteFlag) {
-
+                if(totalView.getText().toString().equals("total")){
+                    dateViewModel.setTotal(item.getPrice());
+                }else{
+                    dateViewModel.addToTotal(item.getPrice());
+                }
                 assoViewModel.onBuyBought(currentAsso,shoppingAssos);
                 itemViewModel.syncBoughtItem(item);
-                if(deleteFlag){
-                    finalLists.remove(currSpinnerPos[0]);
+
+                listViewModel.removeEmptyLists(finalLists,shoppingAssos);
+                if(deleteFlag) {
                     listSpinner.setSelection(0, true);
-                    //spinnerAdapter[0].
                 }
             }
         });
         recyclerView.setAdapter(recyclerAdapter);
-
-
-
 
         /*
         //final ArrayAdapter[] dataAdapter = new ArrayAdapter[1];
@@ -159,7 +157,6 @@ public class ShoppingFragment extends Fragment{
                     currSpinnerPos[0] = position;
                     ItemList selectedList = new ItemList();
                     selectedList = (ItemList) parent.getItemAtPosition(position);
-
                     recyclerAdapter.setItems(shoppingAssos.get(selectedList.getList_Id()));
                     recyclerAdapter.notifyDataSetChanged();
                 }
@@ -173,16 +170,7 @@ public class ShoppingFragment extends Fragment{
                 currSpinnerPos[0]=-1;
             }
         });
-/*
-        dateViewModel.getLiveSpItems().observe(requireActivity(), new Observer<ArrayList<ShoppingItem>>() {
-            @Override
-            public void onChanged(ArrayList<ShoppingItem> shoppingItems) {
-                recyclerAdapter.setItems(new ArrayList<ShoppingItem>());
-                //rcyclerAdapter.notifyDataSetChanged();
-            }
-        });
 
- */
 //total field observer
         dateViewModel.getLiveTotal().observe(requireActivity(), new Observer<Float>() {
             @Override

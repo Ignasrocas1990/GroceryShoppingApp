@@ -11,15 +11,12 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public class AssoViewModel extends ViewModel {
     private final int NONE = 0;
     private final AssoResources assoResources;
     private final MutableLiveData<ArrayList <Association>> currentLive = new MutableLiveData<>();
-    // private final MutableLiveData<HashMap<Integer, ArrayList<Association>>> s = new MutableLiveData<>();
+    private final MutableLiveData<HashMap<Integer, ArrayList<Association>>> shoppingAssos = new MutableLiveData<>();
 
     //constructor
     public AssoViewModel(){
@@ -102,23 +99,12 @@ public class AssoViewModel extends ViewModel {
     public ArrayList<Association> findAssociations(ArrayList<Item> items){
         return assoResources.findAssociations(items);
     }
-
-
     public void onBuyBought(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
-        Set<Map.Entry<Integer, ArrayList<Association>>> keys = shoppingAssos.entrySet();
-        Iterator<Map.Entry<Integer,ArrayList<Association>>> iterator = keys.iterator();
-        while(iterator.hasNext()){
-            Map.Entry<Integer, ArrayList<Association>> current = iterator.next();
-            ArrayList<Association> currAssos = current.getValue();
-            for(int i =0;i< currAssos.size();i++){
-                if(currAssos.get(i).getItem_Id() == currentAsso.getItem_Id()){
-                    currAssos.remove(i);
-                    i--;
-                }
-            }
+        if(currentAsso.getList_Id()==0){
+            assoResources.removeWildAsso(currentAsso,shoppingAssos);
+        }else{
+            assoResources.removeBoughtAsso(currentAsso,shoppingAssos);
         }
-
-
 
     }
 }

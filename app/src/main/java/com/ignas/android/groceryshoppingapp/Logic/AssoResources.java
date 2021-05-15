@@ -7,6 +7,9 @@ import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class AssoResources {
 
@@ -14,6 +17,7 @@ public class AssoResources {
     private final HashMap<Integer,ArrayList<Association>> app_assos = new HashMap<>();//contains list_Id as key
     private final HashMap<Integer,Association> db_assos = new HashMap<>();//contains asso_Id as key
     private final HashMap<Integer,ArrayList<Association>>  toSave = new HashMap<>();//list id as key
+
 
     //private final ArrayList<Association> toDelete = new ArrayList<>();
 
@@ -216,14 +220,12 @@ public class AssoResources {
             if(!found){
                 foundAssos.add(createTempAsso(item.getItem_id()));
             }
-
         }
         return foundAssos;
     }
 
     public HashMap<Integer, ArrayList<Association>> findShoppingAssos(ArrayList<ItemList> lists, ArrayList<Item> notifiedItems) {
         HashMap<Integer,ArrayList<Association>> listMap = new HashMap<>();
-        ArrayList<Association> newAssos = new ArrayList<>();
         if(notifiedItems.size()==0){
             return listMap;
         }else if(lists.size()!= 0){
@@ -265,8 +267,64 @@ public class AssoResources {
         }
         return listMap;
     }
+    private void addToSave(Association asso){
+        if(toSave.containsKey(asso.getList_Id())){
+            toSave.get(asso.getList_Id()).add(asso);
+        }else{
+            ArrayList<Association> newAssos = new ArrayList<>();
+            newAssos.add(asso);
+            toSave.put(asso.getList_Id(),newAssos);
+        }
+    }
 
+//remove association that are part of every list (get first to save)
+    public void removeWildAsso(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
+        Set<Map.Entry<Integer, ArrayList<Association>>> keys = shoppingAssos.entrySet();
+        Iterator<Map.Entry<Integer,ArrayList<Association>>> iterator = keys.iterator();
+        boolean first = true;
+        while(iterator.hasNext()){
+            Map.Entry<Integer, ArrayList<Association>> current = iterator.next();
+            ArrayList<Association> currAssos = current.getValue();
+            for(int i =0;i< currAssos.size();i++){
+                if(currAssos.get(i).getItem_Id() == currentAsso.getItem_Id()){
+                    if(first) {
+                        Association asso = currAssos.get(i);
+                        asso.setBought(true);
+                        addToSave(asso);
+                    }
+                    currAssos.remove(i);
+                    i--;
+                    first=false;
 
+                }
+            }
+        }
+    }
+//remove association that are been bought
+    public void removeBoughtAsso(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos){
 
+        Set<Map.Entry<Integer, ArrayList<Association>>> keys = shoppingAssos.entrySet();
+        Iterator<Map.Entry<Integer,ArrayList<Association>>> iterator = keys.iterator();
+        while(iterator.hasNext()){
+            Map.Entry<Integer, ArrayList<Association>> current = iterator.next();
+            ArrayList<Association> currAssos = current.getValue();
+            for(int i =0;i< currAssos.size();i++){
+                if(currAssos.get(i).getItem_Id() == currentAsso.getItem_Id() &&
+                        currAssos.get(i).getList_Id() == currentAsso.getList_Id()){
+
+                    Association asso = currAssos.get(i);
+                    asso.setBought(true);
+                    addToSave(asso);
+
+                    currAssos.remove(i);
+                    i--;
+                }
+                else if (currAssos.get(i).getItem_Id() == currentAsso.getItem_Id()){
+                    currAssos.remove(i);
+                    i--;
+                }
+            }
+        }
+    }
 
 }
