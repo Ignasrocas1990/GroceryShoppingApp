@@ -23,7 +23,9 @@
             android:id="@+id/newName"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:hint="@string/name" />
+            android:inputType="textPersonName"
+            android:hint="@string/name"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/newAmount"
@@ -31,15 +33,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/amount"
             android:gravity="center"
-            android:inputType="textPersonName" />
+            android:inputType="number"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/newPrice"
             android:gravity="center"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="@string/price" />
+            android:inputType="numberDecimal"
+
+            android:hint="@string/price"
+            android:autofillHints="" />
 
         <Button
             android:id="@+id/addBtn"
@@ -52,12 +57,18 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/totalLayout"
-        android:padding="10dp"
         android:layout_below="@+id/top"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:baselineAligned="false">
 
+        <LinearLayout
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
         <TextView
             android:textColor="@color/blue"
             android:layout_width="wrap_content"
@@ -72,7 +83,14 @@
             android:textColor="@color/red"
             android:text="@string/total"
             android:textSize="18sp" />
+        </LinearLayout>
 
+    <LinearLayout
+        android:padding="5dp"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/listSpinner"
@@ -80,7 +98,7 @@
             android:layout_height="wrap_content"
             android:tooltipText="These are you lists with a shop"/>
 
-
+    </LinearLayout>
 
     </LinearLayout>
 

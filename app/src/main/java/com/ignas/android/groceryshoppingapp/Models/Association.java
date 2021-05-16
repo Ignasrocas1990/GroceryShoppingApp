@@ -32,6 +32,11 @@ public class Association extends RealmObject {
         this.item_Id = item_Id;
     }
 
+    public Association(int item_id, int amount) {
+        this.item_Id = item_id;
+        this.quantity = amount;
+    }
+
     //getters & setters
 
     public void setAsso_Id(int asso_Id) {

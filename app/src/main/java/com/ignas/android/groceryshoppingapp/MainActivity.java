@@ -37,6 +37,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "log";
     private static final int MANAGE_LISTS_TAB = 1;
+    private static final int SHOPPING_TAB = 4;
     private static final int DESELECT = -1;
     private final int[] icos = {R.drawable.ic_list_ico1,R.drawable.ic_list_ico2
             ,R.drawable.ic_list_ico3,R.drawable.ic_list_ico4,R.drawable.ic_list_ico5};
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         tabLayout = findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
         manageItems = findViewById(R.id.ItemFragment);
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(tabAdapter);
         Button a = findViewById(R.id.addBtn);
 
+
 //initialize view Models
         listViewModel = ViewModelProviders.of(this).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(this).get(AssoViewModel.class);
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         dateViewModel = ViewModelProviders.of(this).get(DateViewModel.class);
 
         Observers();
+
 //drawer on select
         mNavigationView.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -129,8 +131,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+isItShoppingTime();
 cancelAlarms();
-//createReports();
+}
+    //checks if activity opened from notification
+    private void isItShoppingTime(){
+        Intent intent = getIntent();
+        if(intent!=null){
+            int openingType = intent.getIntExtra("type",0);
+            if (openingType != 0){
+
+                itemViewModel.setShoppingDate();//sets shopping date to null
+                viewPager.setCurrentItem(SHOPPING_TAB);
+            }
+        }
     }
 //all the data observers----------------------(for drawer)
     private void Observers(){
@@ -142,6 +157,7 @@ cancelAlarms();
                 addtoDrawer(lists);
             }
         });
+
 // select current list after creation
         listViewModel.getCurrLiveList().observe(this, curList->{
             //synchronizes current list <=> its associations to items

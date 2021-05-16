@@ -50,4 +50,5 @@
     <string name="_00_00_0000">00/00/0000</string>
     <string name="_000">000</string>
     <string name="view">view</string>
+    <string name="select_a_list">select a list</string>
 </resources>

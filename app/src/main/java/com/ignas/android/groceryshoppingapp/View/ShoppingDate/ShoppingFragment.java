@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class ShoppingFragment extends Fragment{
-    private static final int MAX_LENGTH  = 7;
+    private static final int MAX_LENGTH  = 8;
     private static final int MAX_CHARS = 20;
     private static final String TAG = "log";
     Context context=null;
@@ -88,22 +88,14 @@ public class ShoppingFragment extends Fragment{
         lists = listViewModel.removeEmptyLists(lists,shoppingAssos);
 
 
-        //itemViewModel.setShoppingDate();// sets to null (need it at the shopping date run) or click on button
         // ArrayList<Item> items = itemViewModel.createShoppingItems();
             //ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
            // ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
 
             // ArrayList<Item> itemWithoutList = dateViewModel.createItems(items, displayAssos, lists);
             // assoViewModel.createAssos(itemWithoutList);
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-
-        //set spinner
-
+//set spinner
         spinnerAdapter[0] = new ArrayAdapter<>(context
                 , android.R.layout.simple_spinner_item, lists);
         spinnerAdapter[0].setNotifyOnChange(true);
@@ -134,20 +126,6 @@ public class ShoppingFragment extends Fragment{
         });
         recyclerView.setAdapter(recyclerAdapter);
 
-        /*
-        //final ArrayAdapter[] dataAdapter = new ArrayAdapter[1];
-        listViewModel.getLiveLists().observe(requireActivity(), new Observer<ArrayList<ItemList>>() {
-            @Override
-            public void onChanged(ArrayList<ItemList> itemLists) {
-
-                dataAdapter[0] = new ArrayAdapter<>(context
-                        , android.R.layout.simple_spinner_item, itemLists);
-
-                dataAdapter[0].setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            }
-        });
- //listSpinner.setAdapter(dataAdapter[0]);
-         *///TODO delete
 
 // attaching data rcyclerAdapter to spinner and setItemSelected
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -160,16 +138,50 @@ public class ShoppingFragment extends Fragment{
                     recyclerAdapter.setItems(shoppingAssos.get(selectedList.getList_Id()));
                     recyclerAdapter.notifyDataSetChanged();
                 }
-
-                    //listViewModel.setCurrentList(selectedList);
-               // }else{
-                //    listViewModel.setCurrentList(null);
-                //}
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {
                 currSpinnerPos[0]=-1;
             }
         });
+//adding item on a fly
+        ArrayList<ItemList> finalLists1 = lists;
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            Association newAsso=null;
+            @Override
+            public void onClick(View v) {
+//get & approves new item data
+                String nameString = nameEditText.getText().toString();
+                String amountString =  amountEditText.getText().toString();
+                String priceString = priceEditText.getText().toString();
+                if(ApproveNewData(nameString,amountString,priceString)){
+                   Item newItem =  itemViewModel.createItem(nameString, "0", priceString);
+                   newItem.setNotified(true);
+                   notifiedItems.add(newItem);
+                   newAsso =  assoViewModel.createTempAsso(newItem.getItem_id(),amountString);
+
+                   nameEditText.setText("");
+                   amountEditText.setText("");
+                   priceEditText.setText("");
+
+                    Toast.makeText(context, "On a fly item added", Toast.LENGTH_SHORT).show();
+//check if there is no other lists shown
+                if(finalLists.get(0).getToStringText().equals("no items to buy")){
+                    finalLists.get(0).setToStringText("select a list");
+                        ItemList newItemList = new ItemList();
+                        newItemList.setList_Id(0);
+                        newItemList.setToStringText("on a fly");
+                        finalLists1.add(1,newItemList);
+                        ArrayList<Association> tempList = new ArrayList<>();
+                        tempList.add(newAsso);
+                        shoppingAssos.put(0,tempList);
+
+                }else{//iterate through lists and add new association.
+                    assoViewModel.insertOnFlyItemAsso(newAsso,shoppingAssos);
+                }
+              }
+            }
+        });
+
 
 //total field observer
         dateViewModel.getLiveTotal().observe(requireActivity(), new Observer<Float>() {
@@ -178,6 +190,7 @@ public class ShoppingFragment extends Fragment{
                 totalView.setText(String.valueOf(aFloat));
             }
         });
+
 
 
 

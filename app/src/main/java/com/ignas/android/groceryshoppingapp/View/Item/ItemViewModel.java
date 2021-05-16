@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
@@ -24,9 +23,14 @@ public class ItemViewModel extends ViewModel {
         mLiveSDate.setValue(itemResources.getShoppingDateItem());
     }
 
-    public void createItem(String newName, String newDays, String newPrice){
-        mLiveItems.setValue(itemResources.createItem( newName, newDays, newPrice, mLiveItems.getValue()));
+    public Item createItem(String newName, String newDays, String newPrice){
+         Item item = itemResources.createItem( newName, newDays, newPrice);
+        ArrayList<Item > temp = mLiveItems.getValue();
+        temp.add(item);
+        mLiveItems.setValue(temp);
+        return item;
     }
+
     public void changeItem(int position, String newName, String newDays, String newPrice) {
         ArrayList<Item> tempArray = mLiveItems.getValue();
         itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);

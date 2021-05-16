@@ -15,10 +15,12 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.R;
 
+import org.jetbrains.annotations.NonNls;
+
 public class Notification extends BroadcastReceiver {
+    private static final int MainActivity  = 2;
     private static final String CHANNEL_ID = "0";
     NotificationCompat.Builder notification;
     public Notification(){}
@@ -26,21 +28,27 @@ public class Notification extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);
 
-        String name = intent.getStringExtra("name");
+        @NonNls String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
         int type = intent.getIntExtra("type",0);
         int item_Id = intent.getIntExtra("item_Id",0);
+
+
+
         if( type == 1 ){ //create shopping date notification
 
             Log.i("log", "shopping date ntf creation---> "+name);
 
 
             //create Brought action Button
-            Intent shoppingIntent = new Intent(context, MainActivity.class);
-            shoppingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context, 0, shoppingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent shoppingIntent = new Intent(context, AlarmService.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("item_Id",item_Id);
+            bundle.putInt("type",MainActivity);
+            shoppingIntent.putExtra("item_Id",bundle);
 
+            PendingIntent pendingIntent = PendingIntent.getService(
+                    context, 0, shoppingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             //create main notification
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
@@ -51,13 +59,8 @@ public class Notification extends BroadcastReceiver {
                     .setContentTitle("Its time to do "+name+" "+time)
                     .setContentText(" ")
                     .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .addAction(R.drawable.ic_baseline_stop_circle_24,"Lets go",pendingIntent)
+                    .addAction(R.drawable.ic_list,"Lets go",pendingIntent)
                     .setSound(uri);
-
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(0,notification.build());
-
 
 
         }else{//create normal notification
@@ -84,13 +87,13 @@ public class Notification extends BroadcastReceiver {
                     .setContentTitle(name+" is running out at "+time)
                     .setContentText(" ")
                     .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .addAction(R.drawable.ic_baseline_stop_circle_24,"OK",pendingIntent)
+                    .addAction(R.drawable.ic_list,"OK",pendingIntent)
                     .setSound(uri);
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(0,notification.build());
-        }
 
+        }
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(0,notification.build());
 
     }
     private void createNotificationChannel(Context context) {

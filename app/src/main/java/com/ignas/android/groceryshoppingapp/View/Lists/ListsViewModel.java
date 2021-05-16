@@ -33,6 +33,7 @@ public class ListsViewModel extends ViewModel {
     }
 
 
+
     public void removeList(ItemList list) {
         ArrayList<ItemList> allList = mLiveLists.getValue();
         allList.remove(listResources.removeList(list));
@@ -85,6 +86,7 @@ public class ListsViewModel extends ViewModel {
         return currentList.getValue();
     }
 
+//after each item bought checks other lists and removes any dubs
     public ArrayList<ItemList> removeEmptyLists(ArrayList<ItemList> lists, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
         ItemList spinnerText;
         if(lists!=null) {

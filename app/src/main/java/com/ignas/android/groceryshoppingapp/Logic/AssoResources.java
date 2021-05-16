@@ -257,13 +257,14 @@ public class AssoResources {
             }
 
         }else{ // creates a list of items if there are not lists but items have run out
-            ItemList allLists = new ItemList("all","all");
+            ItemList allLists = new ItemList("all","every");
             allLists.setList_Id(0);
             ArrayList<Association> aForAllLists = new ArrayList<>();
             for(Item curr: notifiedItems){
                 aForAllLists.add(createTempAsso(curr.getItem_id()));
             }
             listMap.put(allLists.getList_Id(),aForAllLists);
+            lists.add(allLists);
         }
         return listMap;
     }
@@ -326,5 +327,9 @@ public class AssoResources {
             }
         }
     }
-
+    public void insertOnFlyItemAsso(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
+        for(ArrayList<Association> curAssoArray:shoppingAssos.values()){
+            curAssoArray.add(asso);
+        }
+    }
 }

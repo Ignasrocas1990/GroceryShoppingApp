@@ -9,19 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
+import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
 
 public class AlarmService extends Service {
 
@@ -43,26 +40,30 @@ public class AlarmService extends Service {
         flag = intent.getIntExtra("flag", 1);
         Bundle bundle = intent.getBundleExtra("item_Id");
         if (bundle!=null){
-            item_Id = bundle.getInt("item_Id");
+            item_Id = bundle.getInt("item_Id",0);
+            flag = bundle.getInt("type",0);
+            if(flag==2){
+                Log.wtf("log", "alarm in bundle with flag : "+flag);
 
+                Intent toMainActivity = new Intent(this,MainActivity.class);
+                toMainActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                toMainActivity.putExtra("type",1);
+                try {
+                    startActivity(toMainActivity);
+                }catch(Exception e){
+                    Log.i("log", "start act: erro"+e.getMessage());
+                }
+
+            }
         }
-        // name = intent.getStringExtra("name");
-        // runoutDate = intent.getLongExtra("time", 1);
-        //type = intent.getIntExtra("type", 0);
-
-
 //flag=1 when service from notification (reschedule notification)
-            if(flag !=-1) {
+           if(flag !=-1) {
                 if (manager != null) {
                     manager.cancel(0);
                 }
 
                 //connect to db and smallest item
                 item =  new RealmDb().getSmallestDateItem(item_Id);
-
-
-                //ItemResources rec = new ItemResources();
-                //Item item = rec.re_scheduleAlarm();
 
                 if (item != null) {
                     item_Id=item.getItem_id();

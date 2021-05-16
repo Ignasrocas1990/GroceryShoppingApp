@@ -62,7 +62,7 @@ public class ItemResources{
     }
 
     //create item with new data and current list
-    public ArrayList<Item> createItem(String newName, String newDays, String newPrice,ArrayList<Item>current){
+    public Item createItem(String newName, String newDays, String newPrice){
         Item newItem = new Item();
         newItem.setItemName(newName);
         if(newDays.equals("")){
@@ -75,9 +75,8 @@ public class ItemResources{
         }else{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
-        current.add(newItem);
         toSave.put(newItem.getItem_id(),newItem);
-        return current;
+        return newItem;
     }
     public void removeItem(Item itemToRemove){
         if(Check.itemEquals(db_items,itemToRemove) && toSave.containsKey(itemToRemove.getItem_id())){ //check if old item(modified) removing

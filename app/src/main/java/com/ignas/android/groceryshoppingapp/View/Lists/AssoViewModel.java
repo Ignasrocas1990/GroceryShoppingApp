@@ -105,6 +105,17 @@ public class AssoViewModel extends ViewModel {
         }else{
             assoResources.removeBoughtAsso(currentAsso,shoppingAssos);
         }
+    }
+    public void insertOnFlyItemAsso(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos){
+        assoResources.insertOnFlyItemAsso(asso,shoppingAssos);
+    }
+    public Association createTempAsso(int item_id, String amountString) {
+        int amount=0;
+        if(!amountString.equals("")){
+            amount= Integer.parseInt(amountString);
+        }
+        return new Association(item_id,amount);
+
 
     }
 }
