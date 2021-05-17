@@ -108,46 +108,7 @@ public class RealmDb{
             Log.i("log", "addItems: did not save");
         }
     }
-/*
-//remove single item (updating delete flag)
-    public void removeItem(Item item) {
-        try (Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm -> {
-                inRealm.copyToRealmOrUpdate(item);
 
-               Item tempItem = inRealm.where(Item.class)
-                    .equalTo("item_Id", item.getItem_id())
-                    .findFirst();
-                if(tempItem!=null){
-                    tempItem.deleteFromRealm();
-                }
-                Log.i("log", "removeItem: ");
-            });
-        } catch (Exception e) {
-            Log.d("log", "delete item. not found ");
-        }
-    }
-
-//delete multiple items
-    public void deleteItems(ArrayList<Item> toDelete) {
-        try (Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm -> {
-
-                for(Item currItem : toDelete){
-                    Item tempItem = inRealm.where(Item.class)
-                            .equalTo("item_Id", currItem.getItem_id())
-                            .findFirst();
-                    if (tempItem != null) {
-                        tempItem.deleteFromRealm();
-                        }
-                }
-                Log.i("log", "deleteItems: log ");
-            });
-        } catch (Exception e) {
-            Log.d("log", "delete items. not found ");
-        }
-    }
-*/
 // add single item to database
     public void addItem(Item item){
         try (Realm realm = Realm.getDefaultInstance()){
@@ -185,51 +146,16 @@ public class RealmDb{
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(lists));
         }catch (Exception e){
-            Log.i("log", "lists: did not save");
-        }
-    }
-    /*
-//remove single list
-    public void removeList(ItemList list) {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
-                ItemList temp = inRealm.where(ItemList.class)
-                        .equalTo("list_Id", list.getList_Id())
-                        .findFirst();
-                if(temp !=null){
-                    temp.deleteFromRealm();
-                }
-            });
-        } catch (Exception e) {
-            Log.i("log", "delete list. not found ");
-        }
-    }
-//remove multiple lists
-    public void removeLists(ArrayList<ItemList> toDelete) {
-        try(Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm ->{
-
-                for(ItemList list : toDelete){
-                    ItemList temp = inRealm.where(ItemList.class)
-                            .equalTo("list_Id",list.getList_Id())
-                            .findFirst();
-                    if(temp !=null){
-                        temp.deleteFromRealm();
-                    }
-                }
-            });
-        }catch (Exception e){
-            Log.i("log", "removeList's: failure ");
+            Log.i("log", "lists: did not save"+e.getMessage());
         }
     }
 
-     */
 // add single list
     public void addList(ItemList list){
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(list));
         }catch (Exception e){
-            Log.i("log", "add list: error adding lists");
+            Log.wtf("log", "add list: error adding lists "+e.getMessage());
         }
     }
 
@@ -262,45 +188,10 @@ public class RealmDb{
         }
 
     }
-    /*
-    public void removeAsso(Association asso) {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
-                Association tempAsso = inRealm.where(Association.class)
-                        .equalTo("asso_Id", asso.getAsso_Id())
-                        .findFirst();
-                if(tempAsso !=null){
-                    tempAsso.deleteFromRealm();
-                }
-            });
-        } catch (Exception e) {
-            Log.i("log", "delete Asso. not successful ");
-        }
-    }
-    //remove multiple associations
-    public void removeAssos(ArrayList<Association> toDelete) {
-        try(Realm realm = Realm.getDefaultInstance()){
-            realm.executeTransaction(inRealm ->{
 
-                for(Association asso : toDelete){
-                    Association temp = inRealm.where(Association.class)
-                            .equalTo("asso_Id",asso.getAsso_Id())
-                            .findFirst();
-                    if(temp !=null){
-                        temp.deleteFromRealm();
-                    }
-                }
-            });
-        }catch (Exception e){
-            Log.i("log", "remove associations: failure ");
-        }
-    }
-
-     */
     public void addSingeAsso(Association asso){
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(asso));
-            Log.i("log", "asso add single : added successfully...");
         }catch (Exception e){
             Log.i("log", "asso add single : not successful");
         }

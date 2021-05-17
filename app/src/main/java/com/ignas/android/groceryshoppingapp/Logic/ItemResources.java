@@ -4,11 +4,16 @@ import android.util.Log;
 
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
+import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class ItemResources{
     private static final String TAG ="log";
@@ -27,6 +32,7 @@ public class ItemResources{
                 .filter(i-> i.getItem_id() == Integer.MAX_VALUE)
                 .findFirst().orElse(null);
     }
+
 
 //copy db items to app.
     public ArrayList<Item> getItems(){
@@ -209,5 +215,71 @@ public class ItemResources{
             return results;
         }
         return null;
+    }
+
+    public ArrayList<Item> findBoughtItems() {
+        ArrayList<Item> copy = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Item> items  = realm.where(Item.class).findAll();
+        for(int i=0;i< items.size();i++){
+            Item curr = items.get(i);
+            Association result = realm.where(Association.class)
+                    .equalTo("item_Id", curr.getItem_id())
+                    .equalTo("bought",true).findFirst();
+            if(result!=null){
+                copy.add(realm.copyFromRealm(curr));
+            }
+
+        }
+        realm.close();
+        return copy;
+    }
+
+    public RealmResults<Association> findBoughtInstances(int item_Id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+
+        RealmResults<Association> results =  realm.where(Association.class)
+                .equalTo("bought",true)
+                .equalTo("item_Id",item_Id).findAllAsync();
+
+        realm.commitTransaction();
+        realm.close();
+        return results;
+    }
+
+    public List<Association> getCopiedAssos(RealmResults<Association> associations) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<Association> copy = realm.copyFromRealm(associations);
+        realm.commitTransaction();
+        realm.close();
+        return copy;
+
+    }
+    public ArrayList<ItemList> findListsQuery(RealmResults<Association> associations) {
+        ArrayList <ItemList> lists = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+       // RealmQuery query = realm.where(ItemList.class);
+        for(Association curr: associations){
+            ItemList itemList = realm.where(ItemList.class).equalTo("list_Id", curr.getList_Id()).findFirst();
+            if(itemList != null){
+                lists.add(realm.copyFromRealm(itemList));
+            }
+        }
+        //itemList = query.findAll();
+        realm.commitTransaction();
+        realm.close();
+        return lists;
+    }
+
+    public List<ItemList> copyLists(RealmResults<ItemList> itemLists) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<ItemList> copy = realm.copyFromRealm(itemLists);
+        realm.commitTransaction();
+        realm.close();
+        return copy;
     }
 }

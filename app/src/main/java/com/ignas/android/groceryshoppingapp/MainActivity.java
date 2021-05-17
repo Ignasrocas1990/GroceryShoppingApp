@@ -255,7 +255,6 @@ cancelAlarms();
 //update db data
         listViewModel.refresh_Db_Lists();
         itemViewModel.updateDbItems();
-        assoViewModel.updateAssociations();
 
 //start alarm service if switch is on.
         if(dateViewModel.getSwitch()){

@@ -41,7 +41,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         this.mValues = mValues;
     }
 
-    public void updateListItems(ArrayList<Association> aValues,int listID){
+    public void updateListItems(List<Association> aValues,int listID){
         this.aValues = aValues;
         Log.d(TAG, "updateListItems: "+ aValues.size());
         list_Id = listID;

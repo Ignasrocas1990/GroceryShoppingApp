@@ -13,53 +13,74 @@
 
         <LinearLayout
             android:padding="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:gravity="center"
-                android:id="@+id/startLayout"
-                android:layout_width="0dp"
-                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/reportDateView"
-                    android:textSize="20sp"
-                    android:text="@string/_00_00_0000"
+                    android:id="@+id/labelName"
+                    android:text="Name : "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            </LinearLayout>
 
-            <LinearLayout
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:layout_width="0dp">
+                <TextView
+                    android:id="@+id/reportName"
+                    android:text="name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
+                <TextView
+                    android:layout_marginLeft="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shop : "/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Total : "/>
+                <TextView
+                    android:id="@+id/reportShop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="none set"/>
 
-            <TextView
-                android:id="@+id/reportTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="@string/_000"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
 
             </LinearLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="Price : "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/reportPrice"
+                        android:text="price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginLeft="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quantity : "/>
+
+                    <TextView
+                        android:id="@+id/reportQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="none set"/>
+
+                </LinearLayout>
+
+
+
       </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

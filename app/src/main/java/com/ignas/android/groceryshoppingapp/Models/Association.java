@@ -1,5 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import io.realm.RealmObject;
@@ -19,9 +21,11 @@ public class Association extends RealmObject {
     private int quantity=0;
     private boolean deleteFlag = false;
     private boolean bought = false;
+    private Date boughtDate;
 
     //constructor
     public Association(){}
+
     public Association(int list_Id, int item_Id, int quantity) {
         this.list_Id = list_Id;
         this.item_Id = item_Id;
@@ -49,6 +53,8 @@ public class Association extends RealmObject {
 
     public void setBought(boolean bought) {
         this.bought = bought;
+        Calendar cal = Calendar.getInstance();
+        boughtDate = cal.getTime();
     }
 
     public boolean isDeleteFlag() {

@@ -2,23 +2,17 @@ package com.ignas.android.groceryshoppingapp.View.Item;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ignas.android.groceryshoppingapp.Models.Association;
@@ -28,9 +22,7 @@ import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 
-import java.util.ArrayList;
-
-import io.realm.RealmResults;
+import java.util.List;
 
 public class ItemFragment extends Fragment {
     public final String TAG = "log";
@@ -119,12 +111,12 @@ public class ItemFragment extends Fragment {
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ArrayList<ItemList> foundList = null;
+                List<ItemList> foundList = null;
                 String messageString="";
                 if(curPosition[0] != -1){
     //find item to be deleted & assoc's for that item
                     Item deleteItem = itemViewModel.findItem(curPosition[0]);
-                    final ArrayList<Association> foundAssos = assoViewModel.apartOfList(deleteItem);
+                    final List<Association> foundAssos = assoViewModel.apartOfList(deleteItem);
 
      //find lists that that item is part of
                     if(foundAssos.size()!=0){
@@ -139,7 +131,7 @@ public class ItemFragment extends Fragment {
                     if(!messageString.equals("")){
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                        ArrayList<ItemList> foundLists = foundList;
+                        List<ItemList> foundLists = foundList;
                         builder.setCancelable(false)
                                 .setIcon(R.drawable.ico_about_to_delete)
                                 .setTitle("Item deletion Notice")
@@ -178,27 +170,20 @@ public class ItemFragment extends Fragment {
             }
         });
 //sync button
-        syncBtn.setOnClickListener(new View.OnClickListener(){
+        syncBtn.setOnClickListener(view1 -> {
 
-            @Override
-            public void onClick(View view) {
-                if(curPosition[0] != -1){
-                    itemViewModel.reSyncCurrent(curPosition[0]);
-                    Toast.makeText(context, "Item has been updated", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "No item selected", Toast.LENGTH_SHORT).show();
-                }
+            if(curPosition[0] != -1){
+                Item foundItem = itemViewModel.reSyncCurrent(curPosition[0]);
+                assoViewModel.markAsBought(foundItem.getItem_id(),"0");
 
+                Toast.makeText(context, "Item has been updated", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context, "No item selected", Toast.LENGTH_SHORT).show();
             }
+
         });
 //updates live items
-            itemViewModel.getLiveItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
-                @Override
-                public void onChanged(ArrayList<Item> items) {
-
-                    adapter.updateViewItems(items);
-                }
-            });
+            itemViewModel.getLiveItems().observe(requireActivity(), items -> adapter.updateViewItems(items));
 
         return view;
     }

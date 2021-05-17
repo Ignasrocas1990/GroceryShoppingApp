@@ -9,39 +9,43 @@ import io.realm.annotations.PrimaryKey;
 
 public class Item extends RealmObject {
 
-
     @PrimaryKey
     private int item_Id;
-    {
-        Random r = new Random();
-        item_Id = r.nextInt();
-        setRunOutDate(7);
-    }
+
     private String itemName="";
     private float price=0.f;
     private Date runOutDate;
     private int lastingDays=0;
     private boolean deleteFlag = false;
     private boolean notified = false;
+    private String displayText;
 
-//constructors
-    public Item(){}
-    public Item(String itemName) {
-        this.itemName = itemName;
+    //constructors
+    {
+        Random r = new Random();
+        item_Id = r.nextInt();
+        setRunOutDate(7);
     }
+
+    public Item(){}
     public Item(int now){ lastingDays = now;}
+    public Item(String name) {
+        setItemName(name);;
+    }
     public Item(String name,int item_Id,int lastingDays){
         setItemName(name);
         setLastingDays(lastingDays);
         this.item_Id = item_Id;
     }
-
-    public Item(String itemName, float price, int lastingDays) {
-        this.itemName = itemName;
+    public Item(String name, float price, int lastingDays) {
+        setItemName(name);
         this.price = price;
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
-        
+    }
+    public Item(String displayName,int id){
+        displayText = displayName;
+        item_Id = id;
     }
 //getters & setters
 
@@ -70,6 +74,7 @@ public class Item extends RealmObject {
     }
 
     public void setItemName(String itemName) {
+        defaultDisplayString(itemName);
         this.itemName = itemName;
     }
 
@@ -102,5 +107,22 @@ public class Item extends RealmObject {
     public void setLastingDays(int lastingDays) {
         this.lastingDays = lastingDays;
         setRunOutDate(lastingDays);
+    }
+
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
+    }
+
+    private void defaultDisplayString(String itemName){
+        this.displayText = "Item: "+itemName;
+    }
+
+    @Override
+    public String toString() {
+        return displayText;
     }
 }

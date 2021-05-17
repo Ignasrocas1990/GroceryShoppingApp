@@ -1,9 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
-import android.content.Context;
+import android.util.Log;
 
-import com.ignas.android.groceryshoppingapp.Models.Association;
-import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
@@ -81,7 +79,11 @@ public ItemList createList(String listName,String shopName){
         if(toSave.size()>1){
             db.addLists(toSave);
         }else if(toSave.size()==1){
-            db.addList(toSave.get(0));
+            ItemList a = toSave.get(0);
+            if(a==null){
+                Log.i("log", "updateLists: as");
+            }
+            db.addList(a);
         }
     }
 }

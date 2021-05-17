@@ -24,7 +24,6 @@ public class ItemList extends RealmObject {
         shop = new Shop();
         Random r = new Random();
         list_Id = r.nextInt();
-
     }
     public ItemList(){}
     public ItemList(String listName) {

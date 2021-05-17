@@ -70,7 +70,7 @@ public class ShoppingFragment extends Fragment{
          nameEditText = view.findViewById(R.id.newName);
          amountEditText = view.findViewById(R.id.newAmount);
          priceEditText = view.findViewById(R.id.newPrice);
-        listSpinner = view.findViewById(R.id.listSpinner);
+         listSpinner = view.findViewById(R.id.listSpinner);
 
          addBtn = view.findViewById(R.id.addBtn);
          totalView = view.findViewById(R.id.total);
@@ -164,6 +164,7 @@ public class ShoppingFragment extends Fragment{
                    priceEditText.setText("");
 
                     Toast.makeText(context, "On a fly item added", Toast.LENGTH_SHORT).show();
+
 //check if there is no other lists shown
                 if(finalLists.get(0).getToStringText().equals("no items to buy")){
                     finalLists.get(0).setToStringText("select a list");

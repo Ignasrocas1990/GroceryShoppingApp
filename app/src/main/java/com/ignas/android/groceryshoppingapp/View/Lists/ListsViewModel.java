@@ -10,6 +10,7 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ListsViewModel extends ViewModel {
 
@@ -49,7 +50,7 @@ public class ListsViewModel extends ViewModel {
     }
 
 //get lists that contain specific item
-    public ArrayList<ItemList> findLists_forItem(ArrayList<Association> assos){
+    public List<ItemList> findLists_forItem(List<Association> assos){
         ArrayList<ItemList> found = new ArrayList<>();
         for(Association asso : assos){
             if(asso.getList_Id() !=0){
