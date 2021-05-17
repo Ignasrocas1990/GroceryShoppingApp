@@ -21,6 +21,7 @@ import java.util.List;
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
    private List<Item> items = new ArrayList<>();
+   private Item currentItem;
    private List<ItemList> lists = new ArrayList<>();
    private List<Association> assos = new ArrayList<>();
    private String TAG = "log";
@@ -29,7 +30,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
         items = i;
     }
 
-    public void updateValues(List<ItemList> l,List<Association> a){
+    public void updateValues(Item item, List<ItemList> l, List<Association> a){
+        currentItem = item;
         lists=l;
         assos=a;
     }
@@ -44,8 +46,23 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     @Override
     public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
+        Association curAsso = assos.get(position);
+        ItemList itemList=null;
+        if(curAsso.getList_Id()==0){
+            itemList = new ItemList();
+        }else{
+             itemList = lists.stream().
+                    filter(list->list.getList_Id()==curAsso.getList_Id()).findFirst().orElse(null);
+        }
 
-        //holder.dateTextView.setText(iValues.get(position));
+
+        if(itemList !=null) {
+            holder.labelNameTextView.setText(R.string.list_name_label);
+            holder.nameTextView.setText(itemList.getListName());
+            holder.shopTextView.setText(itemList.getShopName());
+            holder.priceTextView.setText(String.valueOf(currentItem.getPrice()));
+            holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
+        }
     }
 
     @Override
@@ -55,11 +72,15 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView nameTextView;
+        TextView nameTextView,priceTextView,shopTextView,quantityTextView,labelNameTextView;
 
         public ViewHolder(@NonNull @NotNull View view) {
             super(view);
             nameTextView = view.findViewById(R.id.reportName);
+            priceTextView = view.findViewById(R.id.reportPrice);
+            shopTextView = view.findViewById(R.id.reportShop);
+            quantityTextView = view.findViewById(R.id.reportQuantity);
+            labelNameTextView = view.findViewById(R.id.labelName);
         }
     }
 }

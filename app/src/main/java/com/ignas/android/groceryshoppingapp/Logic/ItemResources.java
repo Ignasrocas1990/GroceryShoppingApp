@@ -235,17 +235,20 @@ public class ItemResources{
         return copy;
     }
 
-    public RealmResults<Association> findBoughtInstances(int item_Id){
+    public List<Association> findBoughtInstances(int item_Id){
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-
+        List<Association> assos = null;
         RealmResults<Association> results =  realm.where(Association.class)
                 .equalTo("bought",true)
-                .equalTo("item_Id",item_Id).findAllAsync();
+                .equalTo("item_Id",item_Id).findAll();
+        if(results.size() !=0){
+            assos = realm.copyFromRealm(results);
+        }
 
         realm.commitTransaction();
         realm.close();
-        return results;
+        return assos;
     }
 
     public List<Association> getCopiedAssos(RealmResults<Association> associations) {
@@ -257,23 +260,25 @@ public class ItemResources{
         return copy;
 
     }
-    public ArrayList<ItemList> findListsQuery(RealmResults<Association> associations) {
+    public ArrayList<ItemList> findListsQuery(List<Association> associations) {
         ArrayList <ItemList> lists = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-       // RealmQuery query = realm.where(ItemList.class);
         for(Association curr: associations){
             ItemList itemList = realm.where(ItemList.class).equalTo("list_Id", curr.getList_Id()).findFirst();
             if(itemList != null){
                 lists.add(realm.copyFromRealm(itemList));
+            }else{
+                ItemList temp = new ItemList("All Lists","All Shops");
+                lists.add(temp);
             }
         }
-        //itemList = query.findAll();
         realm.commitTransaction();
         realm.close();
         return lists;
     }
 
+    /*TODO Delete
     public List<ItemList> copyLists(RealmResults<ItemList> itemLists) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -282,4 +287,6 @@ public class ItemResources{
         realm.close();
         return copy;
     }
+
+     */
 }

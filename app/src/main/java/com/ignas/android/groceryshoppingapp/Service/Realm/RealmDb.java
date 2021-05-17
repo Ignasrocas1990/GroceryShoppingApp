@@ -182,7 +182,7 @@ public class RealmDb{
     }
     public void addMultipleAsso(ArrayList<Association>asso){
         try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(asso));
+            realm.executeTransaction(inRealm -> inRealm.insertOrUpdate(asso));
         }catch (Exception e){
             Log.i("log", "associations: did not save");
         }
@@ -191,9 +191,9 @@ public class RealmDb{
 
     public void addSingeAsso(Association asso){
         try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(asso));
+            realm.executeTransaction(inRealm -> inRealm.insertOrUpdate(asso));
         }catch (Exception e){
-            Log.i("log", "asso add single : not successful");
+            Log.i("log", "asso add single : not successful"+e.getMessage());
         }
     }
 

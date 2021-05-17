@@ -14,7 +14,7 @@ public class ItemList extends RealmObject {
 
     @PrimaryKey
     private int list_Id;
-    private String listName="";
+    private String listName="all";
     private Shop shop;
     private String toStringText = "";
     private boolean deleteFlag = false;

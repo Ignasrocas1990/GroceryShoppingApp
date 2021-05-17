@@ -77,6 +77,12 @@ public class ItemViewModel extends ViewModel {
 
 //finds instances of bought items that selected in the report drop down menu.
     public void itemQuery(int item_Id){
+        List<Association> assos = itemResources.findBoughtInstances(item_Id);
+        boughtAssos = assos;
+
+        boughtLists.setValue(itemResources.findListsQuery(boughtAssos));
+
+        /*
         itemResources.findBoughtInstances(item_Id)
         .addChangeListener(associations -> {
             if(associations.size() !=0){
@@ -85,6 +91,8 @@ public class ItemViewModel extends ViewModel {
                 boughtLists.setValue(itemResources.findListsQuery(associations));
             }
         });
+
+         */
     }
 
 

@@ -68,13 +68,14 @@ public class ReportFragment extends Fragment {
         itemArrayAdapter.setNotifyOnChange(true);
         itemSpinner.setAdapter(itemArrayAdapter);
 
+        final Item[] selectedItem = {new Item()};
 //at selected item in the item spinner
         itemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0){
-                    Item selectedItem = (Item) parent.getItemAtPosition(position);
-                    itemViewModel.itemQuery(selectedItem.getItem_id());
+                    selectedItem[0] = (Item) parent.getItemAtPosition(position);
+                    itemViewModel.itemQuery(selectedItem[0].getItem_id());
                 }
             }
             @Override
@@ -88,7 +89,7 @@ public class ReportFragment extends Fragment {
 
 //observer lists queried from database
         itemViewModel.getBoughtLists().observe(requireActivity(), itemLists->{
-            reportAdapter.updateValues(itemLists,itemViewModel.getBoughtAssos());
+            reportAdapter.updateValues(selectedItem[0],itemLists,itemViewModel.getBoughtAssos());
             reportAdapter.notifyDataSetChanged();
 
         });

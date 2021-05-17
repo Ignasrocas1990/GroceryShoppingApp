@@ -51,4 +51,5 @@
     <string name="_000">000</string>
     <string name="view">view</string>
     <string name="select_a_list">select a list</string>
+    <string name="list_name_label">"List name : "</string>
 </resources>
