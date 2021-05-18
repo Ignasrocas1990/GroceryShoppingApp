@@ -61,7 +61,7 @@ public class ShoppingFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shopping_day, container, false);
+        View view = inflater.inflate(R.layout.shopping_fragment, container, false);
         context = view.getContext();
          listViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
          assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);

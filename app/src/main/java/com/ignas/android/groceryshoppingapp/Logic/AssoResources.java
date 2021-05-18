@@ -312,7 +312,7 @@ public class AssoResources {
                 counter=0;
             }
             now = extendDate(increment);
-            if(counter>=2){
+            if(counter>=4){
                 stop = true;
             }
 
@@ -323,7 +323,7 @@ public class AssoResources {
         Calendar earlier = Calendar.getInstance();
         if(days!=0){
             //later.add(Calendar.DAY_OF_WEEK,-days); TODO change back to days
-            earlier.add(Calendar.SECOND,-days);
+            earlier.add(Calendar.MINUTE,-days);// Change as for testing-------TODO
         }
 
         return earlier.getTime();
