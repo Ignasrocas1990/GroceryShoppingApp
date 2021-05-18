@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Logic.DateResources;
 import com.ignas.android.groceryshoppingapp.Models.Report;
-import com.ignas.android.groceryshoppingapp.Models.ShoppingItem;
 
 import java.util.ArrayList;
 
@@ -74,9 +73,6 @@ public class DateViewModel extends ViewModel {
         }catch(NullPointerException e){
             Log.i("log", "addToTotal: "+e.getMessage());
         }
-    }
-    public void createReport(float total,ArrayList<ShoppingItem> items){
-        dateResources.createReport(total,items);
     }
 
 //live observational methods

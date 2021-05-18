@@ -1,5 +1,6 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -22,6 +23,7 @@ public class Association extends RealmObject {
     private boolean deleteFlag = false;
     private boolean bought = false;
     private Date boughtDate;
+    private String displayDate="";
 
     //constructor
     public Association(){}
@@ -55,6 +57,12 @@ public class Association extends RealmObject {
         this.bought = bought;
         Calendar cal = Calendar.getInstance();
         boughtDate = cal.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+        displayDate = formatter.format(boughtDate);
+    }
+
+    public String getDisplayDate() {
+        return displayDate;
     }
 
     public boolean isDeleteFlag() {
@@ -91,5 +99,9 @@ public class Association extends RealmObject {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Date getBoughtDate() {
+        return boughtDate;
     }
 }

@@ -6,6 +6,8 @@ import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class AssoResources {
 
@@ -290,5 +293,54 @@ public class AssoResources {
         for(ArrayList<Association> curAssoArray:shoppingAssos.values()){
             curAssoArray.add(asso);
         }
+    }
+
+    public HashMap<String, List<Association>> groupAssosByDate() {
+        HashMap<String,List<Association>> dateMap = new HashMap<>();
+        List<Association> foundAssos;
+        Date now = extendDate(0);
+        Date earlier;
+        int increment = 0,counter=0;
+        boolean stop = false;
+        do{
+            earlier = extendDate(increment+=7);
+            foundAssos = findAssosByDate(earlier,now);
+            if(foundAssos.size()==0){
+                counter++;
+            }else{
+                dateMap.put(foundAssos.get(0).getDisplayDate(),foundAssos);
+                counter=0;
+            }
+            now = extendDate(increment);
+            if(counter>=2){
+                stop = true;
+            }
+
+        }while((!stop));
+        return dateMap;
+    }
+    private Date extendDate(int days){
+        Calendar earlier = Calendar.getInstance();
+        if(days!=0){
+            //later.add(Calendar.DAY_OF_WEEK,-days); TODO change back to days
+            earlier.add(Calendar.SECOND,-days);
+        }
+
+        return earlier.getTime();
+    }
+//find Associations between 7 days time difference
+    public List<Association> findAssosByDate(Date earlier,Date now){
+        List<Association> foundAssos = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<Association> results = realm.where(Association.class)
+                .between("boughtDate", earlier, now)
+                .sort("boughtDate", Sort.DESCENDING).findAll();
+        if(results.size() !=0){
+            foundAssos = realm.copyFromRealm(results);
+        }
+        realm.commitTransaction();
+        realm.close();
+        return foundAssos;
     }
 }

@@ -2,6 +2,7 @@ package com.ignas.android.groceryshoppingapp.View.Report;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
@@ -22,6 +24,8 @@ import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ReportFragment extends Fragment {
     private final String TAG  = "log";
@@ -31,6 +35,7 @@ public class ReportFragment extends Fragment {
     AssoViewModel assoViewModel;
     DateViewModel dateViewModel;
     RecyclerView recyclerView;
+    Spinner itemSpinner,dateSpinner;
 
 
     public ReportFragment() { }
@@ -53,15 +58,24 @@ public class ReportFragment extends Fragment {
         itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
         dateViewModel = ViewModelProviders.of(requireActivity()).get(DateViewModel.class);
 
-        //Button viewBtn = view.findViewById(R.id.viewBtn);
-        Spinner itemSpinner = view.findViewById(R.id.dateSpinner);
-       // final ArrayAdapter[] spinnerAdapter = new ArrayAdapter[1];
-        RecyclerView recyclerView = view.findViewById(R.id.reportRecycler);
+        itemSpinner = view.findViewById(R.id.itemSpinner);
+        dateSpinner = view.findViewById(R.id.dateSpinner);
+        recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+//set up date Spinner(Drop down menu)
+        HashMap<String, List<Association>> dateGroupAssos = assoViewModel.findAssosByDate();
+
+        assoViewModel.getDateDisplay().observe(requireActivity(), strings -> {
+            Log.i(TAG, "gottenDate views here ");//TODO <---------resume here
+            //  (Need Debugging,make sure right number of dates retrieved)
+        });
+
+
+//set item Spinner(Drop Down menu)
         ArrayList<Item> items =  itemViewModel.getBoughtItems();
         items = itemViewModel.setSpinnerText(items);
 
-//set spinner
         ArrayAdapter<Item> itemArrayAdapter = new ArrayAdapter<>(context
                 , android.R.layout.simple_spinner_item, items);
         itemArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

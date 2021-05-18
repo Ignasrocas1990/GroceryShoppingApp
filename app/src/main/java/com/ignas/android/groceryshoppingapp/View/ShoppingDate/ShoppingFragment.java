@@ -79,7 +79,7 @@ public class ShoppingFragment extends Fragment{
         ArrayAdapter[] spinnerAdapter = new ArrayAdapter[1];
         int[] currSpinnerPos = {-1};
 
-        //query data for spinner and recycler
+//query data for spinner and recycler
         ArrayList<Item> notifiedItems = itemViewModel.getNotifiedItems();
         ArrayList<ItemList> lists = new ArrayList<ItemList>();
         lists.addAll(Objects.requireNonNull(listViewModel.getLiveLists().getValue()));
@@ -88,12 +88,6 @@ public class ShoppingFragment extends Fragment{
         lists = listViewModel.removeEmptyLists(lists,shoppingAssos);
 
 
-        // ArrayList<Item> items = itemViewModel.createShoppingItems();
-            //ArrayList<Association> displayAssos = assoViewModel.findAssociations(items);
-           // ArrayList<ItemList> lists =  listViewModel.findLists_forItem(displayAssos);
-
-            // ArrayList<Item> itemWithoutList = dateViewModel.createItems(items, displayAssos, lists);
-            // assoViewModel.createAssos(itemWithoutList);
 
 //set spinner
         spinnerAdapter[0] = new ArrayAdapter<>(context
@@ -164,8 +158,7 @@ public class ShoppingFragment extends Fragment{
                    priceEditText.setText("");
 
                     Toast.makeText(context, "On a fly item added", Toast.LENGTH_SHORT).show();
-
-//check if there is no other lists shown
+//check if there is no other lists shown/insert on a fly
                 if(finalLists.get(0).getToStringText().equals("no items to buy")){
                     finalLists.get(0).setToStringText("select a list");
                         ItemList newItemList = new ItemList();
@@ -176,9 +169,12 @@ public class ShoppingFragment extends Fragment{
                         tempList.add(newAsso);
                         shoppingAssos.put(0,tempList);
 
+                        listSpinner.setSelection(1, true);
+
                 }else{//iterate through lists and add new association.
                     assoViewModel.insertOnFlyItemAsso(newAsso,shoppingAssos);
                 }
+                recyclerAdapter.notifyDataSetChanged();
               }
             }
         });

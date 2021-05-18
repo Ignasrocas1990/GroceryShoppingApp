@@ -19,6 +19,7 @@ public class AssoViewModel extends ViewModel {
     private final int NONE = 0;
     private final AssoResources assoResources;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
     //private final MutableLiveData<HashMap<Integer, ArrayList<Association>>> shoppingAssos = new MutableLiveData<>();
 
     //constructor
@@ -36,9 +37,6 @@ public class AssoViewModel extends ViewModel {
     public void setAsso(int list_Id){
         RealmResults<Association> associations = assoResources.getAsso(list_Id);
         currentLive.setValue(assoResources.getCopyAssociations(associations));
-
-        
-
 
     }
 
@@ -102,5 +100,14 @@ public class AssoViewModel extends ViewModel {
         return new Association(item_id,amount);
 
 
+    }
+    public HashMap<String, List<Association>> findAssosByDate() {
+        HashMap<String, List<Association>> groups = assoResources.groupAssosByDate();
+        dateDisplay.setValue(new ArrayList<>(groups.keySet()));
+        return groups;
+    }
+
+    public LiveData<ArrayList<String>> getDateDisplay() {
+        return dateDisplay;
     }
 }

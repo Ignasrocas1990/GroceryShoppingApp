@@ -62,6 +62,7 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             holder.shopTextView.setText(itemList.getShopName());
             holder.priceTextView.setText(String.valueOf(currentItem.getPrice()));
             holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
+            holder.dateTextView.setText(curAsso.getDisplayDate());
         }
     }
 
@@ -72,7 +73,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView nameTextView,priceTextView,shopTextView,quantityTextView,labelNameTextView;
+        TextView nameTextView,priceTextView,shopTextView,
+                quantityTextView,labelNameTextView,dateTextView,dateLabel;
 
         public ViewHolder(@NonNull @NotNull View view) {
             super(view);
@@ -81,6 +83,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             shopTextView = view.findViewById(R.id.reportShop);
             quantityTextView = view.findViewById(R.id.reportQuantity);
             labelNameTextView = view.findViewById(R.id.labelName);
+            dateTextView = view.findViewById(R.id.reportDate);
+            dateLabel = view.findViewById(R.id.dateLabel);
         }
     }
 }
