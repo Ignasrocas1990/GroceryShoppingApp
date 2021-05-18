@@ -2,11 +2,15 @@ package com.ignas.android.groceryshoppingapp.Logic;
 
 import android.util.Log;
 
+import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import io.realm.Realm;
 
 public class ListResources {
 
@@ -85,5 +89,24 @@ public ItemList createList(String listName,String shopName){
             }
             db.addList(a);
         }
+    }
+
+    public List<ItemList> findLists(List<Association> assos) {
+        List<ItemList> foundLists = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        for(Association a : assos){
+            ItemList result = realm.where(ItemList.class)
+                    .equalTo("list_Id",a.getList_Id()).findFirst();
+
+            if(result !=null){
+                foundLists.add(realm.copyFromRealm(result));
+            }
+
+        }
+        realm.commitTransaction();
+        realm.close();
+
+        return foundLists;
     }
 }

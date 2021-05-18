@@ -2,7 +2,6 @@ package com.ignas.android.groceryshoppingapp.View.Report;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,34 +61,45 @@ public class ReportFragment extends Fragment {
         dateSpinner = view.findViewById(R.id.dateSpinner);
         recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-//set up date Spinner(Drop down menu)
-        HashMap<String, List<Association>> dateGroupAssos = assoViewModel.findAssosByDate();
-
-        assoViewModel.getDateDisplay().observe(requireActivity(), strings -> {
-            Log.i(TAG, "gottenDate views here ");//TODO <---------resume here
-            //  (Need Debugging,make sure right number of dates retrieved)
-        });
-
-
-//set item Spinner(Drop Down menu)
+        final ArrayList<String>[] displayDates = new ArrayList[]{new ArrayList<String>()};
         ArrayList<Item> items =  itemViewModel.getBoughtItems();
         items = itemViewModel.setSpinnerText(items);
 
-        ArrayAdapter<Item> itemArrayAdapter = new ArrayAdapter<>(context
-                , android.R.layout.simple_spinner_item, items);
-        itemArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        itemArrayAdapter.setNotifyOnChange(true);
-        itemSpinner.setAdapter(itemArrayAdapter);
+        //set up Recycler View
+        ReportRecyclerViewAdapter reportAdapter = new ReportRecyclerViewAdapter(items);
+        recyclerView.setAdapter(reportAdapter);
 
-        final Item[] selectedItem = {new Item()};
-//at selected item in the item spinner
-        itemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//set up date SPINNER(Drop down menu)
+        HashMap<String, List<Association>> dateGroupAssos = assoViewModel.findAssosByDate();
+
+
+        assoViewModel.getDateDisplay().observe(requireActivity(), strings -> {
+            displayDates[0] = strings;
+
+        });
+        ArrayAdapter<String> dateArrayAdapter = new ArrayAdapter<>(context
+                , android.R.layout.simple_spinner_item, displayDates[0]);
+        dateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dateArrayAdapter.setNotifyOnChange(true);
+        dateSpinner.setAdapter(dateArrayAdapter);
+
+//on select date in Date SPINNER
+        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0){
-                    selectedItem[0] = (Item) parent.getItemAtPosition(position);
-                    itemViewModel.itemQuery(selectedItem[0].getItem_id());
+                    String date  = (String) parent.getItemAtPosition(position);
+                    if(dateGroupAssos.containsKey(date)){
+                        List<Association> assos = dateGroupAssos.get(date);
+
+                        //find lists for each association selected
+
+                        reportAdapter.fromDateSpinner(listViewModel.findLists(assos),assos);
+                        reportAdapter.notifyDataSetChanged();
+                    }
+                }else{
+                    reportAdapter.setDateSpinner(false);
+                    reportAdapter.notifyDataSetChanged();
                 }
             }
             @Override
@@ -97,13 +107,40 @@ public class ReportFragment extends Fragment {
 
             }
         });
-//set up Recycler View
-        ReportRecyclerViewAdapter reportAdapter = new ReportRecyclerViewAdapter(items);
-        recyclerView.setAdapter(reportAdapter);
 
-//observer lists queried from database
+
+//set item SPINNER (Drop Down menu)
+        ArrayAdapter<Item> itemArrayAdapter = new ArrayAdapter<>(context
+                , android.R.layout.simple_spinner_item, items);
+        itemArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        itemArrayAdapter.setNotifyOnChange(true);
+        itemSpinner.setAdapter(itemArrayAdapter);
+
+
+
+        final Item[] selectedItem = {new Item()};
+//at selected item in the item SPINNER
+        itemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0){
+                    selectedItem[0] = (Item) parent.getItemAtPosition(position);
+                    itemViewModel.itemQuery(selectedItem[0].getItem_id());
+                }else{
+                    reportAdapter.setItemSpinner(false);
+                    reportAdapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+//observer lists queried from database to recycler view
         itemViewModel.getBoughtLists().observe(requireActivity(), itemLists->{
-            reportAdapter.updateValues(selectedItem[0],itemLists,itemViewModel.getBoughtAssos());
+            reportAdapter.fromItemSpinner(selectedItem[0],itemLists,itemViewModel.getBoughtAssos());
             reportAdapter.notifyDataSetChanged();
 
         });

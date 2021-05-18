@@ -77,26 +77,17 @@ public class ItemViewModel extends ViewModel {
 
 //finds instances of bought items that selected in the report drop down menu.
     public void itemQuery(int item_Id){
-        List<Association> assos = itemResources.findBoughtInstances(item_Id);
-        boughtAssos = assos;
+        if(item_Id!=-1){
+            boughtAssos = itemResources.findBoughtInstances(item_Id);
+            boughtLists.setValue(itemResources.findListsQuery(boughtAssos));
+        }else{
+            boughtAssos.clear();
+        }
 
-        boughtLists.setValue(itemResources.findListsQuery(boughtAssos));
-
-        /*
-        itemResources.findBoughtInstances(item_Id)
-        .addChangeListener(associations -> {
-            if(associations.size() !=0){
-
-                boughtAssos =  itemResources.getCopiedAssos(associations);
-                boughtLists.setValue(itemResources.findListsQuery(associations));
-            }
-        });
-
-         */
     }
 
 
-
+    public void setBoughtAssos(){boughtAssos.clear();}
 //live methods
     public LiveData<ArrayList<Item>> getLiveItems() {
         return mLiveItems;

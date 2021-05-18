@@ -20,7 +20,6 @@ public class AssoViewModel extends ViewModel {
     private final AssoResources assoResources;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
-    //private final MutableLiveData<HashMap<Integer, ArrayList<Association>>> shoppingAssos = new MutableLiveData<>();
 
     //constructor
     public AssoViewModel(){
@@ -102,8 +101,16 @@ public class AssoViewModel extends ViewModel {
 
     }
     public HashMap<String, List<Association>> findAssosByDate() {
+        ArrayList<String>foundDates = new ArrayList<>();
         HashMap<String, List<Association>> groups = assoResources.groupAssosByDate();
-        dateDisplay.setValue(new ArrayList<>(groups.keySet()));
+        if(groups.keySet().isEmpty()){
+            foundDates.add(0,"no items bought");
+            dateDisplay.setValue(foundDates);
+        }else{
+            foundDates = new ArrayList<>(groups.keySet());
+            foundDates.add(0,"select date");
+        }
+        dateDisplay.setValue(foundDates);
         return groups;
     }
 

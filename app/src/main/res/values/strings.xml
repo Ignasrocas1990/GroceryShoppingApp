@@ -52,4 +52,8 @@
     <string name="view">view</string>
     <string name="select_a_list">select a list</string>
     <string name="list_name_label">"List name : "</string>
+    <string name="item_name_report">"Item name : "</string>
+    <string name="every_list_report">every list</string>
+    <string name="every_shop_report">every shop</string>
+    <string name="date_report">"Date : "</string>
 </resources>

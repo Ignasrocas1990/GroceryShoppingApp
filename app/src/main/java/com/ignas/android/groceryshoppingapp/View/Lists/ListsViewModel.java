@@ -138,4 +138,8 @@ public class ListsViewModel extends ViewModel {
     public LiveData<ItemList> getSpinnerList() {
         return spinnerList;
     }
+
+    public List<ItemList> findLists(List<Association> assos) {
+        return listResources.findLists(assos);
+    }
 }

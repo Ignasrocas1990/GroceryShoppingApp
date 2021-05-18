@@ -20,20 +20,34 @@ import java.util.List;
 
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
+    //date spinner data
    private List<Item> items = new ArrayList<>();
-   private Item currentItem;
-   private List<ItemList> lists = new ArrayList<>();
-   private List<Association> assos = new ArrayList<>();
+    private List<ItemList> dateItemLists = new ArrayList<>();
+    private List<Association> dateAssos = new ArrayList<>();
+
+    //item spinner data
+    private Item currentItem;
+   private List<ItemList> itemLists = new ArrayList<>();
+   private List<Association> itemAssos = new ArrayList<>();
    private String TAG = "log";
+   private boolean itemSpinner = false;
+   private boolean dateSpinner = false;
+
 
     public ReportRecyclerViewAdapter(List<Item> i) {
         items = i;
     }
 
-    public void updateValues(Item item, List<ItemList> l, List<Association> a){
+    public void fromDateSpinner(List<ItemList> dateI,List<Association> dAssos){
+        dateItemLists = dateI;
+        dateAssos = dAssos;
+        dateSpinner = true;
+    }
+    public void fromItemSpinner(Item item, List<ItemList> l, List<Association> a){
         currentItem = item;
-        lists=l;
-        assos=a;
+        itemLists =l;
+        itemAssos =a;
+        itemSpinner=true;
     }
 
     @NotNull
@@ -46,29 +60,71 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     @Override
     public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
-        Association curAsso = assos.get(position);
-        ItemList itemList=null;
-        if(curAsso.getList_Id()==0){
-            itemList = new ItemList();
-        }else{
-             itemList = lists.stream().
-                    filter(list->list.getList_Id()==curAsso.getList_Id()).findFirst().orElse(null);
-        }
 
+        if(itemSpinner && !dateSpinner){//item spinner selected
+            Association curAsso = itemAssos.get(position);
 
-        if(itemList !=null) {
-            holder.labelNameTextView.setText(R.string.list_name_label);
-            holder.nameTextView.setText(itemList.getListName());
-            holder.shopTextView.setText(itemList.getShopName());
-            holder.priceTextView.setText(String.valueOf(currentItem.getPrice()));
+            ItemList itemList=null;
+            if(curAsso.getList_Id()==0){
+                itemList = new ItemList();
+            }else{
+                itemList = itemLists.stream().
+                        filter(list->list.getList_Id()== curAsso.getList_Id()).findFirst().orElse(null);
+
+                if(itemList !=null) {
+                    holder.labelNameTextView.setText(R.string.list_name_label);
+                    holder.nameTextView.setText(itemList.getListName());
+                    holder.shopTextView.setText(itemList.getShopName());
+                    holder.priceTextView.setText(String.valueOf(currentItem.getPrice()));
+                    holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
+                    holder.dateTextView.setText(curAsso.getDisplayDate());
+                    holder.dateLabel.setText(R.string.date_report);
+
+                }
+            }
+        }else if(dateSpinner && !itemSpinner){//date spinner selected
+            ItemList itemList=null;
+            Association curAsso = dateAssos.get(position);
+            Item curItem = items.stream()
+                    .filter(item->item.getItem_id()==curAsso.getItem_Id()).findFirst().orElse(null);
+
+            if(curItem!=null){
+                itemList = dateItemLists.stream()
+                    .filter(list->list.getList_Id()==curAsso.getList_Id()).findFirst().orElse(null);
+            }
+            if(itemList == null){
+                holder.nameTextView.setText(R.string.every_list_report);
+                holder.shopTextView.setText(R.string.every_shop_report);
+
+            }else{
+                holder.nameTextView.setText(itemList.getListName());
+                holder.shopTextView.setText(itemList.getShopName());
+            }
+            holder.priceTextView.setText(String.valueOf(curItem.getPrice()));
             holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
-            holder.dateTextView.setText(curAsso.getDisplayDate());
+            holder.dateTextView.setText(curItem.getItemName());//item name
+            holder.labelNameTextView.setText(R.string.list_name_label);
+            holder.dateLabel.setText(R.string.item_name_report);
+
+
+        }else{
+            //both selected
+            //TODO ----1>---------when they both selected at the same time;-----------------------------
+
+
         }
     }
 
     @Override
     public int getItemCount() {
-        return assos.size();
+        if(!itemSpinner && dateSpinner){
+            return dateAssos.size();
+        }else if(itemSpinner && !dateSpinner){
+            return itemAssos.size();
+        }else{
+            return 0;
+        }
+
     }
 
 
@@ -86,5 +142,21 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             dateTextView = view.findViewById(R.id.reportDate);
             dateLabel = view.findViewById(R.id.dateLabel);
         }
+    }
+//getters and setters for spinner data
+    public boolean isItemSpinner() {
+        return itemSpinner;
+    }
+
+    public void setItemSpinner(boolean itemSpinner) {
+        this.itemSpinner = itemSpinner;
+    }
+
+    public boolean isDateSpinner() {
+        return dateSpinner;
+    }
+
+    public void setDateSpinner(boolean dateSpinner) {
+        this.dateSpinner = dateSpinner;
     }
 }
