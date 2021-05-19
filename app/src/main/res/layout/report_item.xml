@@ -7,6 +7,32 @@
     android:padding="5dp"
     android:layout_height="wrap_content">
 
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dateLabel"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/reportDate"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="none set" />
+
+
+        </LinearLayout>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,80 +41,79 @@
             android:padding="5dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
             <LinearLayout
+                android:weightSum="4"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp">
 
                 <TextView
                     android:id="@+id/labelName"
                     android:text="Name : "
-                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:gravity="end"
                     android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/reportName"
                     android:text="name"
-                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
 
                 <TextView
-                    android:layout_marginLeft="30dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
                     android:text="Shop : "/>
 
                 <TextView
                     android:id="@+id/reportShop"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="none set"/>
+                    android:layout_weight="1"
+                    android:text="@string/_1"/>
 
-
-                <TextView
-                    android:id="@+id/dateLabel"
-                    android:layout_marginLeft="30dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Date : "/>
-
-                <TextView
-                    android:id="@+id/reportDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="none set"/>
 
             </LinearLayout>
-
-
                 <LinearLayout
+                    android:weightSum="4"
+                    android:layout_weight="1"
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
 
                     <TextView
                         android:text="Price : "
-                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:gravity="end"
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:layout_weight="1"
                         android:id="@+id/reportPrice"
                         android:text="price"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
 
                     <TextView
-                        android:layout_marginLeft="30dp"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:gravity="end"
                         android:layout_height="wrap_content"
-                        android:text="Quantity : "/>
+                        android:text="Amount : "/>
 
                     <TextView
+                        android:layout_weight="1"
                         android:id="@+id/reportQuantity"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="none set"/>
+                        android:text="1"/>
 
                 </LinearLayout>
 

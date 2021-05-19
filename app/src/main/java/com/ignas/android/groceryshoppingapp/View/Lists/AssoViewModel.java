@@ -170,7 +170,7 @@ public class AssoViewModel extends ViewModel {
     public HashMap<String, List<Association>> convertToString(HashMap<Long, List<Association>> groupedAssos ){
 
         HashMap<String, List<Association>> newGroupedAssos = new HashMap<>();
-        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("d/M/yyyy k:m");
         Calendar keyDate = Calendar.getInstance();
         for(Long key : groupedAssos.keySet()){
             keyDate.setTimeInMillis(key);

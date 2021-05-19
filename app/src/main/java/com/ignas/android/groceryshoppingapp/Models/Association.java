@@ -1,5 +1,7 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,7 +59,7 @@ public class Association extends RealmObject {
         this.bought = bought;
         Calendar cal = Calendar.getInstance();
         boughtDate = cal.getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy k:m");
         displayDate = formatter.format(boughtDate);
     }
 

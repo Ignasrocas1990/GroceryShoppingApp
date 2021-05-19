@@ -58,12 +58,12 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ReportRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
 
         if(itemSpinner && !dateSpinner){//item spinner selected
             Association curAsso = itemAssos.get(position);
 
-            ItemList itemList;
+            ItemList itemList=null;
             if(curAsso.getList_Id()==0){
                 itemList = new ItemList();
             }else{
@@ -71,13 +71,13 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
                         filter(list->list.getList_Id()== curAsso.getList_Id()).findFirst().orElse(null);
 
                 if(itemList !=null) {
-                    holder.labelNameTextView.setText(R.string.list_name_label);
+                    holder.labelName.setText("List : ");
                     holder.nameTextView.setText(itemList.getListName());
                     holder.shopTextView.setText(itemList.getShopName());
                     holder.priceTextView.setText(String.valueOf(currentItem.getPrice()));
                     holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
                     holder.dateTextView.setText(curAsso.getDisplayDate());
-                    holder.dateLabel.setText(R.string.date_report);
+                    holder.dateLabel.setText("Date");
 
                 }
             }
@@ -92,8 +92,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
                     .filter(list->list.getList_Id()==curAsso.getList_Id()).findFirst().orElse(null);
             }
             if(itemList == null){
-                holder.nameTextView.setText(R.string.every_list_report);
-                holder.shopTextView.setText(R.string.every_shop_report);
+                holder.nameTextView.setText("all");
+                holder.shopTextView.setText("all");
 
             }else{
                 holder.nameTextView.setText(itemList.getListName());
@@ -102,8 +102,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             holder.priceTextView.setText(String.valueOf(curItem.getPrice()));
             holder.quantityTextView.setText(String.valueOf(curAsso.getQuantity()));
             holder.dateTextView.setText(curItem.getItemName());//item name
-            holder.labelNameTextView.setText(R.string.list_name_label);
-            holder.dateLabel.setText(R.string.item_name_report);
+            holder.labelName.setText("List : ");
+            holder.dateLabel.setText(" Item ");
 
 
         }
@@ -122,7 +122,7 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView nameTextView,priceTextView,shopTextView,
-                quantityTextView,labelNameTextView,dateTextView,dateLabel;
+                quantityTextView,labelName,dateTextView,dateLabel;
 
         public ViewHolder(@NonNull @NotNull View view) {
             super(view);
@@ -130,7 +130,7 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             priceTextView = view.findViewById(R.id.reportPrice);
             shopTextView = view.findViewById(R.id.reportShop);
             quantityTextView = view.findViewById(R.id.reportQuantity);
-            labelNameTextView = view.findViewById(R.id.labelName);
+            labelName = view.findViewById(R.id.labelName);
             dateTextView = view.findViewById(R.id.reportDate);
             dateLabel = view.findViewById(R.id.dateLabel);
         }
