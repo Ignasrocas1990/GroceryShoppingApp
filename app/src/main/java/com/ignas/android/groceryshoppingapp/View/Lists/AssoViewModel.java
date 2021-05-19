@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import io.realm.RealmResults;
-
 public class AssoViewModel extends ViewModel {
     private final int NONE = 0;
     private final AssoResources assoResources;
@@ -41,8 +39,8 @@ public class AssoViewModel extends ViewModel {
 
 //find association and set it to current
     public void setAsso(int list_Id){
-        RealmResults<Association> associations = assoResources.getAsso(list_Id);
-        currentLive.setValue(assoResources.getCopyAssociations(associations));
+        List<Association> associations = assoResources.getAsso(list_Id);
+        currentLive.setValue(associations);
 
     }
 
@@ -54,6 +52,9 @@ public class AssoViewModel extends ViewModel {
 
 //del association
     public void deleteAsso(int item_Id){
+
+
+
         currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));
     }
     public void removeListAssos(ItemList list) {
@@ -67,19 +68,18 @@ public class AssoViewModel extends ViewModel {
 
     public List<Association> apartOfList(Item item) {
         List<Association> assos = assoResources.findItemAssos(item.getItem_id());
-        if(assos !=null){
-            return assos;
-        }
         return assos;
 
     }
     public void removeItemsAssos(List<ItemList> removed, Item deleteItem){
         assoResources.severItem(removed,deleteItem);
     }
-
+/*
     public ArrayList<Association> findAssociations(ArrayList<Item> items){
         return assoResources.findAssociations(items);
     }
+
+ */
     public void onBuyBought(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
         if(currentAsso.getList_Id()==0){
             assoResources.removeWildAsso(currentAsso,shoppingAssos);
@@ -95,7 +95,7 @@ public class AssoViewModel extends ViewModel {
         bought.setDeleteFlag(true);
         bought.setBought(true);
 
-        assoResources.addToSave(bought);
+        assoResources.addAsso(bought);
     }
 
     public Association createTempAsso(int item_id, String amountString) {
@@ -107,7 +107,7 @@ public class AssoViewModel extends ViewModel {
 
 
     }
-    public HashMap<String, List<Association>> findAssosByDate() {//TODO check...
+    public HashMap<String, List<Association>> findAssosByDate() {
         ArrayList<String>foundDates = new ArrayList<>();
         List<Association> boughtAssos = assoResources.getBoughtAssos();
 
@@ -181,13 +181,15 @@ public class AssoViewModel extends ViewModel {
     private long getStart(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);
-        date.add(Calendar.HOUR_OF_DAY,-3);
+        //date.add(Calendar.DAY_OF_WEEK,-7);//un comment this to go back to noraml days (As Cris suggested)
+        date.add(Calendar.MINUTE,-30);
         return date.getTimeInMillis();
     }
     public long getEnd(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);
-        date.add(Calendar.HOUR_OF_DAY,3);
+        //date.add(Calendar.DAY_OF_WEEK,7);//un comment this to go back to noraml days (As Cris suggested)
+        date.add(Calendar.MINUTE,30);
         return date.getTimeInMillis();
 
     }

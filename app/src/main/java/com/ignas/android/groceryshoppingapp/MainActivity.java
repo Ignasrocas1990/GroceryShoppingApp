@@ -142,7 +142,7 @@ cancelAlarms();
             int openingType = intent.getIntExtra("type",0);
             if (openingType != 0){
 
-                itemViewModel.setShoppingDate();//sets shopping date to null
+                itemViewModel.removeShoppingDate();//sets shopping date to null
                 viewPager.setCurrentItem(SHOPPING_TAB);
             }
         }
@@ -221,30 +221,6 @@ cancelAlarms();
             }
         }
     }
-    /*
-    public void createReports(){
-        HashMap<Integer, ArrayList<ShoppingItem>> reports = new HashMap<>();
-        ArrayList<Report> db_reports = dateViewModel.getReports();
-        for(Report rp:db_reports){
-            ArrayList<Integer> assos_Ids = rp.getBoughtAssos();
-            ArrayList<Association> reportAssos = new ArrayList<>();
-
-            for(Integer id  : assos_Ids){
-                Association current = assoViewModel.findAssociation(id);
-                if (current!=null){
-                    reportAssos.add(current);
-                }
-            }
-            ArrayList<ItemList> reportList = listViewModel.findLists_forItem(reportAssos);
-            ArrayList<Item> reportItems = itemViewModel.findItemByIds(reportAssos);
-            dateViewModel.createItems(reportItems, reportAssos, reportList);
-            reports.put(rp.getReport_Id(),dateViewModel.getShoppingItems());
-        }
-        dateViewModel.setQueryReports(reports);
-    }
-
-     */
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -253,8 +229,6 @@ cancelAlarms();
             itemViewModel.reSyncItems();
         }
 //update db data
-        listViewModel.refresh_Db_Lists();
-        itemViewModel.updateDbItems();
 
 //start alarm service if switch is on.
         if(dateViewModel.getSwitch()){

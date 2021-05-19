@@ -3,11 +3,6 @@ package com.ignas.android.groceryshoppingapp.View.ShoppingDate;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +11,16 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class DateFragment extends Fragment {
 
@@ -87,7 +85,7 @@ public class DateFragment extends Fragment {
                     dpDialog.setCancelable(false);
                     dpDialog.setOnCancelListener(dialog -> {
                         dialog.dismiss();
-                        itemViewModel.setShoppingDate();
+                        itemViewModel.removeShoppingDate();
                     });
                     dpDialog.show();
                 }else{
@@ -100,7 +98,7 @@ public class DateFragment extends Fragment {
         dateViewModel.getLiveSwitch().observe(requireActivity(),state->{
             notificationSwitch.setChecked(state);
             if(!state){
-                itemViewModel.setShoppingDate();
+                itemViewModel.removeShoppingDate();
             }
         });
 

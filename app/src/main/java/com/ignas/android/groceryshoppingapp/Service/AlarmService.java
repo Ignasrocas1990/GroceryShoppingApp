@@ -13,9 +13,9 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.ignas.android.groceryshoppingapp.Logic.DateResources;
 import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,7 +63,7 @@ public class AlarmService extends Service {
                 }
 
                 //connect to db and smallest item
-                item =  new RealmDb().getSmallestDateItem(item_Id);
+                item =  new DateResources().getSmallestDateItem(item_Id);
 
                 if (item != null) {
                     item_Id=item.getItem_id();

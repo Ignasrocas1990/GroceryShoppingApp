@@ -31,16 +31,43 @@ public class ItemViewModel extends ViewModel {
 
     }
     public Item createItem(String newName, String newDays, String newPrice){
-         Item item = itemResources.createItem( newName, newDays, newPrice);
+        Item newItem = new Item();
+        newItem.setItemName(newName);
+        if(newDays.equals("")){
+            newItem.setLastingDays(0);
+        }else{
+            newItem.setLastingDays(Integer.parseInt(newDays));
+        }
+        if(newPrice.equals("")){
+            newItem.setPrice(0.f);
+        }else{
+            newItem.setPrice(Float.parseFloat(newPrice));
+        }
+        itemResources.addItem(newItem);
+
         ArrayList<Item > temp = mLiveItems.getValue();
-        temp.add(item);
+        temp.add(newItem);
         mLiveItems.setValue(temp);
-        return item;
+        return newItem;
     }
 
     public void changeItem(int position, String newName, String newDays, String newPrice) {
         ArrayList<Item> tempArray = mLiveItems.getValue();
-        itemResources.modifyItem(tempArray.get(position),newName,newDays,newPrice);
+        Item oldItem = tempArray.get(position);
+
+        oldItem.setItemName(newName);
+        if(oldItem.equals("")) {
+            oldItem.setLastingDays(0);
+        }else if(oldItem.getLastingDays() != Integer.parseInt(newDays)){
+
+            oldItem.setLastingDays(Integer.parseInt(newDays));
+
+        }if(newPrice.equals("")){
+            oldItem.setPrice(0.f);
+        }else{
+            oldItem.setPrice(Float.parseFloat(newPrice));
+        }
+        itemResources.addItem(oldItem);
         mLiveItems.setValue(tempArray);
     }
     public Item findItem(int position){
@@ -50,29 +77,36 @@ public class ItemViewModel extends ViewModel {
 
     public void removeItem(int position){
         ArrayList<Item> temp = mLiveItems.getValue();
-        itemResources.removeItem(temp.get(position));
+        Item itemToRemove = temp.get(position);
+        itemToRemove.setDeleteFlag(true);
+        itemResources.addItem(itemToRemove);
         temp.remove(position);
         mLiveItems.setValue(temp);
     }
     public void reSyncItems(){
-        itemResources.reSyncItems(mLiveItems.getValue());
-    }
+        ArrayList<Item> items = mLiveItems.getValue();
+        ArrayList<Item> toSave = new ArrayList<Item>();
+        if(items != null){
+            for(Item current : items){
+                if(current.isNotified()){
 
-    public void updateDbItems(){
-         itemResources.update(mLiveItems.getValue(), mLiveSDate.getValue());
-    }
+                    current.setRunOutDate(current.getLastingDays());
+                    current.setNotified(false);
+                    toSave.add(current);
+                }
+            }
+            itemResources.addItems(toSave);
+        }
 
+    }
 //shopping date methods
     public void createShoppingDate(int lastingDays){
         mLiveSDate.setValue(itemResources.createDateItem(lastingDays, mLiveSDate.getValue()));
     }
-    public void setShoppingDate(){
-        mLiveSDate.setValue(null);
-    }
+    public void removeShoppingDate(){
 
-//find item by its item_id
-    public ArrayList<Item> findItemByIds(ArrayList<Association> item_Ids){
-        return itemResources.findItemById(item_Ids);
+        itemResources.removeShoppingDate();
+        mLiveSDate.setValue(null);
     }
 
 //finds instances of bought items that selected in the report drop down menu.

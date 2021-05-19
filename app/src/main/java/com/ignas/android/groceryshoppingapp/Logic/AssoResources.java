@@ -1,9 +1,10 @@
 package com.ignas.android.groceryshoppingapp.Logic;
 
+import android.util.Log;
+
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
-import com.ignas.android.groceryshoppingapp.Service.Realm.RealmDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,25 +18,13 @@ import io.realm.RealmResults;
 
 public class AssoResources {
 
-    private final RealmDb db;
 
     public AssoResources() {
-        db = new RealmDb();
-    }
-
-//copy associations from Realm
-    public List<Association> getCopyAssociations(RealmResults<Association> assos){
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        List<Association> result = realm.copyFromRealm(assos);
-
-        realm.commitTransaction();
-        realm.close();
-        return result;
     }
 
 //gets Associations if found  by list_id (filtering)
-    public RealmResults<Association> getAsso(int list_Id){
+    public List<Association> getAsso(int list_Id){
+        List<Association> copy = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmResults<Association> results = realm.where(Association.class)
@@ -43,15 +32,19 @@ public class AssoResources {
                 .equalTo("deleteFlag",false)
                 .findAll();
 
+        if(results.size()!=0){
+            copy = realm.copyFromRealm(results);
+        }
+
         realm.commitTransaction();
         realm.close();
-        return results;
+        return copy;
     }
 
 //add new Association
     public List<Association> addAsso(int list_Id, int item_Id, int quantity, List<Association> current){
         Association newAsso = new Association(list_Id, item_Id, quantity);
-        db.addSingeAsso(newAsso);
+        addAsso(newAsso);
 
         current.add(newAsso);
         return current;
@@ -67,7 +60,7 @@ public class AssoResources {
 
         if (asso != null) {
             asso.setDeleteFlag(true);
-            db.addSingeAsso(asso);
+            addAsso(asso);
             curr.remove(asso);
         }
         return curr;
@@ -86,31 +79,16 @@ public class AssoResources {
     }
 
     public List<Association> findItemAssos(int item_Id){
-        List<Association> assos;
+        List<Association> assos = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Association> result = realm.where(Association.class)
-                .equalTo("item_Id",item_Id).findAll();
+                .equalTo("item_Id",item_Id)
+                .equalTo("deleteFlag",false)
+                .findAll();
         if(result.size()!=0){
             assos = realm.copyFromRealm(result);
         }
-        return result;
-
-        /*
-        ArrayList<Association> foundAssos = new ArrayList<>();
-        for(ArrayList<Association> assoIndexArray : app_assos.values()){
-            if(assoIndexArray.size() != 0){
-                curAsso = assoIndexArray.stream()
-                        .filter(asso->asso.getItem_Id() == item_Id)
-                        .findFirst().orElse(null);
-
-                if(curAsso!=null){
-                    foundAssos.add(curAsso);
-                }
-            }
-        }
-
-         */
-        //return foundAssos;
+        return assos;
     }
 
 // remove item associations from list/s
@@ -132,25 +110,15 @@ public class AssoResources {
 
 
     }
-//find item associations to list for each item
-    public ArrayList<Association> findAssociations(ArrayList<Item> items) {
-        ArrayList<Association> associations = new ArrayList<>();
-        for(Item item : items){
-            associations.addAll(findItemAssos(item.getItem_id()));
-        }
-        return associations;
-    }
+
 //create temporary association for shopping
     public Association createTempAsso(int item_Id){
         return new Association(item_Id);
     }
-//get combined assos as ArrayList
-    public ArrayList<Association> getCombinedAssos(){
-        return db.getAllAssos();
-    }
+
 
     public ArrayList<Association> findNotifiedAssos(ArrayList<Item> notifiedItems){
-        ArrayList<Association> allAssos = new ArrayList<>(getCombinedAssos());
+        ArrayList<Association> allAssos = new ArrayList<>(getAllAssos());
         ArrayList<Association> foundAssos = new ArrayList<>();
         boolean found;
 
@@ -213,9 +181,6 @@ public class AssoResources {
         }
         return listMap;
     }
-    public void addToSave(Association asso){
-        db.addSingeAsso(asso);
-    }
 
 //remove association that are part of every list (get first to save)
     public void removeWildAsso(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
@@ -231,7 +196,7 @@ public class AssoResources {
                         Association asso = currAssos.get(i);
                         asso.setBought(true);
                         asso.setDeleteFlag(true);
-                        addToSave(asso);
+                        addAsso(asso);
                     }
                     currAssos.remove(i);
                     i--;
@@ -255,7 +220,7 @@ public class AssoResources {
                     Association boughtAsso = new Association(asso.getList_Id(),asso.getItem_Id(),asso.getQuantity());
                     boughtAsso.setBought(true);
                     boughtAsso.setDeleteFlag(true);
-                    addToSave(boughtAsso);
+                    addAsso(boughtAsso);
 
                     currAssos.remove(i);
                     i--;
@@ -287,6 +252,35 @@ public class AssoResources {
 
         return copy;
 
+    }
+
+    public ArrayList<Association> getAllAssos(){
+
+        ArrayList<Association> list = new ArrayList<>();
+        try (Realm realm = Realm.getDefaultInstance()) {
+
+            realm.executeTransaction(inRealm -> {
+
+                RealmResults<Association> results = inRealm.where(Association.class)
+                        .equalTo("deleteFlag",false)
+                        .findAll();
+                if (results.size() != 0) {
+                    list.addAll(inRealm.copyFromRealm(results));
+                }
+            });
+        }catch (Exception e){
+            Log.d("log", "get Associations: failed");
+        }
+        return list;
+    }
+
+
+    public void addAsso(Association asso){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> inRealm.insertOrUpdate(asso));
+        }catch (Exception e){
+            Log.i("log", "asso add single : not successful"+e.getMessage());
+        }
     }
 
 }

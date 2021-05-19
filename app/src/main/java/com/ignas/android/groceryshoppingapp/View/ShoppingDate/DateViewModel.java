@@ -31,7 +31,14 @@ public class DateViewModel extends ViewModel {
         app_switch.setValue(state);
     }
     public boolean updateSwitch(){
-        return dateResources.updateSwitch(app_switch.getValue());
+        boolean dbSwitch = dateResources.getDBSwitch();
+        if(dbSwitch != app_switch.getValue()){
+            dateResources.updateSwitch(app_switch.getValue());
+        }
+        if(!dbSwitch && app_switch.getValue()){
+            return true;
+        }
+        return false;
     }
 
 

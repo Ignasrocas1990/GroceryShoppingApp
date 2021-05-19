@@ -18,6 +18,8 @@ public class ListsViewModel extends ViewModel {
     private final ListResources listResources;
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
     private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
+    private ItemList list_to_del;
+
 
     public ListsViewModel() {
         listResources = new ListResources();
@@ -66,12 +68,12 @@ public class ListsViewModel extends ViewModel {
     }
     //current list methods
     public ItemList getDeleteList(){
-        return listResources.getDeleteList();
+        return list_to_del;
     }
-    public void deletedCurrent(){ listResources.deletedCurrent();}
+    public void deletedCurrent(){ list_to_del=null;}
 
     public ItemList setCurrentToDel(){
-        listResources.setItemtoDel(currentList.getValue());
+        list_to_del =  currentList.getValue();
         return currentList.getValue();
     }
     public void setCurrentList(ItemList current){
@@ -119,13 +121,6 @@ public class ListsViewModel extends ViewModel {
         }
         return lists;
     }
-
-
-//update database
-    public void refresh_Db_Lists(){
-        listResources.updateLists();
-    }
-
 
     //live data methods
     public LiveData<ItemList> getCurrLiveList() {
