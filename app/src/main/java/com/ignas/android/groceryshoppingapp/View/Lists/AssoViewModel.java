@@ -128,7 +128,7 @@ public class AssoViewModel extends ViewModel {
     private HashMap<Long, List<Association>> groupByDate(List<Association> boughtAssos) {
         HashMap<Long, List<Association>> groupedAssos = new HashMap<>();
         Calendar currentTime = Calendar.getInstance();
-        boolean first = false;
+        boolean found;
         long end,start;
         ArrayList<Association> currentAssos;
 
@@ -141,18 +141,21 @@ public class AssoViewModel extends ViewModel {
 
             ArrayList<Long>keys = new ArrayList<>(groupedAssos.keySet());
             if(keys.size()!=0){
+                found = false;
                 for(Long key : keys) {
                     start = getStart(key);
                     end = getEnd(key);
                     if(currentTime.getTimeInMillis() >= start && currentTime.getTimeInMillis() <= end){
 
                         Objects.requireNonNull(groupedAssos.get(key)).add(asso);
-
-                    }else{
-                        currentAssos = new ArrayList<>();
-                        currentAssos.add(asso);
-                        groupedAssos.put(currentTime.getTimeInMillis(),currentAssos);
+                        found=true;
+                        break;
                     }
+                }
+                if(!found){
+                    currentAssos = new ArrayList<>();
+                    currentAssos.add(asso);
+                    groupedAssos.put(currentTime.getTimeInMillis(),currentAssos);
                 }
             }else{
                 currentAssos = new ArrayList<>();
@@ -203,8 +206,16 @@ public class AssoViewModel extends ViewModel {
         }
         return newAssos;
     }
-    public List<Association> getCommon(List<Association>itemAsso,List<Association>dateAsso){
-         itemAsso.retainAll(dateAsso);
-         return itemAsso;
+    public List<Association> getCommon(List<Association>itemAssos,List<Association>dateAssos){
+        List<Association>filteredAssos =  new ArrayList<>();
+        for(Association iAsso : itemAssos){
+            Association found = dateAssos.stream()
+                    .filter(dAsso->dAsso.getAsso_Id() == iAsso.getAsso_Id()).findFirst().orElse(null);
+            if(found !=null){
+                filteredAssos.add(found);
+            }
+        }
+
+         return filteredAssos;
     }
 }
