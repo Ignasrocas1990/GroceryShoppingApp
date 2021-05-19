@@ -125,5 +125,4 @@ public class ItemViewModel extends ViewModel {
         }
         return items;
     }
-
 }

@@ -50,6 +50,7 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
         itemSpinner=true;
     }
 
+
     @NotNull
     @Override
     public ReportRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -107,26 +108,19 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             holder.dateLabel.setText(R.string.item_name_report);
 
 
-        }else{
-            //both selected
-            //TODO ----1>---------when they both selected at the same time;-----------------------------
-
-
         }
     }
 
     @Override
     public int getItemCount() {
-        if(!itemSpinner && dateSpinner){
+        if (!itemSpinner && dateSpinner) {
             return dateAssos.size();
-        }else if(itemSpinner && !dateSpinner){
+        } else if (itemSpinner && !dateSpinner) {
             return itemAssos.size();
-        }else{
+        } else {
             return 0;
         }
-
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView nameTextView,priceTextView,shopTextView,
@@ -158,5 +152,9 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     public void setDateSpinner(boolean dateSpinner) {
         this.dateSpinner = dateSpinner;
+    }
+
+    public void setDateAssos(List<Association> dateAssos) {
+        this.dateAssos = dateAssos;
     }
 }

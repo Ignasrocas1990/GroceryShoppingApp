@@ -52,6 +52,8 @@ public class ReportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.report_recycler, container, false);
         context = view.getContext();
+        final boolean[] itemON = {false};
+        final boolean[] dateON = {false};
         listViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
         itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
@@ -64,6 +66,8 @@ public class ReportFragment extends Fragment {
         final ArrayList<String>[] displayDates = new ArrayList[]{new ArrayList<String>()};
         ArrayList<Item> items =  itemViewModel.getBoughtItems();
         items = itemViewModel.setSpinnerText(items);
+        final List<Association>[] currAssos = new List[1];
+
 
         //set up Recycler View
         ReportRecyclerViewAdapter reportAdapter = new ReportRecyclerViewAdapter(items);
@@ -74,6 +78,7 @@ public class ReportFragment extends Fragment {
 
 
         assoViewModel.getDateDisplay().observe(requireActivity(), strings -> {
+            //TODO -------------- need to create string for this
             displayDates[0] = strings;
 
         });
@@ -90,14 +95,15 @@ public class ReportFragment extends Fragment {
                 if(position != 0){
                     String date  = (String) parent.getItemAtPosition(position);
                     if(dateGroupAssos.containsKey(date)){
-                        List<Association> assos = dateGroupAssos.get(date);
+                         currAssos[0] = dateGroupAssos.get(date);//<<<---- need these for other spinner
 
-                        //find lists for each association selected
-
-                        reportAdapter.fromDateSpinner(listViewModel.findLists(assos),assos);
+//find lists for each association selected
+                        reportAdapter.fromDateSpinner(listViewModel.findLists(currAssos[0]), currAssos[0]);
                         reportAdapter.notifyDataSetChanged();
+                        dateON[0] = true;
                     }
                 }else{
+                    dateON[0] = false;
                     reportAdapter.setDateSpinner(false);
                     reportAdapter.notifyDataSetChanged();
                 }
@@ -125,11 +131,21 @@ public class ReportFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0){
                     selectedItem[0] = (Item) parent.getItemAtPosition(position);
-                    itemViewModel.itemQuery(selectedItem[0].getItem_id());
+                    if(dateON[0]){
+                        List<Association> filteredAssos = assoViewModel.filterAssos(currAssos[0], selectedItem[0]);
+                        reportAdapter.setDateAssos(filteredAssos);
+
+                    }else{
+                        itemViewModel.itemQuery(selectedItem[0].getItem_id());
+
+                    }
+                    itemON[0] = true;
                 }else{
+                    itemON[0] = false;
                     reportAdapter.setItemSpinner(false);
-                    reportAdapter.notifyDataSetChanged();
                 }
+                reportAdapter.notifyDataSetChanged();
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

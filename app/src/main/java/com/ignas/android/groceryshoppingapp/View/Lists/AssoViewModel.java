@@ -1,5 +1,7 @@
 package com.ignas.android.groceryshoppingapp.View.Lists;
 
+import android.annotation.SuppressLint;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,9 +11,14 @@ import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -100,21 +107,101 @@ public class AssoViewModel extends ViewModel {
 
 
     }
-    public HashMap<String, List<Association>> findAssosByDate() {
+    public HashMap<String, List<Association>> findAssosByDate() {//TODO check...
         ArrayList<String>foundDates = new ArrayList<>();
-        HashMap<String, List<Association>> groups = assoResources.groupAssosByDate();
+        List<Association> boughtAssos = assoResources.getBoughtAssos();
+
+        HashMap<Long, List<Association>> groups = groupByDate(boughtAssos);
+        HashMap<String, List<Association>> displayGroups = convertToString(groups);
+
         if(groups.keySet().isEmpty()){
             foundDates.add(0,"no items bought");
             dateDisplay.setValue(foundDates);
         }else{
-            foundDates = new ArrayList<>(groups.keySet());
+            foundDates = new ArrayList<>(displayGroups.keySet());
             foundDates.add(0,"select date");
         }
         dateDisplay.setValue(foundDates);
-        return groups;
+        return displayGroups;
+    }
+//get Associations for date spinner in report
+    private HashMap<Long, List<Association>> groupByDate(List<Association> boughtAssos) {
+        HashMap<Long, List<Association>> groupedAssos = new HashMap<>();
+        Calendar currentTime = Calendar.getInstance();
+        boolean first = false;
+        long end,start;
+        ArrayList<Association> currentAssos;
+
+        for(Association asso : boughtAssos){
+
+            Date cur =  asso.getBoughtDate();
+            if(cur!=null){
+
+            currentTime.setTime(cur);
+
+            ArrayList<Long>keys = new ArrayList<>(groupedAssos.keySet());
+            if(keys.size()!=0){
+                for(Long key : keys) {
+                    start = getStart(key);
+                    end = getEnd(key);
+                    if(currentTime.getTimeInMillis() >= start && currentTime.getTimeInMillis() <= end){
+
+                        Objects.requireNonNull(groupedAssos.get(key)).add(asso);
+
+                    }else{
+                        currentAssos = new ArrayList<>();
+                        currentAssos.add(asso);
+                        groupedAssos.put(currentTime.getTimeInMillis(),currentAssos);
+                    }
+                }
+            }else{
+                currentAssos = new ArrayList<>();
+                currentAssos.add(asso);
+                groupedAssos.put(currentTime.getTimeInMillis(),currentAssos);
+                }
+            }
+        }
+
+        return groupedAssos;
+    }
+    public HashMap<String, List<Association>> convertToString(HashMap<Long, List<Association>> groupedAssos ){
+
+        HashMap<String, List<Association>> newGroupedAssos = new HashMap<>();
+        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+        Calendar keyDate = Calendar.getInstance();
+        for(Long key : groupedAssos.keySet()){
+            keyDate.setTimeInMillis(key);
+            newGroupedAssos.put(formatter.format(keyDate.getTime()),groupedAssos.get(key));
+        }
+        return newGroupedAssos;
+    }
+    private long getStart(long key){
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(key);
+        date.add(Calendar.HOUR_OF_DAY,-3);
+        return date.getTimeInMillis();
+    }
+    public long getEnd(long key){
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(key);
+        date.add(Calendar.HOUR_OF_DAY,3);
+        return date.getTimeInMillis();
+
     }
 
     public LiveData<ArrayList<String>> getDateDisplay() {
         return dateDisplay;
+    }
+
+    public List<Association> filterAssos(List<Association> currAsso, Item item) {
+
+        List<Association> newAssos = new ArrayList<>();
+        for(int i=0;i<currAsso.size();i++){
+            if(currAsso.get(i).getItem_Id() != item.getItem_id()){
+                newAssos.add(currAsso.get(i));
+
+            }
+        }
+        return newAssos;
     }
 }
