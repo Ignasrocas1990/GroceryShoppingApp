@@ -20,8 +20,6 @@ import java.util.List;
 
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
-    private String TAG = "log";
-
     //date spinner data
    private List<Item> items = new ArrayList<>();
     private List<ItemList> dateItemLists = new ArrayList<>();
@@ -43,13 +41,11 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
     public void fromDateSpinner(List<ItemList> dateI,List<Association> dAssos){
         dateItemLists = dateI;
         dateAssos = dAssos;
-        dateSpinner = true;
     }
     public void fromItemSpinner(Item item, List<ItemList> l, List<Association> a){
         currentItem = item;
         itemLists =l;
         itemAssos =a;
-        itemSpinner=true;
     }
 
 
@@ -62,12 +58,12 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
     }
 
     @Override
-    public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ReportRecyclerViewAdapter.ViewHolder holder, int position) {
 
         if(itemSpinner && !dateSpinner){//item spinner selected
             Association curAsso = itemAssos.get(position);
 
-            ItemList itemList=null;
+            ItemList itemList;
             if(curAsso.getList_Id()==0){
                 itemList = new ItemList();
             }else{
@@ -151,10 +147,8 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     public void setDateAssos(List<Association> dateAssos) {
         this.dateAssos = dateAssos;
-        itemSpinner = false;
     }
     public void setItemAssos(List<Association> filteredAssos) {
         this.itemAssos = filteredAssos;
-        dateSpinner = false;
     }
 }
