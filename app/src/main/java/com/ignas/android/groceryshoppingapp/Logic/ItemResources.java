@@ -218,7 +218,7 @@ public class ItemResources{
     public List<Association> findBoughtInstances(int item_Id){
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        List<Association> assos = null;
+        List<Association> assos = new ArrayList<>();
         RealmResults<Association> results =  realm.where(Association.class)
                 .equalTo("bought",true)
                 .equalTo("item_Id",item_Id).findAll();

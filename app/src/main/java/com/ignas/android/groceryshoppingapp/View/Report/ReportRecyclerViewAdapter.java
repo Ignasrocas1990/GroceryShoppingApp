@@ -20,18 +20,20 @@ import java.util.List;
 
 public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
 
+    private String TAG = "log";
+
     //date spinner data
    private List<Item> items = new ArrayList<>();
     private List<ItemList> dateItemLists = new ArrayList<>();
     private List<Association> dateAssos = new ArrayList<>();
+    private boolean dateSpinner = false;
 
     //item spinner data
     private Item currentItem;
    private List<ItemList> itemLists = new ArrayList<>();
    private List<Association> itemAssos = new ArrayList<>();
-   private String TAG = "log";
    private boolean itemSpinner = false;
-   private boolean dateSpinner = false;
+
 
 
     public ReportRecyclerViewAdapter(List<Item> i) {
@@ -137,17 +139,10 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
             dateLabel = view.findViewById(R.id.dateLabel);
         }
     }
-//getters and setters for spinner data
-    public boolean isItemSpinner() {
-        return itemSpinner;
-    }
+//setters
 
     public void setItemSpinner(boolean itemSpinner) {
         this.itemSpinner = itemSpinner;
-    }
-
-    public boolean isDateSpinner() {
-        return dateSpinner;
     }
 
     public void setDateSpinner(boolean dateSpinner) {
@@ -156,5 +151,10 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     public void setDateAssos(List<Association> dateAssos) {
         this.dateAssos = dateAssos;
+        itemSpinner = false;
+    }
+    public void setItemAssos(List<Association> filteredAssos) {
+        this.itemAssos = filteredAssos;
+        dateSpinner = false;
     }
 }

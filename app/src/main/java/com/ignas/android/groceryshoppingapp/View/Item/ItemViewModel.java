@@ -83,11 +83,10 @@ public class ItemViewModel extends ViewModel {
         }else{
             boughtAssos.clear();
         }
-
     }
 
 
-    public void setBoughtAssos(){boughtAssos.clear();}
+    //public void setBoughtAssos(){boughtAssos.clear();}
 //live methods
     public LiveData<ArrayList<Item>> getLiveItems() {
         return mLiveItems;
@@ -97,6 +96,8 @@ public class ItemViewModel extends ViewModel {
     public List<Association> getBoughtAssos() {
         return boughtAssos;
     }
+
+
 
     public LiveData<List<ItemList>> getBoughtLists() {
         return boughtLists;

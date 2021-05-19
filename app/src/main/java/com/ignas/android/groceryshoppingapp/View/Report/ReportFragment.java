@@ -35,6 +35,11 @@ public class ReportFragment extends Fragment {
     DateViewModel dateViewModel;
     RecyclerView recyclerView;
     Spinner itemSpinner,dateSpinner;
+    boolean itemON = false;
+    boolean dateON = false;
+    Item selectedItem = new Item();
+    List<Association> dateAssos = new ArrayList<>();
+    ArrayList<String> displayDates = new ArrayList<>();
 
 
     public ReportFragment() { }
@@ -52,8 +57,6 @@ public class ReportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.report_recycler, container, false);
         context = view.getContext();
-        final boolean[] itemON = {false};
-        final boolean[] dateON = {false};
         listViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
         itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);
@@ -63,10 +66,9 @@ public class ReportFragment extends Fragment {
         dateSpinner = view.findViewById(R.id.dateSpinner);
         recyclerView = view.findViewById(R.id.reportRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        final ArrayList<String>[] displayDates = new ArrayList[]{new ArrayList<String>()};
+//item drop down resources
         ArrayList<Item> items =  itemViewModel.getBoughtItems();
         items = itemViewModel.setSpinnerText(items);
-        final List<Association>[] currAssos = new List[1];
 
 
         //set up Recycler View
@@ -76,14 +78,13 @@ public class ReportFragment extends Fragment {
 //set up date SPINNER(Drop down menu)
         HashMap<String, List<Association>> dateGroupAssos = assoViewModel.findAssosByDate();
 
-
+//observer for date drop down
         assoViewModel.getDateDisplay().observe(requireActivity(), strings -> {
-            //TODO -------------- need to create string for this
-            displayDates[0] = strings;
+            displayDates = strings;
 
         });
         ArrayAdapter<String> dateArrayAdapter = new ArrayAdapter<>(context
-                , android.R.layout.simple_spinner_item, displayDates[0]);
+                , android.R.layout.simple_spinner_item, displayDates);
         dateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateArrayAdapter.setNotifyOnChange(true);
         dateSpinner.setAdapter(dateArrayAdapter);
@@ -93,20 +94,25 @@ public class ReportFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0){
-                    String date  = (String) parent.getItemAtPosition(position);
-                    if(dateGroupAssos.containsKey(date)){
-                         currAssos[0] = dateGroupAssos.get(date);//<<<---- need these for other spinner
+                    if (itemON) {//TODO filter the----------
+                        //List<Association> filteredAssos = assoViewModel.filterAssos(dateAssos, selectedItem);
 
-//find lists for each association selected
-                        reportAdapter.fromDateSpinner(listViewModel.findLists(currAssos[0]), currAssos[0]);
-                        reportAdapter.notifyDataSetChanged();
-                        dateON[0] = true;
+                        reportAdapter.setItemAssos(assoViewModel.getCommon(itemViewModel.getBoughtAssos(),dateAssos));
+
+                    }else{
+                        String date  = (String) parent.getItemAtPosition(position);
+                        if(dateGroupAssos.containsKey(date)){
+                            dateAssos = dateGroupAssos.get(date);
                     }
+                        reportAdapter.fromDateSpinner(listViewModel.findLists(dateAssos), dateAssos);//find lists for each association selected
+                        dateON = true;
+                    }
+
                 }else{
-                    dateON[0] = false;
+                    dateON = false;
                     reportAdapter.setDateSpinner(false);
-                    reportAdapter.notifyDataSetChanged();
                 }
+                reportAdapter.notifyDataSetChanged();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -124,25 +130,28 @@ public class ReportFragment extends Fragment {
 
 
 
-        final Item[] selectedItem = {new Item()};
 //at selected item in the item SPINNER
         itemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0){
-                    selectedItem[0] = (Item) parent.getItemAtPosition(position);
-                    if(dateON[0]){
-                        List<Association> filteredAssos = assoViewModel.filterAssos(currAssos[0], selectedItem[0]);
+                if(position != 0) {
+                    selectedItem = (Item) parent.getItemAtPosition(position);
+                    if (dateON) {
+                        List<Association> filteredAssos = assoViewModel.filterAssos(dateAssos, selectedItem);
                         reportAdapter.setDateAssos(filteredAssos);
 
                     }else{
-                        itemViewModel.itemQuery(selectedItem[0].getItem_id());
-
+                        itemViewModel.itemQuery(selectedItem.getItem_id());
                     }
-                    itemON[0] = true;
+                    itemON = true;
+
+                }else if(dateON){
+                    reportAdapter.fromDateSpinner(listViewModel.findLists(dateAssos), dateAssos);
+                    itemON = false;
                 }else{
-                    itemON[0] = false;
                     reportAdapter.setItemSpinner(false);
+                    itemON = false;
+
                 }
                 reportAdapter.notifyDataSetChanged();
 
@@ -154,92 +163,12 @@ public class ReportFragment extends Fragment {
         });
 
 
-//observer lists queried from database to recycler view
+//observer lists of ITEMS selected from spinner
         itemViewModel.getBoughtLists().observe(requireActivity(), itemLists->{
-            reportAdapter.fromItemSpinner(selectedItem[0],itemLists,itemViewModel.getBoughtAssos());
+            reportAdapter.fromItemSpinner(selectedItem,itemLists, itemViewModel.getBoughtAssos());
             reportAdapter.notifyDataSetChanged();
 
         });
-
-
-
-
-
-
-
-        /*
-        if(currentItems.size() != 0){
-            items[0].clear();
-            items[0].addAll(currentItems);
-            Item displayItem = new Item("select item",0);
-            items[0].add(0,displayItem);
-
-        }
-
-         */
-
-        /*
-        itemViewModel.getLiveBoughtItems().observe(requireActivity(), new Observer<ArrayList<Item>>() {
-            @Override
-            public void onChanged(ArrayList<Item> currentItems) {
-
-                if(currentItems.size() != 0){
-                    items[0].clear();
-                    items[0].addAll(currentItems);
-                    Item displayItem = new Item("select item",0);
-                    items[0].add(0,displayItem);
-
-                }
-
-
-            }
-        });
-
-         */
-
-
-
-
-// Creating adapter for spinner
-/*
-
-        ArrayAdapter<Report> dataAdapter = new ArrayAdapter<Report>(context
-                , android.R.layout.simple_spinner_item, dateViewModel.getReports());
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
- */
-
-/*
-// attaching data adapter to spinner and setItemSelected
-        dateSpinner.setAdapter(dataAdapter);
-        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
-                    Report selected = new Report();
-                    selected = (Report) parent.getItemAtPosition(position);//<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                    Log.i(TAG, "onItemSelected: "+selected.getTotal());
-                    dateViewModel.setReport(selected);
-                }else{
-                    dateViewModel.setReport(null);
-                }
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-
- */
-        //ReportRecyclerViewAdapter adapter = new ReportRecyclerViewAdapter();
-        //recyclerView.setAdapter(adapter);
-/*
-        dateViewModel.getLiveReport().observe(requireActivity(), report -> {
-            //get report here
-            if(report!=null){
-                //adapter.setDisplayItems(dateViewModel.findShoppingContent(report.getReport_Id()));
-            }
-        });
-
- */
 
         return view;
     }

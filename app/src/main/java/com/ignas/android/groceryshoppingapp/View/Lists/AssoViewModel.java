@@ -197,11 +197,14 @@ public class AssoViewModel extends ViewModel {
 
         List<Association> newAssos = new ArrayList<>();
         for(int i=0;i<currAsso.size();i++){
-            if(currAsso.get(i).getItem_Id() != item.getItem_id()){
+            if(currAsso.get(i).getItem_Id() == item.getItem_id()){
                 newAssos.add(currAsso.get(i));
-
             }
         }
         return newAssos;
+    }
+    public List<Association> getCommon(List<Association>itemAsso,List<Association>dateAsso){
+         itemAsso.retainAll(dateAsso);
+         return itemAsso;
     }
 }
