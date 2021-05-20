@@ -25,10 +25,10 @@
             android:clickable="true"
             android:contentDescription="@string/del"
             android:visibility="invisible"
-            app:backgroundTint="#F44336"
+            app:backgroundTint="@color/del_btn"
             app:fabSize="mini"
-            app:rippleColor="@color/blue"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            app:rippleColor="@color/black"
+            app:srcCompat="@drawable/ic_x" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -69,10 +69,10 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:contentDescription="@string/saveUpdate"
-            app:backgroundTint="#4CAF50"
+            app:backgroundTint="@color/save_btn"
             app:fabSize="mini"
-            app:rippleColor="@color/blue"
-            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+            app:rippleColor="@color/black"
+            app:srcCompat="@drawable/ic_checked" />
 
     </LinearLayout>
 

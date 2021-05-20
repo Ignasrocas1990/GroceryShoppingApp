@@ -132,11 +132,11 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         }
     private void toggleBtn(ViewHolder holder,boolean added){
         if(added){
-            holder.itemView.setBackgroundResource(R.color.red);
+            holder.itemView.setBackgroundResource(R.color.select_color);
             holder.saveBtn.setVisibility(View.INVISIBLE);
             holder.deleteBtn.setVisibility(View.VISIBLE);
         }else{
-            holder.itemView.setBackgroundResource(R.color.blue);
+            holder.itemView.setBackgroundResource(R.color.main);
             holder.saveBtn.setVisibility(View.VISIBLE);
             holder.deleteBtn.setVisibility(View.INVISIBLE);
         }

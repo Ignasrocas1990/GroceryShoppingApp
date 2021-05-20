@@ -45,7 +45,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
         Log.i(TAG, "item notified ?"+item.getItemName()+" : "+item.isNotified());
 
-        holder.itemView.setBackgroundResource(R.color.blue);
+        holder.itemView.setBackgroundResource(R.color.main);
         holder.product_name.setText(item.getItemName());
         holder.lasting_days.setText(String.valueOf(item.getLastingDays()));
         holder.price.setText(String.valueOf(item.getPrice()));
@@ -54,7 +54,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
             String newName="",newDays="",newPrice="";
             if(prevSelected==null){
                 prevSelected=holder.itemView;
-                holder.itemView.setBackgroundResource(R.color.red);
+                holder.itemView.setBackgroundResource(R.color.select_color);
                 newName = holder.product_name.getText().toString();
                 newDays = holder.lasting_days.getText().toString();
                 newPrice = holder.price.getText().toString();
@@ -63,13 +63,13 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
             }else if(prevSelected.equals(holder.itemView)){
 
                 prevSelected=null;
-                holder.itemView.setBackgroundResource(R.color.blue);
+                holder.itemView.setBackgroundResource(R.color.main);
                 mItemClickListener.onItemClick(-1,"","","");
 
             }else{
-                prevSelected.setBackgroundResource(R.color.blue);
+                prevSelected.setBackgroundResource(R.color.main);
                 prevSelected=holder.itemView;
-                holder.itemView.setBackgroundResource(R.color.red);
+                holder.itemView.setBackgroundResource(R.color.select_color);
 
                 newName = holder.product_name.getText().toString();
                 newDays = holder.lasting_days.getText().toString();

@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue"
+            android:background="@color/main"
             android:keyboardNavigationCluster="true"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
@@ -35,13 +35,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            app:tabIconTint="@color/blue"
+            app:tabIconTint="@color/main"
             app:tabIndicator="@android:drawable/bottom_bar"
-            app:tabIndicatorColor="@color/blue"
+            app:tabIndicatorColor="@color/main"
             app:tabIndicatorHeight="5dp"
-            app:tabRippleColor="@color/blue"
-            app:tabSelectedTextColor="@color/red"
-            app:tabTextColor="@color/blue">
+            app:tabRippleColor="@color/main"
+            app:tabSelectedTextColor="@color/select_color"
+            app:tabTextColor="@color/main">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/ItemFragment"

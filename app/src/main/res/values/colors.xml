@@ -7,6 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="red">#E60000</color>
-    <color name="blue">#0000CC</color>
+    <color name="dark_orchid">#9932CC</color>
+    <!--color name="select_color">#811453</color-->
+    <color name="select_color">#D2691E</color>
+    <color name="save_btn">#2E7D32</color>
+    <color name="del_btn">#D3212D</color>
+    <color name="main">#00004D</color>
+
 </resources>

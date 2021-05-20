@@ -41,10 +41,7 @@ public class AssoViewModel extends ViewModel {
     public void setAsso(int list_Id){
         List<Association> associations = assoResources.getAsso(list_Id);
         currentLive.setValue(associations);
-
     }
-
-
 //add association
     public void addAsso(int list_Id,int item_Id,int quantity){
         currentLive.setValue(assoResources.addAsso(list_Id,item_Id,quantity,currentLive.getValue()));
@@ -52,9 +49,6 @@ public class AssoViewModel extends ViewModel {
 
 //del association
     public void deleteAsso(int item_Id){
-
-
-
         currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));
     }
     public void removeListAssos(ItemList list) {

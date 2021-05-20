@@ -4,71 +4,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".View.Lists.ListsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/test_list"
-        android:layout_below="@+id/listHead"
-        android:layout_width="match_parent"
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delList"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:visibility="invisible"
-        android:background="#3F51B5"
-        android:backgroundTint="@color/blue"
         android:clickable="true"
-        tools:listitem="@layout/lists_item"/>
+        app:fabSize="mini"
+        android:contentDescription="@string/del"
+        app:backgroundTint="@color/del_btn"
+        app:rippleColor="@color/black"
+        app:srcCompat="@drawable/ic_baseline_delete_24" />
 
     <LinearLayout
         android:id="@+id/listHead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:paddingHorizontal="50dp"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="List name : "
+                android:gravity="center|end"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
             <EditText
                 android:id="@+id/listName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:hint="@string/list_name"
+                android:hint="my list"
                 android:inputType="text" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Shop name :"/>
 
             <EditText
+                android:layout_weight="2"
                 android:gravity="center"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/shopname"
-                android:hint="@string/shop_name"
+                android:hint="tesco"
                 android:inputType="text"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <Button
-                android:id="@+id/createList"
-                android:text="Create/Modify list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/delList"
-                android:text="@string/remove_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
     </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/createList"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/saveUpdate"
+        app:backgroundTint="@color/save_btn"
+        app:rippleColor="@color/black"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/test_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listHead"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="16dp"
+        android:background="#3F51B5"
+        android:backgroundTint="@color/main"
+        android:clickable="true"
+        android:visibility="invisible"
+        tools:listitem="@layout/lists_item" />
+
+
 
 
 </RelativeLayout>

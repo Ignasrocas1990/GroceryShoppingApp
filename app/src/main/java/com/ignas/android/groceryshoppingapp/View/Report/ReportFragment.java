@@ -39,6 +39,8 @@ public class ReportFragment extends Fragment {
     Item selectedItem = new Item();
     List<Association> dateAssos = new ArrayList<>();
     ArrayList<String> displayDates = new ArrayList<>();
+    Item prevSpinItem = null;
+    String prevSpinDate = "";
 
 
     public ReportFragment() { }
@@ -96,10 +98,19 @@ public class ReportFragment extends Fragment {
                     if(dateGroupAssos.containsKey(date)){
                         dateAssos = dateGroupAssos.get(date);
                     }
-                    if (itemON) {//find filtered (displaying items)
+                    if (itemON && prevSpinDate.equals("")) {//find filtered (displaying items)
                         reportAdapter.setDateSpinner(false);
                         reportAdapter.setItemSpinner(true);
                         reportAdapter.setItemAssos(assoViewModel.getCommon(itemViewModel.getBoughtAssos(),dateAssos));
+
+                    }else if(itemON){
+
+                        reportAdapter.setDateSpinner(false);
+                        reportAdapter.setItemSpinner(true);
+                        itemViewModel.itemQuery(selectedItem.getItem_id());
+                        reportAdapter.setItemAssos(assoViewModel.getCommon(itemViewModel.getBoughtAssos(), dateAssos));
+
+
 
                     }else{//find associations without filter (display dates)
                         reportAdapter.setDateSpinner(true);
@@ -107,22 +118,24 @@ public class ReportFragment extends Fragment {
                         reportAdapter.fromDateSpinner(listViewModel.findLists(dateAssos), dateAssos);
                     }
                     dateON = true;
+                    prevSpinDate = date;
 
                 }else if(itemON) { //date de-selected but items still selected
                     reportAdapter.setDateSpinner(false);
                     itemViewModel.itemQuery(selectedItem.getItem_id());
                     dateON = false;
+                    prevSpinDate="";
+
 
                 }else{
                     reportAdapter.setDateSpinner(false);
                     dateON = false;
-
+                    prevSpinDate="";
                 }
                 reportAdapter.notifyDataSetChanged();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -143,17 +156,27 @@ public class ReportFragment extends Fragment {
                 if(position != 0) {
                     selectedItem = (Item) parent.getItemAtPosition(position);
 
-                    if(dateON){//filter by date
+                    if(dateON  && prevSpinItem==null){//filter by date
                         List<Association> filteredAssos = assoViewModel.filterAssos(dateAssos, selectedItem);
                         reportAdapter.setDateAssos(filteredAssos);
                         reportAdapter.setItemSpinner(false);
                         reportAdapter.setDateSpinner(true);
+
+                    }else if (dateON){// filter with other select item
+
+                        List<Association> filteredAssos = assoViewModel.filterAssos(dateAssos, selectedItem);
+                        reportAdapter.fromDateSpinner(listViewModel.findLists(dateAssos), dateAssos);
+                        reportAdapter.setDateAssos(filteredAssos);
+                        reportAdapter.setItemSpinner(false);
+                        reportAdapter.setDateSpinner(true);
+
 
                     }else{//find assos with no filter
                         reportAdapter.setDateSpinner(false);
                         itemViewModel.itemQuery(selectedItem.getItem_id());
                     }
                     itemON = true;
+                    prevSpinItem = selectedItem;
 
 
                 }else if(dateON){//find associations from date spinner
@@ -161,12 +184,12 @@ public class ReportFragment extends Fragment {
                     reportAdapter.setItemSpinner(false);
                     reportAdapter.setDateSpinner(true);
                     reportAdapter.fromDateSpinner(listViewModel.findLists(dateAssos), dateAssos);
-
+                    prevSpinItem = null;
                     itemON = false;
                 }else{
+                    prevSpinItem =null;
                     reportAdapter.setItemSpinner(false);
                     itemON = false;
-
                 }
                 reportAdapter.notifyDataSetChanged();
 

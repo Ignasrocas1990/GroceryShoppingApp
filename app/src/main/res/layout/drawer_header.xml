@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
-    android:background="@color/purple_700"
-    android:orientation="horizontal"
-    android:gravity="bottom">
+    android:layout_height="202dp"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:gravity="top">
 
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="170dp"
         android:src="@drawable/back"
-        android:background="@color/white"
         android:scaleType="centerCrop"/>
 
+    <LinearLayout
+        android:layout_below="@+id/imageView"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <TextView
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Lists with a shop"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

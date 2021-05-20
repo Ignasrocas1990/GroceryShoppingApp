@@ -17,14 +17,14 @@
         android:name="com.ignas.android.groceryshoppingapp.ui.main.ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_below="@+id/itemHead"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="-3dp"
+        android:layout_marginRight="16dp"
         android:background="#3F51B5"
-        android:backgroundTint="@color/blue"
+        android:backgroundTint="@color/main"
         android:clickable="true"
         tools:listitem="@layout/item" />
-
 
     <LinearLayout
         android:id="@+id/itemHead"
@@ -79,23 +79,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_marginStart="40dp"
-                android:id="@+id/saveFab"
-                android:src="@drawable/ic_baseline_save_alt_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fabSize="mini"
-                android:contentDescription="@string/none" />
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/saveFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:backgroundTint="@color/save_btn"
+                    android:contentDescription="@string/none"
+                    android:src="@drawable/ic_baseline_save_alt_24"
+                    app:fabSize="mini"
+                    app:rippleColor="#020202" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_marginStart="40dp"
-                android:id="@+id/delFab"
-                android:src="@drawable/ic_baseline_delete_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fabSize="mini"
-                android:contentDescription="none" />
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/delFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:backgroundTint="@color/del_btn"
+                    android:contentDescription="none"
+                    android:src="@drawable/ic_baseline_delete_24"
+                    app:fabSize="mini"
+                    app:rippleColor="#000000" />
 
             </LinearLayout>
 
@@ -107,17 +111,26 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingEnd="30dp"
         android:padding="20dp"
         android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Bought"
+            android:textColor="@color/purple_700"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/reSync"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_sync"
+            android:src="@drawable/ic_checked"
             app:backgroundTint="@color/purple_200"
-            app:rippleColor="@color/red"
+            app:rippleColor="@color/select_color"
             app:fabSize="mini" />
     </LinearLayout>
 
