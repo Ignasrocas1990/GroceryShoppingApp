@@ -22,10 +22,10 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.AlarmService;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
-import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
-import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
-import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.DateViewModel;
 import com.ignas.android.groceryshoppingapp.View.TabAdapter;
 
 import org.jetbrains.annotations.NonNls;

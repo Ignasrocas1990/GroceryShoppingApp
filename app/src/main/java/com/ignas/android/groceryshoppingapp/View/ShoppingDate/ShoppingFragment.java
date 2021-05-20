@@ -19,13 +19,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ignas.android.groceryshoppingapp.Logic.DateViewModel;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
-import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
-import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

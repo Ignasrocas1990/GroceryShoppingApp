@@ -15,9 +15,10 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.ignas.android.groceryshoppingapp.Logic.DateViewModel;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

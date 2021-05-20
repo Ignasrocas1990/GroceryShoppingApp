@@ -1,4 +1,4 @@
-package com.ignas.android.groceryshoppingapp.View.ShoppingDate;
+package com.ignas.android.groceryshoppingapp.Logic;
 
 import android.util.Log;
 
@@ -6,18 +6,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.DateRepository;
+import com.ignas.android.groceryshoppingapp.Service.Repository;
 
 public class DateViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> app_switch = new MutableLiveData<>();
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
-    private final DateRepository dateRepository;
+    private final Repository repository;
 
 
     public DateViewModel(){
-        dateRepository = new DateRepository();
-        app_switch.setValue(dateRepository.getDBSwitch());
+        repository = Repository.getInstance();
+        app_switch.setValue(repository.getDBSwitch());
     }
 //getters & setters
     public boolean getSwitch() {
@@ -31,9 +31,9 @@ public class DateViewModel extends ViewModel {
         app_switch.setValue(state);
     }
     public boolean updateSwitch(){
-        boolean dbSwitch = dateRepository.getDBSwitch();
+        boolean dbSwitch = repository.getDBSwitch();
         if(dbSwitch != app_switch.getValue()){
-            dateRepository.updateSwitch(app_switch.getValue());
+            repository.updateSwitch(app_switch.getValue());
         }
         if(!dbSwitch && app_switch.getValue()){
             return true;

@@ -1,19 +1,19 @@
-package com.ignas.android.groceryshoppingapp.View.Item;
+package com.ignas.android.groceryshoppingapp.Logic;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.ItemRepository;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Service.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemViewModel extends ViewModel {
-    private final ItemRepository itemRepository;
+    private final Repository repository;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
     private List<Association> boughtAssos = new ArrayList<>();
@@ -21,13 +21,15 @@ public class ItemViewModel extends ViewModel {
 
 
     public ItemViewModel() {
-        itemRepository = new ItemRepository();
-        mLiveItems.setValue(itemRepository.getItems());
-        mLiveSDate.setValue(itemRepository.getShoppingDateItem());
+        repository = Repository.getInstance();
+
+
+        mLiveItems.setValue(repository.getItems());
+        mLiveSDate.setValue(repository.getShoppingDateItem());
     }
 
     public ArrayList<Item> getBoughtItems(){
-        return itemRepository.findBoughtItems();
+        return repository.findBoughtItems();
 
     }
     public Item createItem(String newName, String newDays, String newPrice){
@@ -43,7 +45,7 @@ public class ItemViewModel extends ViewModel {
         }else{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
-        itemRepository.addItem(newItem);
+        repository.saveItem(newItem);
 
         ArrayList<Item > temp = mLiveItems.getValue();
         temp.add(newItem);
@@ -67,7 +69,7 @@ public class ItemViewModel extends ViewModel {
         }else{
             oldItem.setPrice(Float.parseFloat(newPrice));
         }
-        itemRepository.addItem(oldItem);
+        repository.saveItem(oldItem);
         mLiveItems.setValue(tempArray);
     }
     public Item findItem(int position){
@@ -79,7 +81,7 @@ public class ItemViewModel extends ViewModel {
         ArrayList<Item> temp = mLiveItems.getValue();
         Item itemToRemove = temp.get(position);
         itemToRemove.setDeleteFlag(true);
-        itemRepository.addItem(itemToRemove);
+        repository.saveItem(itemToRemove);
         temp.remove(position);
         mLiveItems.setValue(temp);
     }
@@ -95,25 +97,31 @@ public class ItemViewModel extends ViewModel {
                     toSave.add(current);
                 }
             }
-            itemRepository.addItems(toSave);
+            repository.addItems(toSave);
         }
 
     }
 //shopping date methods
     public void createShoppingDate(int lastingDays){
-        mLiveSDate.setValue(itemRepository.createDateItem(lastingDays, mLiveSDate.getValue()));
+        Item app_DateItem = mLiveSDate.getValue();
+        if(app_DateItem == null){//it does not exists
+            app_DateItem = new Item("Shopping",Integer.MAX_VALUE,lastingDays);
+        }else{
+            app_DateItem.setLastingDays(lastingDays);
+        }
+        repository.saveItem(app_DateItem);
     }
     public void removeShoppingDate(){
 
-        itemRepository.removeShoppingDate();
+        repository.removeShoppingDate();
         mLiveSDate.setValue(null);
     }
 
 //finds instances of bought items that selected in the report drop down menu.
     public void itemQuery(int item_Id){
         if(item_Id!=-1){
-            boughtAssos = itemRepository.findBoughtInstances(item_Id);
-            boughtLists.setValue(itemRepository.findListsQuery(boughtAssos));
+            boughtAssos = repository.findBoughtInstances(item_Id);
+            boughtLists.setValue(repository.findListsQuery(boughtAssos));
         }else{
             boughtAssos.clear();
         }
@@ -138,16 +146,32 @@ public class ItemViewModel extends ViewModel {
     }
 
     public Item reSyncCurrent(int position) {
-        Item currentItem = findItem(position);
-        itemRepository.reSyncCurrent(currentItem);
-        return currentItem;
+
+        Item item = findItem(position);
+        item.setRunOutDate(item.getLastingDays());
+        item.setNotified(false);
+        repository.saveItem(item);
+        return item;
     }
     public void syncBoughtItem(Item item){
-        itemRepository.reSyncCurrent(item);
+        item.setRunOutDate(item.getLastingDays());
+        item.setNotified(false);
+        repository.saveItem(item);
 
     }
     public ArrayList<Item> getNotifiedItems() {
-        return itemRepository.getNotifiedItems(mLiveItems.getValue());
+
+        ArrayList<Item> items = mLiveItems.getValue();
+        ArrayList<Item> copy = new ArrayList<Item>();
+        for(int i=0;i<items.size();i++){
+
+            Item current = items.get(i);
+
+            if(current.isNotified()){
+                copy.add(current);
+            }
+        }
+        return copy;
     }
     public ArrayList<Item> setSpinnerText(ArrayList<Item> items){
 

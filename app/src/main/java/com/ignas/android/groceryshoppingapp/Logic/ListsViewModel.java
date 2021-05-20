@@ -1,12 +1,12 @@
-package com.ignas.android.groceryshoppingapp.View.Lists;
+package com.ignas.android.groceryshoppingapp.Logic;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.ListRepository;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
+import com.ignas.android.groceryshoppingapp.Service.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,31 +15,34 @@ import java.util.List;
 public class ListsViewModel extends ViewModel {
 
     private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
-    private final ListRepository listRepository;
+    private final Repository repository;
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
-    private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
+    //private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
     private ItemList list_to_del;
 
 
     public ListsViewModel() {
-        listRepository = new ListRepository();
-        mLiveLists.setValue(listRepository.getLists());
+        repository = Repository.getInstance();
+        mLiveLists.setValue(repository.getLists());
 
     }
  //basic lists methods
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = mLiveLists.getValue();
-        ItemList newItemList =  listRepository.createList(listName,shopName);
+
+        ItemList newItemList = new ItemList(listName,shopName);
+        repository.saveList(newItemList);
+
         oldList.add(newItemList);
         mLiveLists.setValue(oldList);
         setCurrentList(newItemList);
     }
 
-
-
     public void removeList(ItemList list) {
         ArrayList<ItemList> allList = mLiveLists.getValue();
-        allList.remove(listRepository.removeList(list));
+        list.setDeleteFlag(true);
+        repository.saveList(list);
+        allList.remove(list);
         mLiveLists.setValue(allList);
     }
 //find list by list_Id
@@ -82,7 +85,12 @@ public class ListsViewModel extends ViewModel {
 
     //check if list not in toUpdate Array and update it
     public void modifyList(String listName, String shopName) {
-        currentList.setValue(listRepository.modifyList(listName,shopName,getConvertedList()));
+         ItemList curList =  currentList.getValue();
+        curList.setShopName(shopName);
+        curList.setListName(listName);
+        repository.saveList(curList);
+
+        currentList.setValue(curList);
     }
 
     public ItemList getConvertedList(){
@@ -129,12 +137,14 @@ public class ListsViewModel extends ViewModel {
     public LiveData<ArrayList<ItemList>> getLiveLists() {
         return mLiveLists;
     }
-
+/*
     public LiveData<ItemList> getSpinnerList() {
         return spinnerList;
     }
 
+ */
+
     public List<ItemList> findLists(List<Association> assos) {
-        return listRepository.findLists(assos);
+        return repository.findLists(assos);
     }
 }

@@ -15,19 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Lists.AssoViewModel;
-import com.ignas.android.groceryshoppingapp.View.Lists.ListsViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 
 import java.util.List;
 
 public class ItemFragment extends Fragment {
     public final String TAG = "log";
     private static final int MAX_PRICE_LENGTH  = 7;
-    private static final int MAX_CHARS = 20,MAX_TIME_LENGTH=4;
+    private static final int MAX_CHARS = 20,MAX_TIME_LENGTH=5;
     private Context context;
 
     public ItemFragment() {}

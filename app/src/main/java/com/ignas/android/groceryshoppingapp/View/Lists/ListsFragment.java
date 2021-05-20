@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ignas.android.groceryshoppingapp.Logic.AssoViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 
 public class ListsFragment extends Fragment {
     private static final String TAG = "log";

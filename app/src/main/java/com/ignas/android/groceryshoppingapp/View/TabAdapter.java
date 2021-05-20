@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.ignas.android.groceryshoppingapp.View.Item.ItemFragment;
-import com.ignas.android.groceryshoppingapp.View.Item.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.View.Lists.ListsFragment;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateFragment;
 import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;

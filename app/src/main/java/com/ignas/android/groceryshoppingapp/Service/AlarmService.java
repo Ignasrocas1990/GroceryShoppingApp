@@ -13,7 +13,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.ignas.android.groceryshoppingapp.Logic.DateRepository;
 import com.ignas.android.groceryshoppingapp.MainActivity;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 
@@ -63,7 +62,7 @@ public class AlarmService extends Service {
                 }
 
                 //connect to db and smallest item
-                item =  new DateRepository().getSmallestDateItem(item_Id);
+                item =   Repository.getInstance().getSmallestDateItem(item_Id);
 
                 if (item != null) {
                     item_Id=item.getItem_id();
