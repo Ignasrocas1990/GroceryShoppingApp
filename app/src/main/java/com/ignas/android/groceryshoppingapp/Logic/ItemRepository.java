@@ -14,10 +14,10 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class ItemResources{
+public class ItemRepository {
     private static final String TAG ="log";
 
-    public ItemResources() {
+    public ItemRepository() {
     }
 
 

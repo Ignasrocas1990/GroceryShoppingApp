@@ -16,11 +16,8 @@ import java.util.Set;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class AssoResources {
-
-
-    public AssoResources() {
-    }
+public class AssoRepository {
+    public AssoRepository() {}
 
 //gets Associations if found  by list_id (filtering)
     public List<Association> getAsso(int list_Id){

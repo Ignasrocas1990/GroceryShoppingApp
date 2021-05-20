@@ -10,10 +10,10 @@ import java.util.Date;
 
 import io.realm.Realm;
 
-public class DateResources {
+public class DateRepository {
 
 
-    public DateResources() {
+    public DateRepository() {
         //clear();
 
     }

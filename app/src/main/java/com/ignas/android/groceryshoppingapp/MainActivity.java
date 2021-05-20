@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
@@ -35,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "log";
     private static final int MANAGE_LISTS_TAB = 1;
     private static final int SHOPPING_TAB = 4;
     private static final int DESELECT = -1;
@@ -75,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         tabAdapter = new TabAdapter(fragmentManager,tabLayout.getTabCount());
         viewPager.setAdapter(tabAdapter);
-        Button a = findViewById(R.id.addBtn);
 
 
 //initialize view Models

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.ItemResources;
+import com.ignas.android.groceryshoppingapp.Logic.ItemRepository;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemViewModel extends ViewModel {
-    private final ItemResources itemResources;
+    private final ItemRepository itemRepository;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
     private List<Association> boughtAssos = new ArrayList<>();
@@ -21,13 +21,13 @@ public class ItemViewModel extends ViewModel {
 
 
     public ItemViewModel() {
-        itemResources = new ItemResources();
-        mLiveItems.setValue(itemResources.getItems());
-        mLiveSDate.setValue(itemResources.getShoppingDateItem());
+        itemRepository = new ItemRepository();
+        mLiveItems.setValue(itemRepository.getItems());
+        mLiveSDate.setValue(itemRepository.getShoppingDateItem());
     }
 
     public ArrayList<Item> getBoughtItems(){
-        return itemResources.findBoughtItems();
+        return itemRepository.findBoughtItems();
 
     }
     public Item createItem(String newName, String newDays, String newPrice){
@@ -43,7 +43,7 @@ public class ItemViewModel extends ViewModel {
         }else{
             newItem.setPrice(Float.parseFloat(newPrice));
         }
-        itemResources.addItem(newItem);
+        itemRepository.addItem(newItem);
 
         ArrayList<Item > temp = mLiveItems.getValue();
         temp.add(newItem);
@@ -67,7 +67,7 @@ public class ItemViewModel extends ViewModel {
         }else{
             oldItem.setPrice(Float.parseFloat(newPrice));
         }
-        itemResources.addItem(oldItem);
+        itemRepository.addItem(oldItem);
         mLiveItems.setValue(tempArray);
     }
     public Item findItem(int position){
@@ -79,7 +79,7 @@ public class ItemViewModel extends ViewModel {
         ArrayList<Item> temp = mLiveItems.getValue();
         Item itemToRemove = temp.get(position);
         itemToRemove.setDeleteFlag(true);
-        itemResources.addItem(itemToRemove);
+        itemRepository.addItem(itemToRemove);
         temp.remove(position);
         mLiveItems.setValue(temp);
     }
@@ -95,25 +95,25 @@ public class ItemViewModel extends ViewModel {
                     toSave.add(current);
                 }
             }
-            itemResources.addItems(toSave);
+            itemRepository.addItems(toSave);
         }
 
     }
 //shopping date methods
     public void createShoppingDate(int lastingDays){
-        mLiveSDate.setValue(itemResources.createDateItem(lastingDays, mLiveSDate.getValue()));
+        mLiveSDate.setValue(itemRepository.createDateItem(lastingDays, mLiveSDate.getValue()));
     }
     public void removeShoppingDate(){
 
-        itemResources.removeShoppingDate();
+        itemRepository.removeShoppingDate();
         mLiveSDate.setValue(null);
     }
 
 //finds instances of bought items that selected in the report drop down menu.
     public void itemQuery(int item_Id){
         if(item_Id!=-1){
-            boughtAssos = itemResources.findBoughtInstances(item_Id);
-            boughtLists.setValue(itemResources.findListsQuery(boughtAssos));
+            boughtAssos = itemRepository.findBoughtInstances(item_Id);
+            boughtLists.setValue(itemRepository.findListsQuery(boughtAssos));
         }else{
             boughtAssos.clear();
         }
@@ -139,15 +139,15 @@ public class ItemViewModel extends ViewModel {
 
     public Item reSyncCurrent(int position) {
         Item currentItem = findItem(position);
-        itemResources.reSyncCurrent(currentItem);
+        itemRepository.reSyncCurrent(currentItem);
         return currentItem;
     }
     public void syncBoughtItem(Item item){
-        itemResources.reSyncCurrent(item);
+        itemRepository.reSyncCurrent(item);
 
     }
     public ArrayList<Item> getNotifiedItems() {
-        return itemResources.getNotifiedItems(mLiveItems.getValue());
+        return itemRepository.getNotifiedItems(mLiveItems.getValue());
     }
     public ArrayList<Item> setSpinnerText(ArrayList<Item> items){
 

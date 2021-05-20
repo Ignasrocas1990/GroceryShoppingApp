@@ -11,11 +11,11 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class ListResources {
+public class ListRepository {
 
 
 
-    public ListResources() {}
+    public ListRepository() {}
     public ArrayList<ItemList> getLists() {
 
         Realm realm = Realm.getDefaultInstance();

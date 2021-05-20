@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.AssoResources;
+import com.ignas.android.groceryshoppingapp.Logic.AssoRepository;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
@@ -22,13 +22,13 @@ import java.util.Objects;
 
 public class AssoViewModel extends ViewModel {
     private final int NONE = 0;
-    private final AssoResources assoResources;
+    private final AssoRepository assoRepository;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
 
     //constructor
     public AssoViewModel(){
-        assoResources = new AssoResources();
+        assoRepository = new AssoRepository();
     }
 
     public LiveData<List<Association>> getCurrentLive() {
@@ -39,34 +39,34 @@ public class AssoViewModel extends ViewModel {
 
 //find association and set it to current
     public void setAsso(int list_Id){
-        List<Association> associations = assoResources.getAsso(list_Id);
+        List<Association> associations = assoRepository.getAsso(list_Id);
         currentLive.setValue(associations);
     }
 //add association
     public void addAsso(int list_Id,int item_Id,int quantity){
-        currentLive.setValue(assoResources.addAsso(list_Id,item_Id,quantity,currentLive.getValue()));
+        currentLive.setValue(assoRepository.addAsso(list_Id,item_Id,quantity,currentLive.getValue()));
     }
 
 //del association
     public void deleteAsso(int item_Id){
-        currentLive.setValue(assoResources.deleteAsso(item_Id,currentLive.getValue()));
+        currentLive.setValue(assoRepository.deleteAsso(item_Id,currentLive.getValue()));
     }
     public void removeListAssos(ItemList list) {
-        List<Association> deleted = assoResources.getAsso(list.getList_Id());
-        assoResources.severList(deleted);
+        List<Association> deleted = assoRepository.getAsso(list.getList_Id());
+        assoRepository.severList(deleted);
     }
 //compile shopping associations
     public HashMap<Integer, ArrayList<Association>> findShoppingAssos(ArrayList<ItemList> lists, ArrayList<Item> notifiedItems) {
-        return assoResources.findShoppingAssos(lists,notifiedItems);
+        return assoRepository.findShoppingAssos(lists,notifiedItems);
     }
 
     public List<Association> apartOfList(Item item) {
-        List<Association> assos = assoResources.findItemAssos(item.getItem_id());
+        List<Association> assos = assoRepository.findItemAssos(item.getItem_id());
         return assos;
 
     }
     public void removeItemsAssos(List<ItemList> removed, Item deleteItem){
-        assoResources.severItem(removed,deleteItem);
+        assoRepository.severItem(removed,deleteItem);
     }
 /*
     public ArrayList<Association> findAssociations(ArrayList<Item> items){
@@ -76,20 +76,20 @@ public class AssoViewModel extends ViewModel {
  */
     public void onBuyBought(Association currentAsso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
         if(currentAsso.getList_Id()==0){
-            assoResources.removeWildAsso(currentAsso,shoppingAssos);
+            assoRepository.removeWildAsso(currentAsso,shoppingAssos);
         }else{
-            assoResources.removeBoughtAsso(currentAsso,shoppingAssos);
+            assoRepository.removeBoughtAsso(currentAsso,shoppingAssos);
         }
     }
     public void insertOnFlyItemAsso(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos){
-        assoResources.insertOnFlyItemAsso(asso,shoppingAssos);
+        assoRepository.insertOnFlyItemAsso(asso,shoppingAssos);
     }
     public void markAsBought(int item_id, String amountString){
         Association bought = createTempAsso(item_id,amountString);
         bought.setDeleteFlag(true);
         bought.setBought(true);
 
-        assoResources.addAsso(bought);
+        assoRepository.addAsso(bought);
     }
 
     public Association createTempAsso(int item_id, String amountString) {
@@ -103,7 +103,7 @@ public class AssoViewModel extends ViewModel {
     }
     public HashMap<String, List<Association>> findAssosByDate() {
         ArrayList<String>foundDates = new ArrayList<>();
-        List<Association> boughtAssos = assoResources.getBoughtAssos();
+        List<Association> boughtAssos = assoRepository.getBoughtAssos();
 
         HashMap<Long, List<Association>> groups = groupByDate(boughtAssos);
         HashMap<String, List<Association>> displayGroups = convertToString(groups);

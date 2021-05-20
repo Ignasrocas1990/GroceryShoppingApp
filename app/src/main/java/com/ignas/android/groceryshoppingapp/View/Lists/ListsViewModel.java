@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Logic.ListResources;
+import com.ignas.android.groceryshoppingapp.Logic.ListRepository;
 import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 
@@ -15,21 +15,21 @@ import java.util.List;
 public class ListsViewModel extends ViewModel {
 
     private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
-    private final ListResources listResources;
+    private final ListRepository listRepository;
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
     private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
     private ItemList list_to_del;
 
 
     public ListsViewModel() {
-        listResources = new ListResources();
-        mLiveLists.setValue(listResources.getLists());
+        listRepository = new ListRepository();
+        mLiveLists.setValue(listRepository.getLists());
 
     }
  //basic lists methods
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = mLiveLists.getValue();
-        ItemList newItemList =  listResources.createList(listName,shopName);
+        ItemList newItemList =  listRepository.createList(listName,shopName);
         oldList.add(newItemList);
         mLiveLists.setValue(oldList);
         setCurrentList(newItemList);
@@ -39,7 +39,7 @@ public class ListsViewModel extends ViewModel {
 
     public void removeList(ItemList list) {
         ArrayList<ItemList> allList = mLiveLists.getValue();
-        allList.remove(listResources.removeList(list));
+        allList.remove(listRepository.removeList(list));
         mLiveLists.setValue(allList);
     }
 //find list by list_Id
@@ -82,7 +82,7 @@ public class ListsViewModel extends ViewModel {
 
     //check if list not in toUpdate Array and update it
     public void modifyList(String listName, String shopName) {
-        currentList.setValue(listResources.modifyList(listName,shopName,getConvertedList()));
+        currentList.setValue(listRepository.modifyList(listName,shopName,getConvertedList()));
     }
 
     public ItemList getConvertedList(){
@@ -135,6 +135,6 @@ public class ListsViewModel extends ViewModel {
     }
 
     public List<ItemList> findLists(List<Association> assos) {
-        return listResources.findLists(assos);
+        return listRepository.findLists(assos);
     }
 }
