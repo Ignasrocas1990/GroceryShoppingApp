@@ -9,13 +9,15 @@
     android:orientation="vertical"
     android:gravity="top">
 
+    <!--android:src="@drawable/back"-->
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:src="@drawable/back"
-        android:scaleType="centerCrop"/>
+        android:background="@color/main"
+        android:scaleType="fitCenter"
+        app:srcCompat="@mipmap/ic_launcher" />
 
     <LinearLayout
         android:layout_below="@+id/imageView"

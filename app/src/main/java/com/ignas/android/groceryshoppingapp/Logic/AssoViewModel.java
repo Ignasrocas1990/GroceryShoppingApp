@@ -28,6 +28,11 @@ public class AssoViewModel extends ViewModel {
     private final Repository repository;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
+    private List<Association> boughtAssos = new ArrayList<>();
+    private final MutableLiveData<List<ItemList>> boughtLists = new MutableLiveData<>();
+
+
+
 
     //constructor
     public AssoViewModel(){
@@ -88,9 +93,24 @@ public class AssoViewModel extends ViewModel {
 
     }
 
+    public List<Association> getBoughtAssos() {
+        return boughtAssos;
+    }
+
+
     public void removeListAssos(ItemList list) {
         List<Association> deleted = repository.getAsso(list.getList_Id());
         severList(deleted);
+    }
+
+    //finds instances of bought items that selected in the report drop down menu.
+    public void itemQuery(int item_Id){
+        if(item_Id!=-1){
+            boughtAssos = repository.findBoughtInstances(item_Id);
+            boughtLists.setValue(repository.findListsQuery(boughtAssos));
+        }else{
+            boughtAssos.clear();
+        }
     }
 
 //compile shopping associations
@@ -369,6 +389,9 @@ public class AssoViewModel extends ViewModel {
     }
 
 
+    public LiveData<List<ItemList>> getBoughtLists() {
+        return boughtLists;
+    }
 
     public LiveData<ArrayList<String>> getDateDisplay() {
         return dateDisplay;

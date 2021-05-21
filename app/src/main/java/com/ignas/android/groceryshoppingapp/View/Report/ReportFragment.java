@@ -101,14 +101,14 @@ public class ReportFragment extends Fragment {
                     if (itemON && prevSpinDate.equals("")) {//find filtered (displaying items)
                         reportAdapter.setDateSpinner(false);
                         reportAdapter.setItemSpinner(true);
-                        reportAdapter.setItemAssos(assoViewModel.getCommon(itemViewModel.getBoughtAssos(),dateAssos));
+                        reportAdapter.setItemAssos(assoViewModel.getCommon(assoViewModel.getBoughtAssos(),dateAssos));
 
                     }else if(itemON){
 
                         reportAdapter.setDateSpinner(false);
                         reportAdapter.setItemSpinner(true);
-                        itemViewModel.itemQuery(selectedItem.getItem_id());
-                        reportAdapter.setItemAssos(assoViewModel.getCommon(itemViewModel.getBoughtAssos(), dateAssos));
+                        assoViewModel.itemQuery(selectedItem.getItem_id());
+                        reportAdapter.setItemAssos(assoViewModel.getCommon(assoViewModel.getBoughtAssos(), dateAssos));
 
 
 
@@ -122,7 +122,7 @@ public class ReportFragment extends Fragment {
 
                 }else if(itemON) { //date de-selected but items still selected
                     reportAdapter.setDateSpinner(false);
-                    itemViewModel.itemQuery(selectedItem.getItem_id());
+                    assoViewModel.itemQuery(selectedItem.getItem_id());
                     dateON = false;
                     prevSpinDate="";
 
@@ -173,7 +173,7 @@ public class ReportFragment extends Fragment {
 
                     }else{//find assos with no filter
                         reportAdapter.setDateSpinner(false);
-                        itemViewModel.itemQuery(selectedItem.getItem_id());
+                        assoViewModel.itemQuery(selectedItem.getItem_id());
                     }
                     itemON = true;
                     prevSpinItem = selectedItem;
@@ -202,13 +202,12 @@ public class ReportFragment extends Fragment {
 
 
 //observer lists of ITEMS selected from spinner
-        itemViewModel.getBoughtLists().observe(requireActivity(), itemLists->{
-            reportAdapter.fromItemSpinner(selectedItem,itemLists, itemViewModel.getBoughtAssos());
+        assoViewModel.getBoughtLists().observe(requireActivity(), itemLists->{
+            reportAdapter.fromItemSpinner(selectedItem,itemLists, assoViewModel.getBoughtAssos());
             reportAdapter.setItemSpinner(true);
             reportAdapter.notifyDataSetChanged();
 
         });
-
         return view;
     }
 

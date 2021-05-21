@@ -22,7 +22,7 @@ public class Repository {
     private Repository() {}
 
     public static Repository getInstance() {
-        //clear();
+        //-----------------------------------------clear();
         return repository;
     }
 //--------------------- ITEM methods -------------
@@ -62,47 +62,6 @@ public class Repository {
         realm.close();
         return shoppingDate;
     }
-/*
-//create/updates shopping date item.
-    public Item createDateItem(int lastingDays,Item app_DateItem) {
-
-        if(app_DateItem == null){//it does not exists
-            app_DateItem = new Item("Shopping",Integer.MAX_VALUE,lastingDays);
-        }else{
-            app_DateItem.setLastingDays(lastingDays);
-        }
-        saveItem(app_DateItem);
-
-       return app_DateItem;
-    }
-
- */
-/*
-//just removes items that not been notified(any item that is going to running out)
-    public ArrayList<Item> getNotifiedItems(ArrayList<Item> items){
-        ArrayList<Item> copy = new ArrayList<Item>();
-        for(int i=0;i<items.size();i++){
-
-            Item current = items.get(i);
-
-            if(current.isNotified()){
-                copy.add(current);
-            }
-        }
-        return copy;
-    }
-
- */
-
-/*
-    public void reSyncCurrent(Item item) {
-
-        item.setRunOutDate(item.getLastingDays());
-        item.setNotified(false);
-        saveItem(item);
-    }
-
- */
 
     public ArrayList<Item> findBoughtItems() {
         ArrayList<Item> copy = new ArrayList<>();
@@ -218,33 +177,7 @@ public class Repository {
 
         return lists;
     }
-    /*
-    //lists methods
-    public ItemList createList(String listName,String shopName){
-        ItemList newItemList = new ItemList(listName,shopName);
-        saveList(newItemList);
-        return newItemList;
-    }
 
-     */
-/*
-    public ItemList removeList(ItemList list) {
-        list.setDeleteFlag(true);
-        saveList(list);
-        return list;
-    }
-
- */
-/*
-    public ItemList modifyList(String listName, String shopName, ItemList curList) {
-
-        curList.setShopName(shopName);
-        curList.setListName(listName);
-        saveList(curList);
-        return curList;
-    }
-
- */
     public void saveList(ItemList list){
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> inRealm.copyToRealmOrUpdate(list));
@@ -456,6 +389,7 @@ public class Repository {
         }
         return null;
     }
+//in-case want to remove all data
     private static void clear() {
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(inRealm->{

@@ -4,25 +4,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ignas.android.groceryshoppingapp.Models.Association;
 import com.ignas.android.groceryshoppingapp.Models.Item;
-import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.Service.Repository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemViewModel extends ViewModel {
     private final Repository repository;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
     private final MutableLiveData<Item> mLiveSDate = new MutableLiveData<>();
-    private List<Association> boughtAssos = new ArrayList<>();
-    private final MutableLiveData<List<ItemList>> boughtLists = new MutableLiveData<>();
-
 
     public ItemViewModel() {
         repository = Repository.getInstance();
-
 
         mLiveItems.setValue(repository.getItems());
         mLiveSDate.setValue(repository.getShoppingDateItem());
@@ -110,22 +103,16 @@ public class ItemViewModel extends ViewModel {
             app_DateItem.setLastingDays(lastingDays);
         }
         repository.saveItem(app_DateItem);
+        mLiveSDate.setValue(app_DateItem);
     }
+
     public void removeShoppingDate(){
 
         repository.removeShoppingDate();
         mLiveSDate.setValue(null);
     }
 
-//finds instances of bought items that selected in the report drop down menu.
-    public void itemQuery(int item_Id){
-        if(item_Id!=-1){
-            boughtAssos = repository.findBoughtInstances(item_Id);
-            boughtLists.setValue(repository.findListsQuery(boughtAssos));
-        }else{
-            boughtAssos.clear();
-        }
-    }
+
 
 
     //public void setBoughtAssos(){boughtAssos.clear();}
@@ -134,16 +121,6 @@ public class ItemViewModel extends ViewModel {
         return mLiveItems;
     }
     public LiveData<Item> getLiveShoppingDate() { return mLiveSDate;}
-
-    public List<Association> getBoughtAssos() {
-        return boughtAssos;
-    }
-
-
-
-    public LiveData<List<ItemList>> getBoughtLists() {
-        return boughtLists;
-    }
 
     public Item reSyncCurrent(int position) {
 
