@@ -19,7 +19,7 @@ public class DbConnect extends Application {
                 .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)
-                .deleteRealmIfMigrationNeeded()//good for when changing db alot
+                //.deleteRealmIfMigrationNeeded()//good for when changing db alot
                 .build();
         Realm.setDefaultConfiguration(config);
         Realm.getInstance(config);

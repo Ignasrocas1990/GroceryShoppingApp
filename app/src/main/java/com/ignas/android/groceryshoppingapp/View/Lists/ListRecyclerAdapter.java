@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder> {
+public class ListRecyclerAdapter extends RecyclerView.Adapter<ListRecyclerAdapter.ViewHolder> {
    private final int MAX_QUANTITY = 9999999;
    private List<Item> mValues = new ArrayList<>();
    private List<Association> aValues = new ArrayList<>();
@@ -28,7 +28,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
    private final String TAG = "log";
 
 //constructor
-    public ListRecyclerViewAdapter(ItemClickListener itemClickListener){
+    public ListRecyclerAdapter(ItemClickListener itemClickListener){
         this.mItemClickListener = itemClickListener;
     }
     public interface ItemClickListener{
@@ -85,7 +85,6 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             holder.quantity.setText("");
             holder.quantity.setEnabled(true);
             toggleBtn(holder,false);
-            //holder.product_name.setText(item.getItemName());
         }
 
 //add item

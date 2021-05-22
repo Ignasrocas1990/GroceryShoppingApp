@@ -27,8 +27,8 @@ public class AssoViewModel extends ViewModel {
     private final int NONE = 0;
     private final Repository repository;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
-    private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
     private List<Association> boughtAssos = new ArrayList<>();
+    private final MutableLiveData<ArrayList<String>> dateDisplay = new MutableLiveData<>();
     private final MutableLiveData<List<ItemList>> boughtLists = new MutableLiveData<>();
 
 
@@ -198,7 +198,9 @@ public class AssoViewModel extends ViewModel {
         }
     }
     public void insertOnFlyItemAsso(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos){
-        insertOnFly(asso,shoppingAssos);
+        for(ArrayList<Association> curAssoArray:shoppingAssos.values()){
+            curAssoArray.add(asso);
+        }
     }
     public void markAsBought(int item_id, String amountString){
         Association bought = createTempAsso(item_id,amountString);
@@ -294,14 +296,14 @@ public class AssoViewModel extends ViewModel {
     private long getStart(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);
-        //date.add(Calendar.DAY_OF_WEEK,-7);//un comment this to go back to noraml days (As Cris suggested)
+        //date.add(Calendar.DAY_OF_WEEK,-7);//un comment this to go back to noraml days (As Cris suggested) TODO
         date.add(Calendar.MINUTE,-30);
         return date.getTimeInMillis();
     }
     public long getEnd(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);
-        //date.add(Calendar.DAY_OF_WEEK,7);//un comment this to go back to noraml days (As Cris suggested)
+        //date.add(Calendar.DAY_OF_WEEK,7);//un comment this to go back to noraml days (As Cris suggested) TODO
         date.add(Calendar.MINUTE,30);
         return date.getTimeInMillis();
 
@@ -382,11 +384,6 @@ public class AssoViewModel extends ViewModel {
         }
     }
 
-    public void insertOnFly(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos) {
-        for(ArrayList<Association> curAssoArray:shoppingAssos.values()){
-            curAssoArray.add(asso);
-        }
-    }
 
 
     public LiveData<List<ItemList>> getBoughtLists() {

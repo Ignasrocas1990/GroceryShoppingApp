@@ -73,7 +73,7 @@ public class ReportFragment extends Fragment {
 
 
         //set up Recycler View
-        ReportRecyclerViewAdapter reportAdapter = new ReportRecyclerViewAdapter(items);
+        ReportRecyclerAdapter reportAdapter = new ReportRecyclerAdapter(items);
         recyclerView.setAdapter(reportAdapter);
 
 //set up date SPINNER(Drop down menu)

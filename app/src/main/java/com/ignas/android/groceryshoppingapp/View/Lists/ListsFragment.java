@@ -99,7 +99,7 @@ public class ListsFragment extends Fragment {
 
 //Recycler on click
         rec.setLayoutManager(new LinearLayoutManager(context));
-        ListRecyclerViewAdapter adapter = new ListRecyclerViewAdapter(new ListRecyclerViewAdapter.ItemClickListener() {
+        ListRecyclerAdapter adapter = new ListRecyclerAdapter(new ListRecyclerAdapter.ItemClickListener() {
 
             @Override
             public void onItemSaveClick(int list_Id,int item_Id, int quantity) {
@@ -149,7 +149,7 @@ public class ListsFragment extends Fragment {
 
         return view;
     }
-
+//aprove users input
     private boolean ApproveData(String listName, String shopName) {
         if(listName.equals("")){
             Toast.makeText(context, "List needs a name", Toast.LENGTH_SHORT).show();

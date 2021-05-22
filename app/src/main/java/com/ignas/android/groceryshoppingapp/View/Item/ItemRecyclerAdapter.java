@@ -16,14 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
+public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapter.ViewHolder> {
 
     private List<Item> mValues = new ArrayList<>();
     private final ItemClickListener mItemClickListener;
     View prevSelected = null;
     private String TAG = "log";
 
-    public ItemRecyclerViewAdapter(ItemClickListener itemClickListener) {
+    public ItemRecyclerAdapter(ItemClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
     }
     public void updateViewItems(ArrayList<Item> mValues){

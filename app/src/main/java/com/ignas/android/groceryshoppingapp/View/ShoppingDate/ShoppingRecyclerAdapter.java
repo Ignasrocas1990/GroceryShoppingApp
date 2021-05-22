@@ -69,42 +69,7 @@ public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecycl
 
 
 
-/*
-        if(currentItem.isSelected()){
-            holder.itemView.setBackgroundResource(R.color.red);
-        }else{
-            holder.itemView.setBackgroundResource(R.color.blue);
-        }
 
-            holder.name.setText(currentItem.getName());
-            if(Float.compare(currentItem.getPrice(),0.f)!=0){
-                holder.price.setText(String.valueOf(currentItem.getPrice()));
-            }
-            if(currentItem.getQuantity()!=0){
-                holder.amount.setText(String.valueOf(currentItem.getQuantity()));
-            }
-            if(!currentItem.getListName().equals("")){
-                holder.list.setText(currentItem.getListName());
-            }
-            if(!currentItem.getShopName().equals("")){
-                holder.list.setText(currentItem.getShopName());
-            }
-//item been selected
-        holder.itemView.setOnClickListener(v -> {
-            if(!currentItem.isSelected()){
-                currentItem.setSelected(true);
-                holder.itemView.setBackgroundResource(R.color.red);
-                mOnItemClickListener.onItemBuy(currentItem);
-            }else{
-                currentItem.setSelected(false);
-                holder.itemView.setBackgroundResource(R.color.blue);
-                mOnItemClickListener.onCancel(currentItem);
-            }
-        });
-
-
- */
-        //TODO -- need to get price form Asso's------Amount & list ID-----------next
     }
 
     @Override

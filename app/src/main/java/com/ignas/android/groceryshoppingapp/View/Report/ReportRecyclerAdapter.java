@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecyclerViewAdapter.ViewHolder> {
+public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder> {
 
     //date spinner data
    private List<Item> items = new ArrayList<>();
@@ -34,7 +34,7 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
 
 
-    public ReportRecyclerViewAdapter(List<Item> i) {
+    public ReportRecyclerAdapter(List<Item> i) {
         items = i;
     }
 
@@ -51,14 +51,14 @@ public class ReportRecyclerViewAdapter extends RecyclerView.Adapter<ReportRecycl
 
     @NotNull
     @Override
-    public ReportRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReportRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.report_item, parent, false);
-        return new ReportRecyclerViewAdapter.ViewHolder(view);
+        return new ReportRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ReportRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ReportRecyclerAdapter.ViewHolder holder, int position) {
 
         if(itemSpinner && !dateSpinner){//item spinner selected
             Association curAsso = itemAssos.get(position);

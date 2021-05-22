@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ListsViewModel extends ViewModel {
 
-    private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
     private final Repository repository;
+    private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
     //private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
     private ItemList list_to_del;
@@ -137,12 +137,6 @@ public class ListsViewModel extends ViewModel {
     public LiveData<ArrayList<ItemList>> getLiveLists() {
         return mLiveLists;
     }
-/*
-    public LiveData<ItemList> getSpinnerList() {
-        return spinnerList;
-    }
-
- */
 
     public List<ItemList> findLists(List<Association> assos) {
         return repository.findLists(assos);

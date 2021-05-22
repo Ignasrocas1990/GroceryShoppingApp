@@ -55,7 +55,7 @@ public class DateFragment extends Fragment {
 
         itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {
             if(item !=null){
-                dateTextView.setText(TestDate(item));//testing (deletable)-(right now show what selected but act's day =  second)
+                dateTextView.setText(TestDate(item));// TODO testing (deletable)-(right now show what selected but act's day =  second)
                                                     //when not testing simple get item's run out date...
             }else{
                 dateTextView.setText(R.string.NoDate);
@@ -111,7 +111,7 @@ public class DateFragment extends Fragment {
         });
         return view;
     }
-    public String TestDate(Item item){ // test (deletable)-------------------------------
+    public String TestDate(Item item){ // test (deletable)TODO for normal use comment out the method
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_WEEK,item.getLastingDays());

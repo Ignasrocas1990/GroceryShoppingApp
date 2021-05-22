@@ -42,17 +42,10 @@ public class DateViewModel extends ViewModel {
     }
 
 
-//total methods for shopping day (simple add/subtract/set)
+//total methods for shopping day
     public void addToTotal(float price){
         try{
             liveTotal.setValue(liveTotal.getValue()+price);
-        }catch(NullPointerException e){
-            Log.i("log", "addToTotal: "+e.getMessage());
-        }
-    }
-    public void subtractTotal(float price){
-        try{
-            liveTotal.setValue(liveTotal.getValue()-price);
         }catch(NullPointerException e){
             Log.i("log", "addToTotal: "+e.getMessage());
         }

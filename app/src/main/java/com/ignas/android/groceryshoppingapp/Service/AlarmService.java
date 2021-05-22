@@ -79,7 +79,8 @@ public class AlarmService extends Service {
 
 // if has a name create alarm -else- cancel alarm (from activity)
         if(!name.equals("")){
-            @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");
+            //@SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");//TODO change to above for normal use
+            @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy k:m:s");//TODO change to above for normal use
             dateTag = formatter.format(runoutDate);
 
 

@@ -67,7 +67,7 @@ public class ItemFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        ItemRecyclerViewAdapter adapter = new ItemRecyclerViewAdapter(new ItemRecyclerViewAdapter.ItemClickListener() {
+        ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(new ItemRecyclerAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position, String newName, String newDays, String newPrice) {
                 product_name.setText(newName);
@@ -188,7 +188,7 @@ public class ItemFragment extends Fragment {
 
         return view;
     }
-
+//method to approve user input
     private boolean ApproveData(String stringName, String stringDays, String stringPrice) {
         if(stringName.equals("")){
             Toast.makeText(context, "Name field is empty", Toast.LENGTH_SHORT).show();
