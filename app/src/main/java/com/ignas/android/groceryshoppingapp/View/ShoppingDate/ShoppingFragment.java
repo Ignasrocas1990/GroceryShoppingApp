@@ -201,8 +201,12 @@ public class ShoppingFragment extends Fragment{
             Toast.makeText(context, "Name field is empty", Toast.LENGTH_SHORT).show();
         }else if(newName.length() > MAX_CHARS) {
             Toast.makeText(context, "Name is above 20 Character's", Toast.LENGTH_SHORT).show();
+        }else if(Integer.parseInt(newAmount) < 0){
+            Toast.makeText(context, "Quantity cant be negative", Toast.LENGTH_SHORT).show();
         }else if(newAmount.length() > MAX_LENGTH){
             Toast.makeText(context, "Quantity cant be above 7 digits", Toast.LENGTH_SHORT).show();
+        }else if(Float.compare(Float.parseFloat(newPrice),0.f) < 0){
+            Toast.makeText(context, "Quantity cant be negative", Toast.LENGTH_SHORT).show();
         }else if(newPrice.length() > MAX_LENGTH){
             Toast.makeText(context, "Price cant be above 7 digits", Toast.LENGTH_SHORT).show();
         }else{

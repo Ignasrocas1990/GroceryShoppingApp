@@ -106,7 +106,7 @@ public class ListsFragment extends Fragment {
                 if(list_Id == -1) {
                     Toast.makeText(context, "No list selected", Toast.LENGTH_SHORT).show();
                 }if(item_Id==-1){
-                    Toast.makeText(context, "Quantity is too large", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Quantity is too large or negative", Toast.LENGTH_SHORT).show();
                 }else{
                     assoViewModel.addAsso(list_Id,item_Id,quantity);
                 }

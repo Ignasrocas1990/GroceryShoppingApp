@@ -96,7 +96,7 @@ public class Item extends RealmObject {
         if(lastingDays >=4) lastingDays-=2;
         else if(lastingDays >=2) lastingDays-=1;
 
-        if(lastingDays > 0){
+        if(lastingDays != 0){
             //calendar.add(Calendar.DAY_OF_WEEK,lastingDays);//TODO for chris suggestion un-comment for normal use
             calendar.add(Calendar.MILLISECOND,lastingDays*1000);//TODO for chris suggestion comment for normal use
         }else{
