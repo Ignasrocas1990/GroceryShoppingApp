@@ -91,12 +91,17 @@ public class Item extends RealmObject {
     }
 
     public void setRunOutDate(int lastingDays) {
-        lastingDays-=2;
         Calendar calendar = Calendar.getInstance();
-        if(lastingDays != 0){
-            calendar.add(Calendar.MILLISECOND,lastingDays*1000);//TODO ------testing (need to be changed)
+
+        if(lastingDays >=4) lastingDays-=2;
+        else if(lastingDays >=2) lastingDays-=1;
+
+        if(lastingDays > 0){
+            //calendar.add(Calendar.DAY_OF_WEEK,lastingDays);//TODO for chris suggestion un-comment for normal use
+            calendar.add(Calendar.MILLISECOND,lastingDays*1000);//TODO for chris suggestion comment for normal use
         }else{
-            calendar.add(Calendar.MILLISECOND,10*1000);//TODO --  default
+            //calendar.add(Calendar.DAY_OF_WEEK,999);//TODO for chris suggestion un-comment for normal use
+            calendar.add(Calendar.MILLISECOND,10*1000);//TODO for chris suggestion comment for normal use
         }
         this.runOutDate = calendar.getTime();
     }
