@@ -1,5 +1,8 @@
 package com.ignas.android.groceryshoppingapp.Models;
 
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -17,7 +20,8 @@ public class Item extends RealmObject {
     private Date runOutDate;
     private int lastingDays=0;
     private boolean deleteFlag = false;
-    private boolean notified = false;
+    private boolean notified = true;
+    @NonNls
     private String displayText;
 
     //constructors
@@ -30,7 +34,7 @@ public class Item extends RealmObject {
     public Item(){}
     public Item(int now){ lastingDays = now;}
     public Item(String name) {
-        setItemName(name);;
+        setItemName(name);
     }
     public Item(String name,int item_Id,int lastingDays){
         setItemName(name);
@@ -114,18 +118,11 @@ public class Item extends RealmObject {
         setRunOutDate(lastingDays);
     }
 
-    public String getDisplayText() {
-        return displayText;
-    }
-
-    public void setDisplayText(String displayText) {
-        this.displayText = displayText;
-    }
-
     private void defaultDisplayString(String itemName){
         this.displayText = "Item: "+itemName;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return displayText;

@@ -11,9 +11,11 @@ import com.ignas.android.groceryshoppingapp.View.ShoppingDate.DateFragment;
 import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.ShoppingFragment;
 
+import java.util.Objects;
+
 public class TabAdapter extends FragmentPagerAdapter {
     //dbHelper data;
-    private int numberOfTabs;
+    private final int numberOfTabs;
     public TabAdapter(@NonNull FragmentManager fm, int tabCount) {
         super(fm, tabCount);
         numberOfTabs = tabCount;
@@ -40,7 +42,7 @@ public class TabAdapter extends FragmentPagerAdapter {
                 fragment = ShoppingFragment.newInstance();
                 break;
         }
-        return fragment;
+        return Objects.requireNonNull(fragment);
     }
 
     @Override

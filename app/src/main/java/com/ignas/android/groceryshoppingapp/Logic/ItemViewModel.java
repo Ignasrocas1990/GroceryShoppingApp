@@ -99,6 +99,7 @@ public class ItemViewModel extends ViewModel {
         Item app_DateItem = mLiveSDate.getValue();
         if(app_DateItem == null){//it does not exists
             app_DateItem = new Item("Shopping",Integer.MAX_VALUE,lastingDays);
+            app_DateItem.setNotified(false);
         }else{
             app_DateItem.setLastingDays(lastingDays);
         }

@@ -22,7 +22,7 @@ public class Repository {
     private Repository() {}
 
     public static Repository getInstance() {
-        //-----------------------------------------clear();
+        //clear();
         return repository;
     }
 //--------------------- ITEM methods -------------

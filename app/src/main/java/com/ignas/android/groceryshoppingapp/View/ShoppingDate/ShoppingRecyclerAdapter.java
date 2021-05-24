@@ -18,7 +18,6 @@ import java.util.List;
 
 public class ShoppingRecyclerAdapter extends RecyclerView.Adapter<ShoppingRecyclerAdapter.ViewHolder> {
 
-    private static final String TAG = "log";
     private List<Item> ntfItems = new ArrayList<Item>();
     private List<Association> assos = new ArrayList<>();
     private final onItemClickListener mOnItemClickListener;

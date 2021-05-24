@@ -98,6 +98,7 @@
                     android:backgroundTint="@color/del_btn"
                     android:contentDescription="none"
                     android:src="@drawable/ic_baseline_delete_24"
+                    app:backgroundTint="@color/del_btn"
                     app:fabSize="mini"
                     app:rippleColor="#000000" />
 
