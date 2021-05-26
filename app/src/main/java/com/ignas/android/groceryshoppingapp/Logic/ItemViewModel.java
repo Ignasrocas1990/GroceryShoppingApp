@@ -8,7 +8,12 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.Service.Repository;
 
 import java.util.ArrayList;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, ViewModel responsible of Items
+ */
 public class ItemViewModel extends ViewModel {
     private final Repository repository;
     private final MutableLiveData<ArrayList<Item>> mLiveItems = new MutableLiveData<>();
@@ -25,6 +30,7 @@ public class ItemViewModel extends ViewModel {
         return repository.findBoughtItems();
 
     }
+//creates item
     public Item createItem(String newName, String newDays, String newPrice){
         Item newItem = new Item();
         newItem.setItemName(newName);
@@ -45,7 +51,7 @@ public class ItemViewModel extends ViewModel {
         mLiveItems.setValue(temp);
         return newItem;
     }
-
+//Change item
     public void changeItem(int position, String newName, String newDays, String newPrice) {
         ArrayList<Item> tempArray = mLiveItems.getValue();
         Item oldItem = tempArray.get(position);
@@ -78,6 +84,7 @@ public class ItemViewModel extends ViewModel {
         temp.remove(position);
         mLiveItems.setValue(temp);
     }
+//sets all items to start of their scheduling
     public void reSyncItems(){
         ArrayList<Item> items = mLiveItems.getValue();
         ArrayList<Item> toSave = new ArrayList<Item>();
@@ -94,7 +101,6 @@ public class ItemViewModel extends ViewModel {
         }
 
     }
-//shopping date methods
     public void createShoppingDate(int lastingDays){
         Item app_DateItem = mLiveSDate.getValue();
         if(app_DateItem == null){//it does not exists
@@ -116,7 +122,6 @@ public class ItemViewModel extends ViewModel {
 
 
 
-    //public void setBoughtAssos(){boughtAssos.clear();}
 //live methods
     public LiveData<ArrayList<Item>> getLiveItems() {
         return mLiveItems;
@@ -131,12 +136,14 @@ public class ItemViewModel extends ViewModel {
         repository.saveItem(item);
         return item;
     }
+//re-sets single item of notification
     public void syncBoughtItem(Item item){
         item.setRunOutDate(item.getLastingDays());
         item.setNotified(false);
         repository.saveItem(item);
 
     }
+//finds notified items
     public ArrayList<Item> getNotifiedItems() {
 
         ArrayList<Item> items = mLiveItems.getValue();
@@ -151,6 +158,7 @@ public class ItemViewModel extends ViewModel {
         }
         return copy;
     }
+//sets spinner starter text (for the look)
     public ArrayList<Item> setSpinnerText(ArrayList<Item> items){
 
         if(items.size() == 0){

@@ -9,7 +9,12 @@ import java.util.Random;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Association model
+ */
 public class Association extends RealmObject {
 
     @PrimaryKey
@@ -54,7 +59,6 @@ public class Association extends RealmObject {
     public boolean isBought() {
         return bought;
     }
-
     public void setBought(boolean bought) {
         this.bought = bought;
         Calendar cal = Calendar.getInstance();

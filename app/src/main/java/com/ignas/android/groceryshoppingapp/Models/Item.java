@@ -9,7 +9,12 @@ import java.util.Random;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Item Model
+ */
 public class Item extends RealmObject {
 
     @PrimaryKey
@@ -94,6 +99,7 @@ public class Item extends RealmObject {
         return runOutDate;
     }
 
+//important for notification scheduling
     public void setRunOutDate(int lastingDays) {
         Calendar calendar = Calendar.getInstance();
 

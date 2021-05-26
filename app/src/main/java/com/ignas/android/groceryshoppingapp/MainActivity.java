@@ -32,7 +32,12 @@ import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Initialize main components
+ */
 public class MainActivity extends AppCompatActivity {
     private static final int MANAGE_LISTS_TAB = 1;
     private static final int SHOPPING_TAB = 4;
@@ -177,6 +182,7 @@ cancelAlarms();
 
         });
     }
+//remove list to a drawer
     public void delDrawerList(ItemList list){
         menu = mNavigationView.getMenu();
         if(menu.hasVisibleItems()){
@@ -187,6 +193,7 @@ cancelAlarms();
         refreshDrawer();
 
     }
+//add list to a drawer
     public void addtoDrawer(ArrayList<ItemList>lists){
         menu = mNavigationView.getMenu();
         Random r = new Random();
@@ -206,7 +213,7 @@ cancelAlarms();
         }
         refreshDrawer();
     }
-    //not my code -----------------(run through children and get adapter)
+    //not my code -----------------(run through children and get adapter and notifyDataSetChanged)
     public void refreshDrawer(){
         for (int i = 0, count = mNavigationView.getChildCount(); i < count; i++) {
             final View child = mNavigationView.getChildAt(i);
@@ -214,7 +221,7 @@ cancelAlarms();
                 final ListView menuView = (ListView) child;
                 final HeaderViewListAdapter adapter = (HeaderViewListAdapter) menuView.getAdapter();
                 final BaseAdapter wrapped = (BaseAdapter) adapter.getWrappedAdapter();
-                wrapped.notifyDataSetChanged();
+                wrapped.notifyDataSetChanged(); //< important this
             }
         }
     }
@@ -225,7 +232,6 @@ cancelAlarms();
         if(dateViewModel.updateSwitch()){ //checks if switch was off and now its on
             itemViewModel.reSyncItems();
         }
-//update db data
 
 //start alarm service if switch is on.
         if(dateViewModel.getSwitch()){
@@ -240,6 +246,7 @@ cancelAlarms();
         intent.putExtra("name","");
         startService(intent);
     }
+    //cancels alarm again in case resumed
     @Override
     protected void onPostResume() {
         super.onPostResume();

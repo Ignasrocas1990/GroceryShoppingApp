@@ -18,7 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Item Recycler adapter controls the data
+ * for recycler view component
+ */
 public class ListRecyclerAdapter extends RecyclerView.Adapter<ListRecyclerAdapter.ViewHolder> {
    private final int MAX_QUANTITY = 9999999;
    private List<Item> mValues = new ArrayList<>();

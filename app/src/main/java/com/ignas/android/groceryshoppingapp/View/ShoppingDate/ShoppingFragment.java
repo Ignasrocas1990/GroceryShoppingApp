@@ -31,7 +31,12 @@ import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Fragment responsible for Shopping day
+ */
 public class ShoppingFragment extends Fragment{
     private static final int MAX_LENGTH  = 8;
     private static final int MAX_CHARS = 20;

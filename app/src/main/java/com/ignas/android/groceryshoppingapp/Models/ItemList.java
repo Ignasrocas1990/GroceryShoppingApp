@@ -9,7 +9,12 @@ import java.util.Random;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, ItemList model
+ */
 public class ItemList extends RealmObject {
 
     @PrimaryKey

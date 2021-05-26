@@ -18,10 +18,13 @@ import com.ignas.android.groceryshoppingapp.Models.Item;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, AlarmService that runs in the background
+ */
 public class AlarmService extends Service {
-
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -123,6 +126,8 @@ public class AlarmService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    //stop any alarms
     public void stopAlarm(Context context){
 
         Intent intent  = new Intent(context, Notification.class);

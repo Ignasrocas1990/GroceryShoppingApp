@@ -18,7 +18,12 @@ import androidx.core.app.NotificationManagerCompat;
 import com.ignas.android.groceryshoppingapp.R;
 
 import org.jetbrains.annotations.NonNls;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Notification shown to the user
+ */
 public class Notification extends BroadcastReceiver {
     private static final int MainActivity  = 2;
     private static final String CHANNEL_ID = "0";

@@ -21,7 +21,12 @@ import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 import com.ignas.android.groceryshoppingapp.Models.ItemList;
 import com.ignas.android.groceryshoppingapp.R;
 import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Fragment responsible for lists
+ */
 public class ListsFragment extends Fragment {
     private static final String TAG = "log";
     private static final int MAX_CHARS  = 10;

@@ -22,7 +22,12 @@ import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Fragment responsible for Date
+ */
 public class DateFragment extends Fragment {
 
     private static final String TAG = "log";
@@ -52,7 +57,7 @@ public class DateFragment extends Fragment {
         Calendar now = Calendar.getInstance();
         Calendar later = Calendar.getInstance();
 
-
+//observe shopping gui
         itemViewModel.getLiveShoppingDate().observe(requireActivity(), item -> {
             if(item !=null){
                 dateTextView.setText(displayDate(item));
@@ -110,6 +115,7 @@ public class DateFragment extends Fragment {
         });
         return view;
     }
+    //convert for display the date
     public String displayDate(Item item){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();

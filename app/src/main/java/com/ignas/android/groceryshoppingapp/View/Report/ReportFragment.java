@@ -25,7 +25,12 @@ import com.ignas.android.groceryshoppingapp.Logic.DateViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Fragment responsible for report
+ */
 public class ReportFragment extends Fragment {
     Context context=null;
     ItemViewModel itemViewModel;
@@ -58,6 +63,7 @@ public class ReportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.report_recycler, container, false);
         context = view.getContext();
+//get back view models from main activity
         listViewModel = ViewModelProviders.of(requireActivity()).get(ListsViewModel.class);
         assoViewModel = ViewModelProviders.of(requireActivity()).get(AssoViewModel.class);
         itemViewModel = ViewModelProviders.of(requireActivity()).get(ItemViewModel.class);

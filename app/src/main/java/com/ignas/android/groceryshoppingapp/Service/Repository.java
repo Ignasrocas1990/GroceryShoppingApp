@@ -15,14 +15,22 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, all Realm interactions class
+ */
 
 public class Repository {
     static private final Repository repository = new Repository();
     private static final String TAG ="log";
-    private Repository() {}
+    private Repository() {
+        //clear();
+
+    }
 
     public static Repository getInstance() {
-        //clear();
         return repository;
     }
 //--------------------- ITEM methods -------------

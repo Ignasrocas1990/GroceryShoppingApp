@@ -11,13 +11,17 @@ import com.ignas.android.groceryshoppingapp.Service.Repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, ViewModel responsible of lists
+ */
 public class ListsViewModel extends ViewModel {
-
+//live storage
     private final Repository repository;
     private final MutableLiveData<ArrayList<ItemList>> mLiveLists = new MutableLiveData<>();
     private final MutableLiveData<ItemList> currentList = new MutableLiveData<>();
-    //private final MutableLiveData<ItemList> spinnerList = new MutableLiveData<>();
     private ItemList list_to_del;
 
 
@@ -26,7 +30,7 @@ public class ListsViewModel extends ViewModel {
         mLiveLists.setValue(repository.getLists());
 
     }
- //basic lists methods
+//CRUD Lists methods
     public void createList(String listName,String shopName){
         ArrayList<ItemList> oldList = mLiveLists.getValue();
 

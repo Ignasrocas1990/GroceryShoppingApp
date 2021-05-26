@@ -17,7 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Item Recycler adapter controls the data
+ * for recycler view component
+ */
 public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder> {
 
     //date spinner data
@@ -37,7 +43,7 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
     public ReportRecyclerAdapter(List<Item> i) {
         items = i;
     }
-
+//different data from different spinners
     public void fromDateSpinner(List<ItemList> dateI,List<Association> dAssos){
         dateItemLists = dateI;
         dateAssos = dAssos;

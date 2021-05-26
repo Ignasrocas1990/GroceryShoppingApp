@@ -12,15 +12,21 @@ import com.ignas.android.groceryshoppingapp.View.Report.ReportFragment;
 import com.ignas.android.groceryshoppingapp.View.ShoppingDate.ShoppingFragment;
 
 import java.util.Objects;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, bridge between fragments class
+ */
 public class TabAdapter extends FragmentPagerAdapter {
-    //dbHelper data;
+
     private final int numberOfTabs;
     public TabAdapter(@NonNull FragmentManager fm, int tabCount) {
         super(fm, tabCount);
         numberOfTabs = tabCount;
 
     }
+    //switch between fragments on item selected tab
     @NonNull
     @Override
     public Fragment getItem(int position) {

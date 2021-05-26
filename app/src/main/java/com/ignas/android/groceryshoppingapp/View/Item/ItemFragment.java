@@ -24,9 +24,13 @@ import com.ignas.android.groceryshoppingapp.Logic.AssoViewModel;
 import com.ignas.android.groceryshoppingapp.Logic.ListsViewModel;
 
 import java.util.List;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, Fragment responsible for items
+ */
 public class ItemFragment extends Fragment {
-    public final String TAG = "log";
     private static final int MAX_PRICE_LENGTH  = 7;
     private static final int MAX_CHARS = 20,MAX_TIME_LENGTH=5;
     private Context context;

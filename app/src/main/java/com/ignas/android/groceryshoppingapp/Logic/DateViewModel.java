@@ -7,9 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.ignas.android.groceryshoppingapp.Service.Repository;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, ViewModel responsible of NotificationSwitch & Total
+ */
 public class DateViewModel extends ViewModel {
-
+//live storage
     private final MutableLiveData<Boolean> app_switch = new MutableLiveData<>();
     private final MutableLiveData<Float> liveTotal = new MutableLiveData<>();
     private final Repository repository;
@@ -18,6 +23,7 @@ public class DateViewModel extends ViewModel {
     public DateViewModel(){
         repository = Repository.getInstance();
         app_switch.setValue(repository.getDBSwitch());
+
     }
 //getters & setters
     public boolean getSwitch() {
@@ -30,6 +36,7 @@ public class DateViewModel extends ViewModel {
     public void setSwitch(boolean state) {
         app_switch.setValue(state);
     }
+//updates and checks if needed to re-sync
     public boolean updateSwitch(){
         boolean dbSwitch = repository.getDBSwitch();
         if(dbSwitch != app_switch.getValue()){

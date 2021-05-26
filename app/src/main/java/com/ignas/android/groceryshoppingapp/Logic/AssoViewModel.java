@@ -23,7 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, ViewModel responsible of Associations
+ */
 public class AssoViewModel extends ViewModel {
+    //live data storage
     private final int NONE = 0;
     private final Repository repository;
     private final MutableLiveData<List<Association>> currentLive = new MutableLiveData<>();
@@ -158,6 +165,7 @@ public class AssoViewModel extends ViewModel {
         }
         return listMap;
     }
+//goes through notified items and finds notified associations for each
     public ArrayList<Association> findNotifiedAssos(ArrayList<Item> notifiedItems){
         ArrayList<Association> allAssos = new ArrayList<>(repository.getAllAssos());
         ArrayList<Association> foundAssos = new ArrayList<>();
@@ -197,11 +205,13 @@ public class AssoViewModel extends ViewModel {
             removeBoughtAsso(currentAsso,shoppingAssos);
         }
     }
+//insert item in the shopping tab (item set to not tracking)
     public void insertOnFlyItemAsso(Association asso, HashMap<Integer, ArrayList<Association>> shoppingAssos){
         for(ArrayList<Association> curAssoArray:shoppingAssos.values()){
             curAssoArray.add(asso);
         }
     }
+//reset item to bought so it will be push back in the scheduling notification
     public void markAsBought(int item_id, String amountString){
         Association bought = createTempAsso(item_id,amountString);
         bought.setDeleteFlag(true);
@@ -239,7 +249,7 @@ public class AssoViewModel extends ViewModel {
         return displayGroups;
     }
 
-//get Associations for date spinner in report
+//create Associations for date spinner in report
     private HashMap<Long, List<Association>> groupByDate(List<Association> boughtAssos) {
         HashMap<Long, List<Association>> groupedAssos = new HashMap<>();
         Calendar currentTime = Calendar.getInstance();
@@ -282,6 +292,7 @@ public class AssoViewModel extends ViewModel {
 
         return groupedAssos;
     }
+//converts to string for display in spinner
     public HashMap<String, List<Association>> convertToString(HashMap<Long, List<Association>> groupedAssos ){
 
         HashMap<String, List<Association>> newGroupedAssos = new HashMap<>();
@@ -293,6 +304,7 @@ public class AssoViewModel extends ViewModel {
         }
         return newGroupedAssos;
     }
+//get start day for grouping comparison
     private long getStart(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);
@@ -300,6 +312,7 @@ public class AssoViewModel extends ViewModel {
         date.add(Calendar.MINUTE,-30);
         return date.getTimeInMillis();
     }
+//get end day for grouping comparison
     public long getEnd(long key){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(key);

@@ -8,7 +8,12 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
-
+/***
+ * Author:Ignas Rocas
+ * Student Id: C00135830
+ * Date: 28/05/2021
+ * Purpose: Project, DB connection/migration class
+ */
 public class DbConnect extends Application {
     @Override
     public void onCreate() {
@@ -19,7 +24,6 @@ public class DbConnect extends Application {
                 .schemaVersion(1).migration(new RealmMigrations())
                 .allowWritesOnUiThread(true)
                 .allowQueriesOnUiThread(true)
-                //.deleteRealmIfMigrationNeeded()//good for when changing db alot
                 .build();
         Realm.setDefaultConfiguration(config);
         Realm.getInstance(config);
