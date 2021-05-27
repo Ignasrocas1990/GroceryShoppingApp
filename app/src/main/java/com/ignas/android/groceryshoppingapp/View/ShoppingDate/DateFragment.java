@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.ignas.android.groceryshoppingapp.Logic.DateViewModel;
+import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 import com.ignas.android.groceryshoppingapp.Models.Item;
 import com.ignas.android.groceryshoppingapp.R;
-import com.ignas.android.groceryshoppingapp.Logic.ItemViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +31,7 @@ import java.util.Calendar;
 public class DateFragment extends Fragment {
 
     private static final String TAG = "log";
+    DatePickerDialog.OnDateSetListener dateSelector;
 
     public DateFragment() {
     }
@@ -70,6 +71,8 @@ public class DateFragment extends Fragment {
             public void onClick(View v) {
                 if(dateViewModel.getSwitch()){//if notification switch is on
 
+
+
                     DatePickerDialog dpDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -86,7 +89,8 @@ public class DateFragment extends Fragment {
                                 Toast.makeText(context, "Error,Date selected is in the past.", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    },now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_WEEK));
+                    },now.get(Calendar.YEAR),now.get(Calendar.MONTH) ,now.get(Calendar.DAY_OF_MONTH));
+
                     dpDialog.setCancelable(false);
                     dpDialog.setOnCancelListener(dialog -> {
                         dialog.dismiss();
