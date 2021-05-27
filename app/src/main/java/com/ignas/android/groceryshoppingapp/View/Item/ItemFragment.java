@@ -198,12 +198,8 @@ public class ItemFragment extends Fragment {
             Toast.makeText(context, "Name field is empty", Toast.LENGTH_SHORT).show();
         }else if(stringName.length() >= MAX_CHARS){
             Toast.makeText(context,"Name is above 20 Character's",Toast.LENGTH_SHORT).show();
-        }else if(Integer.parseInt(stringDays) < 0){
-            Toast.makeText(context,"Lasting days cant be negative",Toast.LENGTH_SHORT).show();
         }else if(stringDays.length() >= MAX_TIME_LENGTH ){
             Toast.makeText(context, "Item can't last that long (max 5 digits)", Toast.LENGTH_SHORT).show();
-        }else if(Float.compare(Float.parseFloat(stringPrice),0.f) < 0){
-            Toast.makeText(context, "Quantity cant be negative", Toast.LENGTH_SHORT).show();
         }else if(stringPrice.length() >= MAX_PRICE_LENGTH){
             Toast.makeText(context, "Price cant be above 7 digits", Toast.LENGTH_SHORT).show();
         }else{

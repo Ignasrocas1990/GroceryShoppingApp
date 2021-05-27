@@ -103,7 +103,7 @@ public class ListRecyclerAdapter extends RecyclerView.Adapter<ListRecyclerAdapte
                 if(!qString.equals("")){
                     quantity = Integer.parseInt(qString);
                 }
-                if(quantity <= MAX_QUANTITY && quantity >= 0){
+                if(quantity <= MAX_QUANTITY){
                     toggleBtn(holder,true);
                     holder.quantity.setEnabled(false);
                 }else{
